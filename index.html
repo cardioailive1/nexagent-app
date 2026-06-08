@@ -1539,39 +1539,14 @@ async function runTask() {
   try {
     var SYSTEM = 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]';
 
-    var PAYLOAD = {
-      model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
-      system: SYSTEM, messages: [{ role: 'user', content: userText }],
-    };
-
-    var resp;
-    // Try proxy first (Vercel deployment with ANTHROPIC_API_KEY env var)
-    try {
-      resp = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify(PAYLOAD),
-      });
-      // If proxy returns 404, it doesn't exist — fall back to direct
-      if (resp.status === 404) throw new Error('proxy_not_found');
-    } catch(proxyErr) {
-      // Fallback: direct browser call using embedded key
-      var apiKey = window.NEXAGENT_CONFIG_KEY || localStorage.getItem('na_api_key') || '';
-      if (!apiKey || !apiKey.startsWith('sk-ant-')) {
-        throw new Error('NexGen Ultra not configured. Please contact support.');
-      }
-      resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify(PAYLOAD),
-      });
-    }
-
+    var resp = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
+        system: SYSTEM, messages: [{ role: 'user', content: userText }],
+      }),
+    });
     if (!resp.ok) {
       var errJson = await resp.json().catch(function(){ return {}; });
       var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
