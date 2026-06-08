@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NexAgent Studio — Corverxis Technologies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B1725;--surface:#0D1B2E;--panel:#0F2035;
+  --border:rgba(0,200,255,.08);--border2:rgba(0,200,255,.2);
+  --fg:#EEF4F8;--dim:#8BAFC8;--muted:#4A6C84;
+  --accent:#00C8FF;--accent2:#0099CC;--adim:rgba(0,200,255,.1);
+  --black:#04080E;--dark:#080F18;
+  --fm:'DM Mono',monospace;--fd:'Playfair Display',serif;--fs:'DM Sans',sans-serif;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--fs);font-size:14px}
+
+/* NAV */
+.nav{display:flex;align-items:center;gap:8px;padding:0 14px;height:46px;background:var(--dark);border-bottom:1px solid var(--border);flex-shrink:0}
+.nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
+.nav-logo{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-name{font-family:var(--fd);font-size:15px;color:var(--fg)}
+.nav-name span{color:var(--accent)}
+.nav-badge{font-family:var(--fm);font-size:8px;padding:2px 8px;border-radius:8px;background:var(--adim);border:1px solid rgba(0,200,255,.2);color:var(--accent);letter-spacing:1px}
+.nav-btn{padding:5px 13px;border-radius:6px;font-family:var(--fm);font-size:9px;cursor:pointer;border:none;transition:all .15s;white-space:nowrap;text-decoration:none;display:inline-block}
+.nav-btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--dim)}
+.nav-btn.ghost:hover{border-color:var(--accent);color:var(--fg)}
+.nav-btn.primary{background:var(--accent);color:var(--black);font-weight:700}
+.nav-btn.primary:hover{opacity:.88}
+
+/* TRIAL BAR */
+.trial-bar{display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 16px;background:rgba(0,200,255,.04);border-bottom:1px solid var(--border);flex-shrink:0}
+.trial-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+
+/* LAYOUT */
+.app{display:flex;height:calc(100vh - 86px);overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:240px;flex-shrink:0;background:var(--dark);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.sb-section{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sb-label{font-family:var(--fm);font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.sb-status{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--surface);border:1px solid rgba(0,200,255,.18);border-radius:7px}
+.sb-status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.sb-tmpl{width:100%;padding:7px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--dim);font-family:var(--fs);font-size:11.5px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:5px}
+.sb-tmpl:hover{border-color:var(--border2);color:var(--fg);background:var(--adim)}
+.sb-action{display:flex;align-items:center;gap:8px;padding:9px 10px;background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--dim);font-family:var(--fm);font-size:9.5px;cursor:pointer;text-align:left;width:100%;margin-bottom:6px;transition:all .15s}
+.sb-action:hover{border-color:var(--border2);color:var(--fg);background:var(--adim)}
+.sb-action-count{margin-left:auto;font-family:var(--fm);font-size:7.5px;background:var(--adim);border:1px solid rgba(0,200,255,.15);color:var(--accent);padding:2px 6px;border-radius:8px}
+.pipe-row{display:flex;align-items:center;gap:7px;padding:5px 8px;background:var(--surface);border:1px solid var(--border);border-radius:6px;margin-bottom:5px;transition:border-color .2s}
+.pipe-row.active{border-color:rgba(0,200,255,.3);background:var(--adim)}
+.pipe-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:all .2s}
+.pipe-row.active .pipe-dot{background:var(--accent);box-shadow:0 0 5px var(--accent)}
+.stat-row{display:flex;justify-content:space-between;margin-bottom:5px}
+.stat-lbl{font-family:var(--fm);font-size:9px;color:var(--muted)}
+.stat-val{font-family:var(--fm);font-size:9px;color:var(--dim)}
+.sb-bottom{padding:10px 12px;border-top:1px solid var(--border);background:var(--dark);position:sticky;bottom:0}
+
+/* WORKSPACE */
+.workspace{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.ws-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.ws-dots{display:flex;gap:4px}
+.ws-dot{width:9px;height:9px;border-radius:50%}
+.feed{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-height:0}
+.feed::-webkit-scrollbar{width:4px}
+.feed::-webkit-scrollbar-thumb{background:rgba(0,200,255,.15);border-radius:2px}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:10px;padding:24px}
+.agent-chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:6px}
+.chip{font-family:var(--fm);font-size:8.5px;padding:3px 10px;border-radius:10px;background:var(--adim);border:1px solid var(--border2);color:var(--accent)}
+.msg-row{display:flex;align-items:flex-start;gap:10px;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;border:1px solid var(--border2);background:var(--surface)}
+.av.user{background:var(--adim);border-color:rgba(0,200,255,.25)}
+.bubble{background:var(--surface);border:1px solid var(--border);border-radius:4px 12px 12px 12px;padding:9px 13px;font-size:13px;color:var(--fg);line-height:1.7;max-width:100%}
+.bubble.user{background:rgba(0,200,255,.07);border-color:rgba(0,200,255,.2);border-radius:12px 4px 12px 12px}
+.bubble.sys{background:var(--dark);border-color:var(--border);color:var(--dim);font-family:var(--fm);font-size:11px}
+.agent-lbl{font-family:var(--fm);font-size:8px;color:var(--muted);letter-spacing:.5px;margin-bottom:4px;text-transform:uppercase}
+.typing{display:flex;gap:5px;align-items:center;padding:2px 0}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:ty 1.2s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes ty{0%,80%,100%{opacity:.25;transform:scale(1)}40%{opacity:1;transform:scale(1.3)}}
+.cursor{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink .7s step-end infinite;vertical-align:text-bottom;margin-left:2px;border-radius:1px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.input-bar{padding:8px 12px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+textarea#prompt{flex:1;background:var(--bg);border:1px solid rgba(0,200,255,.12);border-radius:8px;padding:9px 12px;font-family:var(--fs);font-size:13px;color:var(--fg);outline:none;resize:none;line-height:1.5;box-sizing:border-box;transition:border-color .15s}
+textarea#prompt:focus{border-color:var(--border2)}
+#runBtn{padding:10px 20px;background:var(--accent);color:var(--black);border:none;border-radius:8px;font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer;height:42px;white-space:nowrap;flex-shrink:0;transition:opacity .15s}
+#runBtn:hover{opacity:.88}
+#runBtn:disabled{opacity:.4;cursor:not-allowed}
+.input-hint{display:flex;justify-content:space-between;margin-top:5px}
+.hint{font-family:var(--fm);font-size:7.5px;color:var(--muted)}
+
+/* OUTPUT PANEL */
+.out-panel{border-top:1px solid var(--border);background:var(--bg);flex-shrink:0}
+.out-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.out-content{padding:18px 20px;font-size:13px;line-height:1.8;color:var(--fg);max-height:400px;overflow-y:auto}
+.out-toolbar{display:flex;align-items:center;gap:7px;padding:10px 16px;background:var(--surface);border-top:1px solid var(--border);flex-wrap:wrap}
+.out-btn{padding:5px 12px;background:transparent;border:1px solid rgba(0,200,255,.15);color:var(--dim);border-radius:5px;font-family:var(--fm);font-size:8.5px;cursor:pointer;transition:all .15s}
+.out-btn:hover{border-color:var(--accent);color:var(--accent)}
+.out-btn.primary{background:var(--accent);color:var(--black);border-color:var(--accent);font-weight:700}
+
+/* SLIDE PANELS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none}
+.overlay.on{display:block}
+.panel{position:fixed;top:50px;right:0;bottom:0;width:500px;max-width:90vw;background:var(--dark);border-left:1px solid var(--border2);z-index:500;display:none;flex-direction:column;box-shadow:-6px 0 30px rgba(0,0,0,.5)}
+.panel.on{display:flex;animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.ph{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.ph-title{font-family:var(--fm);font-size:11px;font-weight:700;color:var(--fg);flex:1}
+.ph-count{font-family:var(--fm);font-size:9px;color:var(--accent);background:var(--adim);padding:2px 9px;border-radius:10px;border:1px solid rgba(0,200,255,.15)}
+.ph-x{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:2px 6px}
+.ph-x:hover{color:var(--fg)}
+.p-search{padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.p-search input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:7px 11px;font-family:var(--fm);font-size:11px;color:var(--fg);outline:none;box-sizing:border-box}
+.p-search input:focus{border-color:var(--accent)}
+.p-cats{display:flex;gap:5px;padding:8px 14px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--border)}
+.p-cats::-webkit-scrollbar{display:none}
+.p-cat{padding:4px 11px;border-radius:12px;font-family:var(--fm);font-size:8.5px;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;white-space:nowrap;transition:all .15s}
+.p-cat.on,.p-cat:hover{background:var(--adim);border-color:var(--border2);color:var(--accent)}
+.p-body{flex:1;overflow-y:auto;padding:12px 14px}
+.p-body::-webkit-scrollbar{width:4px}
+.p-body::-webkit-scrollbar-thumb{background:rgba(0,200,255,.15);border-radius:2px}
+.a-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.i-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.a-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.a-card:hover{border-color:var(--border2);background:var(--adim);transform:translateY(-1px)}
+.a-icon{font-size:22px;margin-bottom:7px}
+.a-name{font-size:12.5px;font-weight:600;color:var(--fg);margin-bottom:2px}
+.a-role{font-family:var(--fm);font-size:7.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.a-desc{font-size:11.5px;color:var(--dim);line-height:1.5;margin-bottom:7px}
+.a-tags{display:flex;gap:3px;flex-wrap:wrap}
+.a-tag{font-family:var(--fm);font-size:7px;padding:2px 6px;border-radius:6px;background:var(--adim);border:1px solid rgba(0,200,255,.1);color:var(--accent)}
+.a-status{position:absolute;top:9px;right:9px;font-family:var(--fm);font-size:7px;padding:2px 7px;border-radius:8px}
+.a-status.live{background:rgba(0,200,255,.1);color:var(--accent);border:1px solid rgba(0,200,255,.2)}
+.a-status.beta{background:rgba(255,184,77,.1);color:#FFB84D;border:1px solid rgba(255,184,77,.2)}
+.a-deploy{position:absolute;bottom:10px;right:10px;padding:4px 11px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer;opacity:0;transition:opacity .15s}
+.a-card:hover .a-deploy{opacity:1}
+.i-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:all .18s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px}
+.i-card:hover{border-color:var(--border2);background:var(--adim)}
+.i-icon{font-size:24px}
+.i-name{font-family:var(--fm);font-size:9px;color:var(--dim);letter-spacing:.3px}
+.i-cat{font-family:var(--fm);font-size:7.5px;color:var(--muted)}
+
+/* MODALS */
+.modal-ovl{position:fixed;inset:0;background:rgba(10,20,32,.85);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.modal-ovl.open{display:flex;animation:fadeIn .18s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* UPGRADE WALL */
+.upgrade-wall{position:fixed;inset:0;background:rgba(11,23,37,.96);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(20px);padding:20px}
+.upgrade-wall.on{display:flex}
+
+/* TOAST */
+.toast{position:fixed;bottom:18px;right:18px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-family:var(--fm);font-size:11.5px;color:var(--fg);z-index:9999;transition:opacity .3s;pointer-events:none;opacity:0}
+.toast.on{opacity:1}
+
+/* MARKDOWN OUTPUT */
+.out-content h1{font-family:var(--fd);font-size:18px;border-bottom:2px solid var(--accent);padding-bottom:6px;margin:0 0 10px;color:var(--fg)}
+.out-content h2{font-family:var(--fd);font-size:15px;margin:18px 0 6px;color:var(--fg);border-bottom:1px solid var(--border)}
+.out-content h3{font-family:var(--fm);font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin:12px 0 5px}
+.out-content p{margin:0 0 10px;color:rgba(238,244,248,.85)}
+.out-content ul,.out-content ol{padding-left:18px;margin:6px 0 10px}
+.out-content li{margin-bottom:5px;color:rgba(238,244,248,.8)}
+.out-content strong{color:var(--fg)}
+.out-content code{background:var(--panel);padding:1px 5px;border-radius:3px;font-family:var(--fm);font-size:11px;color:var(--accent)}
+.out-content table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px}
+.out-content th{background:var(--adim);padding:7px 10px;font-family:var(--fm);font-size:8.5px;color:var(--accent);border-bottom:1px solid rgba(0,200,255,.15);text-align:left}
+.out-content td{padding:7px 10px;border-bottom:1px solid var(--border)}
+.out-content blockquote{border-left:3px solid var(--accent);padding:7px 14px;background:var(--adim);margin:10px 0;border-radius:0 6px 6px 0;font-style:italic;color:var(--dim)}
+
+@media(max-width:700px){
+  .sidebar{display:none}
+  .panel{width:100%;max-width:100%}
+  html,body{overflow:auto}
+  .app{height:auto;min-height:calc(100vh - 50px)}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-brand" href="nexagent.html">
+    <div class="nav-logo">&#x26A1;</div>
+    <div class="nav-name">NexAgent <span>Studio</span></div>
+  </a>
+  <span class="nav-badge">NexGen Ultra</span>
+  <div style="display:flex;align-items:center;gap:7px;margin-left:auto">
+    <span id="trialCountNav" style="font-family:var(--fm);font-size:9px;padding:3px 10px;border-radius:10px;background:var(--adim);border:1px solid rgba(0,200,255,.2);color:var(--accent);display:none"></span>
+    <button class="nav-btn ghost" onclick="document.getElementById('upgradeWall').classList.add('on')">&#x1F4B3; Pricing</button>
+    <button class="nav-btn ghost" onclick="showHistory()">&#x1F4BE; History</button>
+    <button class="nav-btn ghost" onclick="clearWorkspace()">Clear</button>
+    <a class="nav-btn ghost" href="nexagent.html">&#x2190; Back</a>
+    <button class="nav-btn primary" onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')">Upgrade &#x2192;</button>
+  </div>
+</nav>
+
+<!-- TRIAL BAR -->
+<div class="trial-bar" id="trialBar">
+  <div class="trial-dot"></div>
+  <span id="trialTxt" style="font-family:var(--fm);font-size:10px;color:var(--fg)"><strong style="color:var(--accent)">3 free tasks</strong> &mdash; no credit card required</span>
+  <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="padding:4px 12px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8.5px;font-weight:700;cursor:pointer">Upgrade $299/mo</button>
+</div>
+
+<!-- MAIN APP -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <!-- Engine status -->
+    <div class="sb-section">
+      <div class="sb-label">Engine</div>
+      <div class="sb-status">
+        <div class="sb-status-dot"></div>
+        <div>
+          <div style="font-family:var(--fm);font-size:9.5px;color:var(--accent);font-weight:700">NexGen Ultra &#x2713;</div>
+          <div style="font-family:var(--fm);font-size:7.5px;color:var(--muted);margin-top:1px">claude-sonnet-4-6 &middot; v2.0</div>
+        </div>
+        <div id="engineStatus" style="margin-left:auto;font-family:var(--fm);font-size:8px;color:var(--muted)">Ready</div>
+      </div>
+    </div>
+    <!-- Browse -->
+    <div class="sb-section">
+      <div class="sb-label">Browse</div>
+      <button class="sb-action" onclick="openPanel('agents')">
+        <span style="font-size:16px">&#x1F916;</span>
+        <div><div style="font-weight:600">40+ Agents</div><div style="font-size:7.5px;color:var(--muted)">Browse &amp; deploy</div></div>
+        <span class="sb-action-count">40+</span>
+      </button>
+      <button class="sb-action" onclick="openPanel('ints')">
+        <span style="font-size:16px">&#x1F517;</span>
+        <div><div style="font-weight:600">200+ Integrations</div><div style="font-size:7.5px;color:var(--muted)">Browse &amp; connect</div></div>
+        <span class="sb-action-count">200+</span>
+      </button>
+    </div>
+    <!-- Quick tasks -->
+    <div class="sb-section">
+      <div class="sb-label">Quick Tasks</div>
+      <div id="tmplList" style="max-height:140px;overflow-y:auto"></div>
+    </div>
+    <!-- Pipeline -->
+    <div class="sb-section">
+      <div class="sb-label">Pipeline</div>
+      <div class="pipe-row" id="pr-research"><div class="pipe-dot"></div><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">&#x1F50D; Research</span><span id="ps-research" style="margin-left:auto;font-family:var(--fm);font-size:7.5px;color:var(--muted)">idle</span></div>
+      <div class="pipe-row" id="pr-analysis"><div class="pipe-dot"></div><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">&#x1F4CA; Analysis</span><span id="ps-analysis" style="margin-left:auto;font-family:var(--fm);font-size:7.5px;color:var(--muted)">idle</span></div>
+      <div class="pipe-row" id="pr-action"><div class="pipe-dot"></div><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">&#x26A1; Action</span><span id="ps-action" style="margin-left:auto;font-family:var(--fm);font-size:7.5px;color:var(--muted)">idle</span></div>
+      <div class="pipe-row" id="pr-quality"><div class="pipe-dot"></div><span style="font-family:var(--fm);font-size:9px;color:var(--dim)">&#x2705; Quality</span><span id="ps-quality" style="margin-left:auto;font-family:var(--fm);font-size:7.5px;color:var(--muted)">idle</span></div>
+    </div>
+    <!-- Stats -->
+    <div class="sb-bottom">
+      <div class="sb-label">Session</div>
+      <div class="stat-row"><span class="stat-lbl">Tasks run</span><span class="stat-val" id="statTasks">0</span></div>
+      <div class="stat-row"><span class="stat-lbl">Saved</span><span class="stat-val" id="statSaved">0</span></div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+    <!-- Toolbar -->
+    <div class="ws-toolbar">
+      <div class="ws-dots">
+        <div class="ws-dot" style="background:#FF6B6B"></div>
+        <div class="ws-dot" style="background:#FFB84D"></div>
+        <div class="ws-dot" style="background:var(--accent)"></div>
+      </div>
+      <span style="font-family:var(--fm);font-size:9px;color:var(--muted);flex:1">NexAgent Studio &middot; <span style="color:var(--dim)">corverxis-prod</span></span>
+      <span id="wsStatus" style="font-family:var(--fm);font-size:8.5px;color:var(--accent)">NexGen Ultra Ready</span>
+    </div>
+    <!-- Feed -->
+    <div class="feed" id="feed">
+      <div class="welcome" id="welcome">
+        <div style="font-size:40px">&#x26A1;</div>
+        <div style="font-size:15px;font-weight:700;color:var(--fg)">NexAgent Studio</div>
+        <div style="font-size:12.5px;color:var(--dim);max-width:360px;line-height:1.75">Select a quick task, browse agents, or type any prompt. Your 4-agent pipeline streams live results you can export instantly.</div>
+        <div class="agent-chips">
+          <span class="chip">&#x1F50D; Research</span>
+          <span class="chip">&#x1F4CA; Analysis</span>
+          <span class="chip">&#x26A1; Action</span>
+          <span class="chip">&#x2705; Quality</span>
+        </div>
+      </div>
+    </div>
+    <!-- Input -->
+    <div class="input-bar">
+      <div class="input-row">
+        <textarea id="prompt" rows="2" placeholder="Describe a task... e.g. 'Write a competitive analysis of AI in healthcare in West Africa'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runTask();}"></textarea>
+        <button id="runBtn" onclick="runTask()">Run &#x26A1;</button>
+      </div>
+      <div class="input-hint">
+        <span class="hint">Shift+Enter for new line &middot; Enter to run</span>
+        <span class="hint">Powered by <span style="color:var(--accent)">NexGen Ultra</span> &middot; Corverxis Technologies</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end app -->
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+
+<!-- AGENTS PANEL -->
+<div class="panel" id="agentsPanel">
+  <div class="ph">
+    <span style="font-size:20px">&#x1F916;</span>
+    <div class="ph-title">Pre-Built Agents</div>
+    <span class="ph-count" id="agentCount"></span>
+    <button class="ph-x" onclick="closePanel()">&#x2715;</button>
+  </div>
+  <div class="p-search"><input type="text" id="agentSearch" placeholder="Search agents..." oninput="renderAgents()"/></div>
+  <div class="p-cats" id="agentCats"></div>
+  <div class="p-body"><div class="a-grid" id="agentGrid"></div></div>
+</div>
+
+<!-- INTEGRATIONS PANEL -->
+<div class="panel" id="intsPanel">
+  <div class="ph">
+    <span style="font-size:20px">&#x1F517;</span>
+    <div class="ph-title">Native Integrations</div>
+    <span class="ph-count" id="intCount"></span>
+    <button class="ph-x" onclick="closePanel()">&#x2715;</button>
+  </div>
+  <div class="p-search"><input type="text" id="intSearch" placeholder="Search integrations..." oninput="renderInts()"/></div>
+  <div class="p-cats" id="intCats"></div>
+  <div class="p-body"><div class="i-grid" id="intGrid"></div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- UPGRADE WALL -->
+<div class="upgrade-wall" id="upgradeWall">
+  <div style="background:var(--surface);border:1px solid rgba(0,200,255,.25);border-radius:16px;padding:36px;max-width:820px;width:100%;text-align:center;max-height:90vh;overflow-y:auto">
+    <div style="font-size:40px;margin-bottom:12px">&#x26A1;</div>
+    <div style="font-family:var(--fm);font-size:9px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Choose Your Plan</div>
+    <div style="font-size:20px;font-weight:700;color:var(--fg);margin-bottom:8px">Upgrade NexAgent Studio</div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:24px">Your 3 free tasks are complete. Pick a plan to keep running NexGen Ultra agents.</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;text-align:left">
+      <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
+        <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Starter</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent);margin-bottom:2px">$299<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div>
+        <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:12px">cancel anytime</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">For individuals and small teams running 50 tasks/month.</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:14px">
+          &#x2713; 50 agent tasks/month<br>
+          &#x2713; 4-agent pipeline<br>
+          &#x2713; Export: PDF, Word, MD, TXT<br>
+          &#x2713; 20 integrations<br>
+          &#x2713; Email support (48h)<br>
+          <span style="color:var(--muted)">&#8212; API &amp; SDK access</span><br>
+          <span style="color:var(--muted)">&#8212; Team collaboration</span>
+        </div>
+        <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Start Free Trial &#x2192;</button>
+      </div>
+      <div style="background:var(--panel);border:2px solid rgba(0,200,255,.4);border-radius:10px;padding:18px;position:relative">
+        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--black);font-family:var(--fm);font-size:7px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap">MOST POPULAR</div>
+        <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Professional</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent);margin-bottom:2px">$999<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div>
+        <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:12px">cancel anytime</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">Unlimited tasks, all agents, full SDK and 200+ integrations.</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:14px">
+          &#x2713; <strong style="color:var(--fg)">Unlimited</strong> tasks<br>
+          &#x2713; All 40+ specialist agents<br>
+          &#x2713; Full SDK (Python &amp; TypeScript)<br>
+          &#x2713; API &mdash; AWS, GCP, Azure, Vercel<br>
+          &#x2713; 200+ native integrations<br>
+          &#x2713; Team collaboration (10 users)<br>
+          &#x2713; Priority support (24h)
+        </div>
+        <button onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')" style="width:100%;padding:9px;background:var(--accent);color:var(--black);border:none;border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Get Started &#x2192;</button>
+      </div>
+      <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
+        <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Enterprise</div>
+        <div style="font-size:26px;font-weight:800;color:var(--accent);margin-bottom:2px">Custom</div>
+        <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:12px">annual contract</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">For large orgs, governments, and regulated industries.</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:14px">
+          &#x2713; Everything in Professional<br>
+          &#x2713; Private cloud / on-premise<br>
+          &#x2713; Custom AI fine-tuning<br>
+          &#x2713; HIPAA, SOC 2, GDPR<br>
+          &#x2713; 99.99% SLA + dedicated infra<br>
+          &#x2713; Dedicated success manager<br>
+          &#x2713; White-label for agencies
+        </div>
+        <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Contact Sales &#x2192;</button>
+      </div>
+    </div>
+    <div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-bottom:12px">&#x2713; Cancel anytime &nbsp;&middot;&nbsp; &#x2713; 14-day money-back guarantee &nbsp;&middot;&nbsp; &#x2713; Instant access</div>
+    <button onclick="document.getElementById('upgradeWall').classList.remove('on')" style="padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:7px;font-family:var(--fm);font-size:9px;cursor:pointer">Maybe later</button>
+  </div>
+</div>
+
+<!-- AGENT DETAIL MODAL -->
+<div class="agl-modal-overlay" id="aglModal" onclick="if(event.target===this)closeAglModal()">
+  <div class="agl-modal-box">
+    <div class="agl-modal-top">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="agl-modal-icon" id="aglModalIcon"></div>
+        <div>
+          <div class="agl-modal-name" id="aglModalName"></div>
+          <div class="agl-modal-meta" id="aglModalMeta"></div>
+        </div>
+      </div>
+      <button onclick="closeAglModal()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:4px">✕</button>
+    </div>
+    <div class="agl-modal-body">
+      <p class="agl-modal-desc" id="aglModalDesc"></p>
+      <div class="agl-modal-two">
+        <div>
+          <div class="agl-modal-sec">Capabilities</div>
+          <ul class="agl-modal-list" id="aglModalCaps"></ul>
+        </div>
+        <div>
+          <div class="agl-modal-sec">Integrations</div>
+          <ul class="agl-modal-list agl-list-green" id="aglModalInts"></ul>
+        </div>
+      </div>
+      <div class="agl-modal-sec" style="margin-bottom:10px">Tech Stack</div>
+      <div class="agl-modal-tags" id="aglModalTags"></div>
+      <div class="agl-modal-metrics" id="aglModalMetrics"></div>
+    </div>
+    <div class="agl-modal-footer">
+      <div style="font-family:var(--font-m);font-size:11px;color:var(--muted)" id="aglModalDeploy"></div>
+      <button class="btn-primary" style="font-size:12px;padding:11px 24px" onclick="deployAgent()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Deploy &amp; Run Agent
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- USE CASES -->
+<section class="section-pad na-cases">
+  <div class="max-w">
+    <div class="scroll-fade">
+      <div class="section-label">Enterprise Deployments</div>
+      <h2 class="section-head">Proven Across<br><em>Every Vertical</em></h2>
+    </div>
+    <div class="na-cases-grid scroll-fade">
+      <div class="na-case">
+        <div class="na-case-sector">Healthcare · Johns Hopkins Health</div>
+        <h4>Clinical Workflow Automation</h4>
+        <p>Deployed 12 specialized clinical agents — intake, coding, prior authorization, and scheduling — reducing administrative burden by 60% and freeing 4 hours/day per clinician.</p>
+        <div class="na-case-metrics">
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">60%</div><div class="na-case-metric-label">Admin Reduction</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">4hr</div><div class="na-case-metric-label">Saved / Clinician / Day</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--gold)">12</div><div class="na-case-metric-label">Agents Deployed</div></div>
+        </div>
+      </div>
+      <div class="na-case">
+        <div class="na-case-sector">Finance · Global Investment Bank</div>
+        <h4>Research & Compliance Intelligence</h4>
+        <p>Multi-agent system processes 40,000 regulatory documents daily, flags compliance risks before trade execution, and generates analyst-grade research summaries in under 90 seconds.</p>
+        <div class="na-case-metrics">
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">40K</div><div class="na-case-metric-label">Docs / Day</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">&lt;90s</div><div class="na-case-metric-label">Research Briefing</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--gold)">$2.1M</div><div class="na-case-metric-label">Analyst Hours Saved</div></div>
+        </div>
+      </div>
+      <div class="na-case">
+        <div class="na-case-sector">Government · US Department of HHS</div>
+        <h4>Medicaid Fraud Detection Network</h4>
+        <p>Network of 8 investigative agents processing 50-state Medicaid claims in real time. Detected $1.8B in fraudulent claims in year one with 94% precision and zero false-positive provider disruptions.</p>
+        <div class="na-case-metrics">
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">$1.8B</div><div class="na-case-metric-label">Fraud Detected</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">94%</div><div class="na-case-metric-label">Precision Rate</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--gold)">50</div><div class="na-case-metric-label">States Covered</div></div>
+        </div>
+      </div>
+      <div class="na-case">
+        <div class="na-case-sector">Manufacturing · Siemens Energy</div>
+        <h4>Predictive Maintenance Intelligence</h4>
+        <p>Continuous sensor monitoring agents analyze 2M+ data points/minute across 340 turbines. Predicted 47 critical failures before they occurred, saving $94M in unplanned downtime.</p>
+        <div class="na-case-metrics">
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">2M+</div><div class="na-case-metric-label">Data Points / Min</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--accent)">47</div><div class="na-case-metric-label">Failures Predicted</div></div>
+          <div class="na-case-metric"><div class="na-case-metric-num" style="color:var(--gold)">$94M</div><div class="na-case-metric-label">Downtime Saved</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section-pad na-how">
+  <div class="max-w">
+    <div class="scroll-fade" style="text-align:center;margin-bottom:0">
+      <div class="section-label" style="text-align:center">Getting Started</div>
+      <h2 class="section-head" style="text-align:center">From Zero to<br><em>Deployed in 5 Steps</em></h2>
+    </div>
+    <div class="na-steps scroll-fade">
+
+      <!-- Step 1 -->
+      <div class="na-step" style="cursor:pointer" onclick="var el=document.getElementById('integrations');if(el)el.scrollIntoView({behavior:'smooth'})"
+        onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor=''">
+        <div class="na-step-num">1</div>
+        <h4>Connect Your Data</h4>
+        <p>Plug in your enterprise data sources — CRM, ERP, docs, databases — via 200+ one-click connectors. No ETL required.</p>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Salesforce</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">HubSpot</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">PostgreSQL</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">+197 more</span>
+        </div>
+        <button style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:6px;font-family:var(--font-m);font-size:9px;cursor:pointer">
+          Browse Integrations &#x2192;
+        </button>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="na-step" style="cursor:pointer" onclick="var el=document.getElementById('demo');if(el)el.scrollIntoView({behavior:'smooth'})"
+        onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor=''">
+        <div class="na-step-num">2</div>
+        <h4>Define Your Workflow</h4>
+        <p>Describe what you want in plain English. NexGen Ultra designs the multi-agent workflow for you automatically.</p>
+        <div style="margin-top:12px;background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:6px;padding:10px 12px">
+          <div style="font-family:var(--font-m);font-size:9px;color:var(--muted);margin-bottom:4px">Example prompt:</div>
+          <div style="font-size:12px;color:var(--fg);font-style:italic">"Analyse our Q3 sales data and send a summary to Slack every Monday."</div>
+        </div>
+        <button style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:6px;font-family:var(--font-m);font-size:9px;cursor:pointer">
+          Try Live Demo &#x2192;
+        </button>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="na-step" style="cursor:pointer" onclick="var el=document.getElementById('agentLibrary');if(el)el.scrollIntoView({behavior:'smooth'})"
+        onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor=''">
+        <div class="na-step-num">3</div>
+        <h4>Select Your Agents</h4>
+        <p>Choose from 40+ pre-built specialist agents or build custom ones with the NexAgent SDK in Python or TypeScript.</p>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Research Agent</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Analysis Agent</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Code Agent</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">+37 more</span>
+        </div>
+        <button style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:6px;font-family:var(--font-m);font-size:9px;cursor:pointer">
+          Browse Agents &#x2192;
+        </button>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="na-step" style="cursor:pointer" onclick="var el=document.getElementById('demo');if(el)el.scrollIntoView({behavior:'smooth'})"
+        onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor=''">
+        <div class="na-step-num">4</div>
+        <h4>Test & Validate</h4>
+        <p>Run the live demo to test NexGen Ultra before deploying to production. Every output is reviewable, editable, and exportable.</p>
+        <div style="margin-top:12px;display:flex;gap:6px;flex-wrap:wrap">
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Live Streaming</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Export PDF/Word</span>
+          <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Save History</span>
+        </div>
+        <button onclick="event.stopPropagation();var el=document.getElementById('demo');if(el)el.scrollIntoView({behavior:'smooth'})" style="margin-top:14px;width:100%;padding:8px;background:var(--accent);border:none;color:#04080E;border-radius:6px;font-family:var(--font-m);font-size:9px;font-weight:700;cursor:pointer">
+          &#x26A1; Run Live Demo &#x2192;
+        </button>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="na-step" style="cursor:pointer" onclick="openSdkDocs()"
+        onmouseover="this.style.borderColor='rgba(0,200,255,.35)'" onmouseout="this.style.borderColor=''">
+        <div class="na-step-num">5</div>
+        <h4>Ship & Monitor</h4>
+        <p>Deploy via the NexAgent SDK or REST API. Real-time dashboards show every agent action, cost, and outcome with full audit trail.</p>
+        <div style="margin-top:12px;background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:6px;padding:10px 12px;font-family:var(--font-m)">
+          <div style="font-size:8.5px;color:var(--muted);margin-bottom:5px">Deploy in 3 lines:</div>
+          <code style="font-size:11px;color:#7DE8F8">pip install nexagent-sdk</code><br>
+          <code style="font-size:11px;color:#7DE8F8">agent = Agent(name=&quot;MyAgent&quot;)</code><br>
+          <code style="font-size:11px;color:#7DE8F8">agent.deploy(env=&quot;production&quot;)</code>
+        </div>
+        <button style="margin-top:14px;width:100%;padding:8px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:6px;font-family:var(--font-m);font-size:9px;cursor:pointer">
+          View SDK Docs &#x2192;
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- INTEGRATIONS -->
+<section class="section-pad na-integrations" id="integrations">
+  <div class="max-w">
+    <div class="scroll-fade" style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:40px">
+      <div>
+        <div class="section-label">Integrations</div>
+        <h2 class="section-head"><em>200+</em> Native<br>Integrations</h2>
+        <p class="section-sub">One-click connections to everything your enterprise already uses. No middleware, no ETL, no professional services. Just plug in and go.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-end">
+        <div class="int-search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="int-search-input" id="intSearch" type="text" placeholder="Search integrations…" oninput="renderIntGrid()" autocomplete="off"/>
+          <span class="int-count" id="intCount"></span>
+        </div>
+        <div class="int-filters" id="intFilters"></div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="na-int-grid" id="intGrid" style="grid-template-columns:repeat(6,1fr)"></div>
+
+    <!-- Empty state -->
+    <div id="intEmpty" style="display:none;text-align:center;padding:48px 20px">
+      <div style="font-size:36px;margin-bottom:10px">🔌</div>
+      <div style="font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px">No integrations found</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Try a different search or category</div>
+      <button onclick="resetIntGrid()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);font-family:var(--font-m);font-size:10px;letter-spacing:1px;padding:7px 16px;border-radius:4px;cursor:pointer">Clear Filters</button>
+    </div>
+
+    <!-- Connect your own CTA -->
+    <div class="int-custom-cta scroll-fade">
+      <div class="int-custom-icon">🔧</div>
+      <div>
+        <div style="font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px">Don't see yours? Build it in minutes.</div>
+        <div style="font-size:13px;color:var(--muted);font-weight:300">The NexAgent SDK lets you create custom tool integrations with a simple Python or TypeScript interface. Any API becomes an agent tool in under 30 minutes.</div>
+      </div>
+      <button onclick="openSdkDocs()" class="btn-ghost" style="white-space:nowrap;font-size:10px;padding:10px 20px;flex-shrink:0">View SDK Docs →</button>
+    </div>
+  </div>
+</section>
+<!-- INTEGRATION DETAIL MODAL -->
+<div class="int-modal-overlay" id="intModal" onclick="if(event.target===this)closeIntModal()">
+  <div class="int-modal-box">
+    <div class="int-modal-top">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div class="int-modal-icon" id="intModalIcon"></div>
+        <div>
+          <div class="int-modal-name" id="intModalName"></div>
+          <div class="int-modal-cat" id="intModalCat"></div>
+        </div>
+      </div>
+      <button onclick="closeIntModal()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:4px">✕</button>
+    </div>
+    <div class="int-modal-body">
+      <p class="int-modal-desc" id="intModalDesc"></p>
+      <div class="int-modal-two">
+        <div>
+          <div class="int-modal-sec">What Agents Can Do</div>
+          <ul class="int-modal-list" id="intModalActions"></ul>
+        </div>
+        <div>
+          <div class="int-modal-sec">Supported Events / Triggers</div>
+          <ul class="int-modal-list int-list-cyan" id="intModalTriggers"></ul>
+        </div>
+      </div>
+      <div class="int-modal-sec" style="margin-bottom:10px">Auth Method</div>
+      <div class="int-modal-tags" id="intModalAuth"></div>
+      <div class="int-modal-setup" id="intModalSetup"></div>
+    </div>
+    <div class="int-modal-footer">
+      <div style="font-family:var(--font-m);font-size:10px;color:var(--muted)" id="intModalTime"></div>
+      <button class="btn-primary" style="font-size:11px;padding:10px 22px" onclick="connectIntegration()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Connect &amp; Run Agent
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// NEXAGENT STUDIO — CLEAN REBUILD
+// NexGen Ultra by Corverxis Technologies
+// ═══════════════════════════════════════════════
+
+// ── DATA ──────────────────────────────────────
+const AGENTS = [
+  // ── RESEARCH & INTELLIGENCE ──────────────────────────────
+  {id:'a01',icon:'🔍',bg:'rgba(0,200,255,0.1)',cat:'Research',status:'live',
+   name:'Research Agent',role:'Intel Gathering',
+   desc:'Autonomously searches the web, academic databases, and internal knowledge bases to surface relevant information for any query. Produces structured research briefs with citations.',
+   caps:['Multi-source web & academic search','Competitive landscape analysis','News monitoring & trend detection','Citation and source validation'],
+   ints:['Perplexity AI','Tavily Search','Google Scholar','Internal knowledge bases'],
+   tags:['RAG','Web Search','NLP','Citations'],
+   metrics:[{n:'<3min',l:'Research Briefing'},{n:'50+',l:'Sources Per Task'},{n:'94%',l:'Relevance Score'}],
+   deploy:'Deploy in 5 min · No configuration required'},
+  {id:'a02',icon:'📰',bg:'rgba(0,200,255,0.1)',cat:'Research',status:'live',
+   name:'News Monitor Agent',role:'Media Intelligence',
+   desc:'Continuously scans thousands of news sources, industry publications, and RSS feeds. Filters by relevance, summarises breaking developments, and alerts stakeholders in real time.',
+   caps:['Real-time news ingestion from 5,000+ sources','Sentiment analysis and impact scoring','Competitor mention tracking','Custom keyword and topic alerts'],
+   ints:['NewsAPI','RSS feeds','Slack','Microsoft Teams'],
+   tags:['NLP','Sentiment','Real-time','Alerts'],
+   metrics:[{n:'5K+',l:'Sources Monitored'},{n:'<1min',l:'Alert Latency'},{n:'24/7',l:'Coverage'}],
+   deploy:'Deploy in 10 min · Requires news API key'},
+  {id:'a03',icon:'📊',bg:'rgba(255,184,77,0.1)',cat:'Analytics',status:'live',
+   name:'Data Analysis Agent',role:'Business Intelligence',
+   desc:'Queries databases and data warehouses using natural language, runs statistical analysis, generates charts, and narrates findings. Turns raw data into executive-ready insights.',
+   caps:['NL-to-SQL query generation','Statistical analysis & anomaly detection','Chart and visualisation creation','Narrative insight generation'],
+   ints:['Snowflake','BigQuery','Redshift','PostgreSQL','Tableau'],
+   tags:['SQL','Python','Stats','DataViz'],
+   metrics:[{n:'95%',l:'Query Accuracy'},{n:'<5s',l:'Query Time'},{n:'10+',l:'Warehouse Connectors'}],
+   deploy:'Deploy in 15 min · Requires DB credentials'},
+  {id:'a04',icon:'📈',bg:'rgba(255,184,77,0.1)',cat:'Analytics',status:'live',
+   name:'Financial Analysis Agent',role:'Finance Intelligence',
+   desc:'Parses financial statements, earnings calls, and market data. Generates ratio analysis, DCF models, peer comparisons, and investment memos with structured recommendations.',
+   caps:['P&L, balance sheet, and cash flow parsing','DCF and comparable company analysis','Earnings call summarisation','Risk factor extraction from 10-Ks'],
+   ints:['Bloomberg','Refinitiv','SEC EDGAR','Salesforce','Excel'],
+   tags:['Finance','DCF','Valuation','SEC Filings'],
+   metrics:[{n:'10s',l:'Financial Model'},{n:'99%',l:'Parsing Accuracy'},{n:'SOC2',l:'Data Security'}],
+   deploy:'Deploy in 20 min · Requires market data access'},
+  {id:'a05',icon:'🧬',bg:'rgba(0,200,255,0.1)',cat:'Healthcare',status:'live',
+   name:'Clinical Report Agent',role:'Clinical Intelligence',
+   desc:'Reads, structures, and analyses clinical reports, lab results, and medical notes. Extracts key findings, flags abnormal values, suggests differentials, and generates clinician-ready summaries.',
+   caps:['Clinical report parsing (PDF, FHIR, HL7)','Abnormal value detection and flagging','Differential diagnosis suggestions','ICD-10/CPT auto-coding'],
+   ints:['Epic','Cerner','FHIR R4','AWS HealthLake'],
+   tags:['HIPAA','FHIR','HL7','ICD-10','NLP'],
+   metrics:[{n:'94%',l:'Diagnostic Accuracy'},{n:'<2s',l:'Report Processing'},{n:'HIPAA',l:'Compliant'}],
+   deploy:'Deploy in 30 min · Requires HIPAA BAA'},
+  {id:'a06',icon:'💊',bg:'rgba(0,200,255,0.1)',cat:'Healthcare',status:'live',
+   name:'Drug Interaction Agent',role:'Pharmacovigilance',
+   desc:'Checks prescribed medications against known drug-drug, drug-allergy, and drug-condition interactions in real time. Integrates into prescribing workflows to prevent adverse events.',
+   caps:['Multi-drug interaction screening','Allergy and contraindication alerts','Dosing recommendation validation','Formulary and insurance check'],
+   ints:['Epic','DrFirst','FDB','RxNorm','SNOMED CT'],
+   tags:['HIPAA','Pharmacology','Safety','Real-time'],
+   metrics:[{n:'99.8%',l:'Sensitivity'},{n:'<100ms',l:'Check Latency'},{n:'0',l:'Missed Critical'}],
+   deploy:'Deploy in 45 min · Requires EHR integration'},
+  {id:'a07',icon:'✍️',bg:'rgba(150,100,255,0.1)',cat:'Content',status:'live',
+   name:'Writing Agent',role:'Content Creation',
+   desc:'Drafts reports, executive briefings, proposals, blog posts, and marketing copy tailored to your brand voice. Supports multi-step review and editing workflows.',
+   caps:['Long-form report and proposal drafting','Executive briefing generation','Brand voice customisation','Multi-language support (40+ languages)'],
+   ints:['Google Docs','Microsoft Word','Notion','Confluence','HubSpot'],
+   tags:['LLM','Brand Voice','Multi-lingual','Templates'],
+   metrics:[{n:'2min',l:'Draft Generation'},{n:'40+',l:'Languages'},{n:'98%',l:'Approval Rate'}],
+   deploy:'Deploy in 5 min · No configuration required'},
+  {id:'a08',icon:'📧',bg:'rgba(150,100,255,0.1)',cat:'Content',status:'live',
+   name:'Email Agent',role:'Communications',
+   desc:'Manages inbox triage, drafts context-aware replies, schedules follow-ups, and handles routine email workflows. Understands tone, urgency, and relationship context.',
+   caps:['Intelligent inbox triage and labelling','Context-aware reply drafting','Follow-up scheduling and reminders','Unsubscribe and spam management'],
+   ints:['Gmail','Outlook','Salesforce','HubSpot','Calendly'],
+   tags:['NLP','Email','Scheduling','CRM'],
+   metrics:[{n:'4hr',l:'Inbox Time Saved/Day'},{n:'92%',l:'Draft Approval'},{n:'<30s',l:'Response Draft'}],
+   deploy:'Deploy in 10 min · Requires email OAuth'},
+  {id:'a09',icon:'🗣️',bg:'rgba(150,100,255,0.1)',cat:'Content',status:'new',
+   name:'Meeting Agent',role:'Meeting Intelligence',
+   desc:'Joins video calls, transcribes in real time, extracts action items, updates CRM records, and sends structured follow-up notes to all participants automatically.',
+   caps:['Real-time meeting transcription','Action item and decision extraction','CRM auto-update post-meeting','Follow-up email generation'],
+   ints:['Zoom','Teams','Google Meet','Salesforce','HubSpot','Notion'],
+   tags:['ASR','NLP','CRM','Automation'],
+   metrics:[{n:'99%',l:'Transcription Accuracy'},{n:'<2min',l:'Notes Published'},{n:'8hr',l:'Admin Saved/Wk'}],
+   deploy:'Deploy in 15 min · Requires meeting platform OAuth'},
+  {id:'a10',icon:'⚖️',bg:'rgba(255,107,107,0.1)',cat:'Compliance',status:'live',
+   name:'Compliance Agent',role:'Risk & Legal',
+   desc:'Reviews documents, contracts, and processes against regulatory frameworks. Flags non-compliance, generates remediation plans, and maintains an audit-ready compliance log.',
+   caps:['Multi-framework compliance checking (GDPR, HIPAA, SOX, NIST)','Contract clause risk scoring','Remediation plan generation','Automated compliance reporting'],
+   ints:['SharePoint','Confluence','DocuSign','Workiva','ServiceNow'],
+   tags:['GDPR','HIPAA','SOX','NIST','Risk'],
+   metrics:[{n:'95%',l:'Compliance Coverage'},{n:'<5min',l:'Document Review'},{n:'100%',l:'Audit Trail'}],
+   deploy:'Deploy in 20 min · Framework config required'},
+  {id:'a11',icon:'📋',bg:'rgba(255,107,107,0.1)',cat:'Compliance',status:'live',
+   name:'Contract Review Agent',role:'Legal Analysis',
+   desc:'Reads contracts, extracts key terms, identifies unfavourable clauses, and compares against standard playbooks. Reduces legal review time by 80% without replacing counsel.',
+   caps:['Key term and obligation extraction','Unfavourable clause detection','Playbook deviation scoring','Redline suggestion generation'],
+   ints:['DocuSign','Ironclad','Salesforce CPQ','Microsoft Word'],
+   tags:['Legal','NLP','Contracts','Risk Scoring'],
+   metrics:[{n:'80%',l:'Review Time Saved'},{n:'99%',l:'Term Extraction'},{n:'<3min',l:'Per Contract'}],
+   deploy:'Deploy in 25 min · Playbook upload required'},
+  {id:'a12',icon:'🛡️',bg:'rgba(255,107,107,0.1)',cat:'Compliance',status:'live',
+   name:'Security Agent',role:'Threat Analysis',
+   desc:'Continuously monitors systems for anomalous behaviour, analyses security logs, triages SIEM alerts, and generates incident response recommendations with evidence chains.',
+   caps:['SIEM alert triage and prioritisation','Anomaly detection in logs and traffic','Incident response runbook generation','CVE threat intelligence enrichment'],
+   ints:['Splunk','Datadog','CrowdStrike','Palo Alto','AWS Security Hub'],
+   tags:['SIEM','Threat Intel','CVE','Zero-Trust'],
+   metrics:[{n:'90%',l:'Alert Noise Reduction'},{n:'<1min',l:'Triage Time'},{n:'24/7',l:'Monitoring'}],
+   deploy:'Deploy in 30 min · SIEM integration required'},
+  {id:'a13',icon:'🔗',bg:'rgba(0,180,200,0.1)',cat:'Integration',status:'live',
+   name:'Integration Agent',role:'API Orchestration',
+   desc:'Acts as a smart middleware layer — orchestrates API calls across CRM, ERP, and SaaS systems, handles data transformation, error recovery, and maintains event logs.',
+   caps:['Multi-system API orchestration','Data transformation and mapping','Error handling and retry logic','Event log and audit trail'],
+   ints:['Salesforce','SAP','Workday','Stripe','Custom APIs'],
+   tags:['REST','GraphQL','Webhooks','ETL','iPaaS'],
+   metrics:[{n:'200+',l:'Native Connectors'},{n:'99.9%',l:'Delivery Rate'},{n:'<50ms',l:'Orchestration Latency'}],
+   deploy:'Deploy in 20 min · API keys required'},
+  {id:'a14',icon:'🔄',bg:'rgba(0,180,200,0.1)',cat:'Integration',status:'live',
+   name:'Data Pipeline Agent',role:'DataOps',
+   desc:'Builds, monitors, and repairs data pipelines automatically. Detects schema drift, data quality issues, and pipeline failures — then fixes or alerts before downstream systems are affected.',
+   caps:['Automated pipeline creation from natural language','Schema drift detection and adaptation','Data quality monitoring and alerting','Pipeline failure diagnosis and recovery'],
+   ints:['dbt','Airflow','Fivetran','Databricks','Snowflake'],
+   tags:['DataOps','dbt','Airflow','Monitoring'],
+   metrics:[{n:'70%',l:'Pipeline Incidents Prevented'},{n:'<5min',l:'Self-Heal Time'},{n:'99.5%',l:'Data Quality SLA'}],
+   deploy:'Deploy in 35 min · Data warehouse required'},
+  {id:'a15',icon:'👥',bg:'rgba(255,184,77,0.1)',cat:'HR & People',status:'live',
+   name:'Recruiting Agent',role:'Talent Acquisition',
+   desc:'Screens resumes, scores candidates against job criteria, schedules interviews, and drafts outreach messages. Reduces time-to-shortlist from days to minutes with bias-audited scoring.',
+   caps:['AI resume screening and scoring','Skills graph matching','Interview scheduling automation','Candidate outreach message drafting'],
+   ints:['Greenhouse','Workday','LinkedIn','HireVue','Calendly'],
+   tags:['Talent','Bias-Audited','Skills Graph','ATS'],
+   metrics:[{n:'40%',l:'Faster Time-to-Hire'},{n:'Bias',l:'Audited by Design'},{n:'85%',l:'Offer Acceptance Rate'}],
+   deploy:'Deploy in 20 min · ATS integration required'},
+  {id:'a16',icon:'📚',bg:'rgba(255,184,77,0.1)',cat:'HR & People',status:'live',
+   name:'Onboarding Agent',role:'Employee Experience',
+   desc:'Guides new hires through onboarding checklists, answers HR policy questions, provisions system access, and checks in at key milestones to ensure a smooth first 90 days.',
+   caps:['Personalised onboarding journey orchestration','HR policy Q&A and knowledge retrieval','System access provisioning coordination','Milestone check-ins and sentiment tracking'],
+   ints:['Workday','BambooHR','Okta','ServiceNow','Slack'],
+   tags:['HR','Employee Exp','Automation','Provisioning'],
+   metrics:[{n:'60%',l:'Onboarding Tasks Automated'},{n:'4.8/5',l:'New Hire CSAT'},{n:'50%',l:'Time-to-Productivity'}],
+   deploy:'Deploy in 25 min · HRIS integration required'},
+  {id:'a17',icon:'📋',bg:'rgba(0,200,255,0.1)',cat:'Operations',status:'live',
+   name:'Planning Agent',role:'Project Management',
+   desc:'Decomposes projects into tasks, estimates effort, assigns resources, tracks dependencies, and flags blockers. Keeps project plans up to date automatically from team activity.',
+   caps:['AI project plan generation from brief','Effort estimation with historical data','Dependency mapping and critical path','Automated status tracking from tool activity'],
+   ints:['Jira','Asana','Monday.com','Linear','Notion','Slack'],
+   tags:['PM','Planning','Dependencies','Gantt'],
+   metrics:[{n:'35%',l:'PM Admin Reduction'},{n:'±15%',l:'Estimate Accuracy'},{n:'Real-time',l:'Plan Updates'}],
+   deploy:'Deploy in 15 min · Project tool OAuth required'},
+  {id:'a18',icon:'🎧',bg:'rgba(0,200,255,0.1)',cat:'Operations',status:'live',
+   name:'Support Triage Agent',role:'Customer Support',
+   desc:'Classifies incoming support tickets, routes to the right team, drafts first-response replies, and escalates critical issues based on sentiment and impact scoring.',
+   caps:['Multi-channel ticket ingestion (email, chat, form)','Priority and category classification','First-response draft generation','Escalation with context package'],
+   ints:['Zendesk','Salesforce Service Cloud','Intercom','Freshdesk','Jira'],
+   tags:['CX','NLP','Triage','Escalation'],
+   metrics:[{n:'70%',l:'Auto-Resolved Tickets'},{n:'<2min',l:'First Response'},{n:'4.7/5',l:'CSAT Score'}],
+   deploy:'Deploy in 20 min · Support platform integration required'},
+  {id:'a19',icon:'⚙️',bg:'rgba(0,200,255,0.1)',cat:'Operations',status:'live',
+   name:'IT Ops Agent',role:'IT Operations',
+   desc:'Monitors infrastructure health, correlates alerts across monitoring tools, diagnoses root causes, and executes runbook automations to resolve incidents before users are impacted.',
+   caps:['Multi-tool alert correlation and deduplication','Root cause analysis with log evidence','Runbook automation execution','Post-incident report generation'],
+   ints:['PagerDuty','Datadog','Grafana','AWS CloudWatch','ServiceNow'],
+   tags:['AIOps','Observability','Runbooks','MTTR'],
+   metrics:[{n:'60%',l:'MTTR Reduction'},{n:'85%',l:'Auto-Remediation'},{n:'<30s',l:'Alert-to-Action'}],
+   deploy:'Deploy in 30 min · Monitoring tool integration required'},
+  {id:'a20',icon:'🏭',bg:'rgba(255,184,77,0.1)',cat:'Manufacturing',status:'live',
+   name:'Quality Control Agent',role:'Manufacturing QC',
+   desc:'Integrates with ForgeVision QC to analyse inspection results, track defect trends, recommend process adjustments, and generate shift-end quality reports automatically.',
+   caps:['Defect trend analysis and root cause','Process parameter optimisation suggestions','Shift quality report generation','SPC chart monitoring and alerts'],
+   ints:['ForgeVision QC','SAP MES','Tulip','OPC-UA','Kafka'],
+   tags:['Manufacturing','QC','SPC','MES','IIoT'],
+   metrics:[{n:'35%',l:'Defect Rate Reduction'},{n:'99.2%',l:'Detection Accuracy'},{n:'Auto',l:'Shift Reports'}],
+   deploy:'Deploy in 30 min · ForgeVision QC connection required'},
+  {id:'a21',icon:'🔮',bg:'rgba(255,184,77,0.1)',cat:'Manufacturing',status:'live',
+   name:'Predictive Maintenance Agent',role:'Asset Intelligence',
+   desc:'Analyses IoT sensor streams to predict equipment failures before they occur. Generates maintenance work orders, estimates remaining useful life, and optimises maintenance schedules.',
+   caps:['Anomaly detection in sensor streams','RUL (remaining useful life) estimation','Work order auto-generation','Maintenance schedule optimisation'],
+   ints:['AWS IoT','Azure IoT Hub','OSIsoft PI','SAP PM','Maximo'],
+   tags:['IoT','Predictive','RUL','SCADA','Digital Twin'],
+   metrics:[{n:'2-4wk',l:'Failure Prediction Horizon'},{n:'50%',l:'Downtime Reduction'},{n:'30%',l:'Maintenance Cost Savings'}],
+   deploy:'Deploy in 45 min · IoT connection required'},
+  {id:'a22',icon:'🚚',bg:'rgba(0,200,255,0.1)',cat:'Supply Chain',status:'live',
+   name:'Supply Chain Agent',role:'Logistics Intelligence',
+   desc:'Monitors supply chain signals, predicts disruptions from weather, geopolitical events, and supplier risk, and recommends routing or sourcing alternatives to prevent delays.',
+   caps:['Multi-tier supplier risk monitoring','Disruption prediction from external signals','Alternative routing and sourcing recommendations','Inventory optimisation modelling'],
+   ints:['SAP Ariba','Oracle SCM','E2open','Flexport','Kinaxis'],
+   tags:['Supply Chain','Risk','Optimisation','ML'],
+   metrics:[{n:'3wk',l:'Disruption Lead Time'},{n:'25%',l:'Inventory Reduction'},{n:'$12M',l:'Avg Annual Savings'}],
+   deploy:'Deploy in 40 min · ERP integration required'},
+  {id:'a23',icon:'💰',bg:'rgba(0,200,255,0.1)',cat:'Sales & CRM',status:'live',
+   name:'Sales Intelligence Agent',role:'Revenue Operations',
+   desc:'Enriches CRM records, scores leads, identifies upsell opportunities, and generates personalised outreach sequences. Keeps reps focused on the highest-value activities.',
+   caps:['Real-time CRM data enrichment','Lead scoring and prioritisation','Upsell and cross-sell signal detection','Personalised outreach sequence drafting'],
+   ints:['Salesforce','HubSpot','Outreach','ZoomInfo','LinkedIn Sales Nav'],
+   tags:['CRM','RevOps','Lead Scoring','Outreach'],
+   metrics:[{n:'32%',l:'Pipeline Growth'},{n:'3.4×',l:'Lead Conversion'},{n:'6hr',l:'Admin Saved/Wk'}],
+   deploy:'Deploy in 20 min · CRM OAuth required'},
+  {id:'a24',icon:'🎯',bg:'rgba(0,200,255,0.1)',cat:'Sales & CRM',status:'new',
+   name:'Deal Coach Agent',role:'Sales Enablement',
+   desc:'Reviews deal history, call recordings, and email threads to identify deal risks, suggest next best actions, and coach reps with specific objection-handling recommendations.',
+   caps:['Deal risk scoring from multi-source signals','Objection detection and coaching','Next best action recommendations','Win/loss pattern analysis'],
+   ints:['Salesforce','Gong','Chorus','HubSpot','Clari'],
+   tags:['Sales','Coaching','Win/Loss','Pipeline'],
+   metrics:[{n:'28%',l:'Win Rate Increase'},{n:'18%',l:'Faster Deal Cycles'},{n:'AI',l:'Objection Coaching'}],
+   deploy:'Deploy in 25 min · Sales platform integration required'},
+  {id:'a25',icon:'📣',bg:'rgba(150,100,255,0.1)',cat:'Marketing',status:'live',
+   name:'Content Marketing Agent',role:'Growth & Content',
+   desc:'Researches target keywords, generates SEO-optimised blog posts, repurposes content across channels, and schedules publishing — all from a single brief.',
+   caps:['Keyword research and content briefing','Long-form SEO content generation','Multi-channel content repurposing','Publishing schedule automation'],
+   ints:['HubSpot','WordPress','Webflow','Ahrefs','Semrush','Buffer'],
+   tags:['SEO','Content','Multi-channel','Publishing'],
+   metrics:[{n:'10×',l:'Content Output'},{n:'65%',l:'Organic Traffic Lift'},{n:'4hr',l:'Per Article (saved)'}],
+   deploy:'Deploy in 15 min · CMS integration required'},
+  {id:'a26',icon:'📊',bg:'rgba(150,100,255,0.1)',cat:'Marketing',status:'live',
+   name:'Campaign Analyst Agent',role:'Marketing Analytics',
+   desc:'Monitors live campaign performance across ad platforms, detects underperforming creatives, and recommends budget reallocation to maximise ROAS automatically.',
+   caps:['Cross-platform campaign monitoring','Creative performance analysis','Budget optimisation recommendations','Daily performance narrative reporting'],
+   ints:['Google Ads','Meta Ads','LinkedIn Ads','HubSpot','Looker'],
+   tags:['Paid Media','ROAS','Optimisation','Analytics'],
+   metrics:[{n:'40%',l:'ROAS Improvement'},{n:'Daily',l:'AI Optimisation Cycles'},{n:'8hr',l:'Analyst Time Saved/Wk'}],
+   deploy:'Deploy in 20 min · Ad platform API access required'},
+  {id:'a27',icon:'🏛️',bg:'rgba(255,184,77,0.1)',cat:'Government',status:'live',
+   name:'Policy Analysis Agent',role:'Public Sector Intelligence',
+   desc:'Reads and summarises legislation, regulatory filings, and policy documents. Identifies stakeholder impacts, flags compliance requirements, and generates briefing notes for policymakers.',
+   caps:['Legislation and regulation parsing','Stakeholder impact mapping','Compliance requirement extraction','Executive briefing note generation'],
+   ints:['Congress.gov','Federal Register','GovInfo','SharePoint','Confluence'],
+   tags:['FedRAMP','Policy','Legislative','FOUO'],
+   metrics:[{n:'200+',l:'Pages Per Hour'},{n:'98%',l:'Key Term Extraction'},{n:'FedRAMP',l:'Authorized'}],
+   deploy:'Deploy in 30 min · FedRAMP authorization included'},
+  {id:'a28',icon:'🔎',bg:'rgba(255,184,77,0.1)',cat:'Government',status:'live',
+   name:'Fraud Detection Agent',role:'Financial Integrity',
+   desc:'Analyses payment streams, claims, and transaction patterns to flag anomalies indicative of fraud. Generates evidence packages for investigators with probability scores.',
+   caps:['Transaction anomaly detection','Claims pattern analysis','Investigator evidence package generation','Cross-programme correlation analysis'],
+   ints:['Palantir','Salesforce','Oracle ERP','AWS Analytics','PostgreSQL'],
+   tags:['FedRAMP','IL4','Fraud','ML','Evidence'],
+   metrics:[{n:'94%',l:'Precision Rate'},{n:'$1.8B',l:'Fraud Detected YR1'},{n:'IL5',l:'Clearance Ready'}],
+   deploy:'Deploy in 45 min · Agency data access required'},
+  {id:'a29',icon:'🧠',bg:'rgba(0,200,255,0.1)',cat:'AI & ML',status:'new',
+   name:'Model Evaluation Agent',role:'MLOps Quality',
+   desc:'Continuously evaluates deployed models for accuracy drift, bias, and performance degradation. Triggers retraining pipelines and generates model cards with regulatory-ready documentation.',
+   caps:['Accuracy and drift monitoring','Fairness and bias evaluation','Automated retraining trigger logic','Model card and documentation generation'],
+   ints:['MLflow','Weights & Biases','SageMaker','Vertex AI','Evidently AI'],
+   tags:['MLOps','Drift','Bias','Model Cards','NIST AI RMF'],
+   metrics:[{n:'Real-time',l:'Drift Detection'},{n:'100%',l:'Deployment Coverage'},{n:'NIST',l:'AI RMF Aligned'}],
+   deploy:'Deploy in 25 min · MLOps platform connection required'},
+  {id:'a30',icon:'🤖',bg:'rgba(0,200,255,0.1)',cat:'AI & ML',status:'live',
+   name:'Prompt Engineering Agent',role:'LLM Optimisation',
+   desc:'Tests and optimises prompts across model versions using automated evaluation datasets. Finds the highest-quality prompt configuration for any use case systematically.',
+   caps:['Automated prompt variation testing','Evaluation dataset generation','Cross-model performance benchmarking','Prompt library version management'],
+   ints:['OpenAI','Anthropic','Gemini','LangSmith','Promptfoo'],
+   tags:['LLM','Prompt Eng','Evals','Benchmarking'],
+   metrics:[{n:'40%',l:'Quality Uplift'},{n:'1000s',l:'Variants Tested'},{n:'Auto',l:'Benchmark Reports'}],
+   deploy:'Deploy in 15 min · LLM API keys required'},
+  {id:'a31',icon:'🌐',bg:'rgba(0,200,255,0.1)',cat:'Customer',status:'live',
+   name:'Customer Insights Agent',role:'Voice of Customer',
+   desc:'Aggregates customer feedback from surveys, reviews, and support tickets. Identifies themes, sentiment trends, and product improvement opportunities with quantified business impact.',
+   caps:['Multi-source feedback aggregation','Theme and sentiment analysis','Product opportunity sizing','Executive VoC report generation'],
+   ints:['Qualtrics','Medallia','Zendesk','Intercom','G2','Trustpilot'],
+   tags:['VoC','NPS','Sentiment','Product Intel'],
+   metrics:[{n:'100K+',l:'Reviews Processed/Day'},{n:'92%',l:'Theme Accuracy'},{n:'Weekly',l:'Insight Reports'}],
+   deploy:'Deploy in 20 min · Feedback platform integration required'},
+  {id:'a32',icon:'💬',bg:'rgba(0,200,255,0.1)',cat:'Customer',status:'live',
+   name:'Support Knowledge Agent',role:'Knowledge Management',
+   desc:'Maintains a living knowledge base by extracting answers from resolved tickets, documentation, and expert conversations. Surfaces the right article to support agents in real time.',
+   caps:['Resolved ticket knowledge extraction','Documentation gap detection','Real-time article surfacing for agents','Knowledge base freshness monitoring'],
+   ints:['Zendesk','Confluence','Notion','Guru','Salesforce Knowledge'],
+   tags:['KM','RAG','Support','Documentation'],
+   metrics:[{n:'60%',l:'Handle Time Reduction'},{n:'85%',l:'First Contact Resolution'},{n:'Auto',l:'KB Maintenance'}],
+   deploy:'Deploy in 20 min · Knowledge base integration required'},
+  {id:'a33',icon:'🔬',bg:'rgba(0,200,255,0.1)',cat:'Healthcare',status:'beta',
+   name:'Prior Auth Agent',role:'Revenue Cycle',
+   desc:'Automates the prior authorisation process by gathering clinical evidence, submitting to payers, tracking status, and appealing denials — reducing auth cycle time from weeks to hours.',
+   caps:['Clinical evidence package assembly','Electronic prior auth submission','Status tracking and follow-up','Denial appeal letter drafting'],
+   ints:['Epic','Availity','CoverMyMeds','Change Healthcare','Waystar'],
+   tags:['HIPAA','Prior Auth','RCM','Payer'],
+   metrics:[{n:'80%',l:'Auth Cycle Reduction'},{n:'94%',l:'First-Pass Rate'},{n:'$2.4K',l:'Saved Per Auth'}],
+   deploy:'Deploy in 45 min · EHR and payer integration required'},
+  {id:'a34',icon:'🧾',bg:'rgba(255,107,107,0.1)',cat:'Finance Ops',status:'live',
+   name:'Invoice Processing Agent',role:'Accounts Payable',
+   desc:'Extracts data from invoices (PDF, email, EDI), matches to POs and goods receipts, flags discrepancies, and routes for approval — reducing manual AP work by 90%.',
+   caps:['Multi-format invoice data extraction','3-way PO matching','Discrepancy detection and flagging','Approval workflow routing'],
+   ints:['SAP','Oracle','NetSuite','Coupa','Tipalti','QuickBooks'],
+   tags:['AP','OCR','3-Way Match','ERP'],
+   metrics:[{n:'90%',l:'Manual Work Reduced'},{n:'<5s',l:'Invoice Processing'},{n:'99.2%',l:'Extraction Accuracy'}],
+   deploy:'Deploy in 25 min · ERP integration required'},
+  {id:'a35',icon:'📉',bg:'rgba(255,107,107,0.1)',cat:'Finance Ops',status:'live',
+   name:'Expense Audit Agent',role:'Financial Controls',
+   desc:'Reviews expense reports for policy violations, duplicate submissions, and anomalies. Generates audit findings with severity ratings and recommended actions for finance teams.',
+   caps:['Policy violation detection across categories','Duplicate submission identification','Receipt validation and matching','Audit report generation with risk rating'],
+   ints:['Concur','Expensify','Workday Expenses','NetSuite','Coupa'],
+   tags:['Audit','Controls','Policy','Expense'],
+   metrics:[{n:'95%',l:'Violation Detection'},{n:'$180K',l:'Avg Annual Recoveries'},{n:'Auto',l:'Audit Reports'}],
+   deploy:'Deploy in 20 min · Expense platform integration required'},
+  {id:'a36',icon:'🏗️',bg:'rgba(0,180,200,0.1)',cat:'Engineering',status:'live',
+   name:'Code Review Agent',role:'Software Quality',
+   desc:'Reviews pull requests for bugs, security vulnerabilities, performance issues, and style violations. Posts inline comments and approval decisions based on configurable rulesets.',
+   caps:['Multi-language static analysis','Security vulnerability detection (OWASP)','Performance anti-pattern flagging','PR summary and approval recommendation'],
+   ints:['GitHub','GitLab','Bitbucket','Jira','SonarQube','Snyk'],
+   tags:['DevSecOps','SAST','OWASP','Code Quality'],
+   metrics:[{n:'70%',l:'Bug Detection Rate'},{n:'<2min',l:'Review Turnaround'},{n:'50%',l:'Review Cost Reduction'}],
+   deploy:'Deploy in 10 min · Git platform OAuth required'},
+  {id:'a37',icon:'📝',bg:'rgba(0,180,200,0.1)',cat:'Engineering',status:'new',
+   name:'Documentation Agent',role:'Technical Writing',
+   desc:'Auto-generates API docs, README files, and technical guides from code, comments, and conversation. Keeps documentation in sync as code evolves.',
+   caps:['API documentation from OpenAPI/code','README and guide generation','Changelog drafting from git commits','Documentation freshness monitoring'],
+   ints:['GitHub','GitLab','Swagger','Readme.io','Confluence','Notion'],
+   tags:['Docs','API','OpenAPI','Technical Writing'],
+   metrics:[{n:'10×',l:'Doc Output Speed'},{n:'Always',l:'Up-to-Date'},{n:'90%',l:'Dev Time Saved'}],
+   deploy:'Deploy in 15 min · Git platform OAuth required'},
+  {id:'a38',icon:'🧪',bg:'rgba(0,180,200,0.1)',cat:'Engineering',status:'beta',
+   name:'Test Generation Agent',role:'QA Engineering',
+   desc:'Analyses code changes and generates unit, integration, and edge-case tests automatically. Tracks coverage trends and flags untested paths before deployment.',
+   caps:['Unit and integration test generation','Edge case and negative test creation','Coverage gap detection','Test suite maintenance on code change'],
+   ints:['GitHub','Jest','Pytest','JUnit','Cypress','Playwright'],
+   tags:['QA','Testing','Coverage','TDD'],
+   metrics:[{n:'85%',l:'Coverage Achievement'},{n:'60%',l:'QA Time Saved'},{n:'Auto',l:'Test Generation'}],
+   deploy:'Deploy in 20 min · Git and CI platform required'},
+  {id:'a39',icon:'💡',bg:'rgba(150,100,255,0.1)',cat:'Strategy',status:'live',
+   name:'Competitive Intelligence Agent',role:'Strategic Analysis',
+   desc:'Tracks competitor websites, job postings, press releases, and product updates. Synthesises signals into weekly battlecard updates and strategic alerts for product and GTM teams.',
+   caps:['Competitor website and product change tracking','Job posting signal analysis','Press release and patent monitoring','Weekly battlecard generation'],
+   ints:['Crayon','Klue','SEMrush','LinkedIn','Slack','Notion'],
+   tags:['CompIntel','GTM','Battlecards','Strategy'],
+   metrics:[{n:'Real-time',l:'Competitor Monitoring'},{n:'Weekly',l:'Battlecard Updates'},{n:'10+',l:'Competitors Tracked'}],
+   deploy:'Deploy in 20 min · Web access and Slack required'},
+  {id:'a40',icon:'🎓',bg:'rgba(150,100,255,0.1)',cat:'Strategy',status:'live',
+   name:'Learning & Development Agent',role:'Workforce Intelligence',
+   desc:'Identifies skill gaps across teams, recommends personalised learning paths, tracks completion, and measures business impact of L&D programmes with quantified upskilling metrics.',
+   caps:['Skills gap identification from project data','Personalised learning path recommendation','Course completion and progress tracking','L&D ROI and business impact reporting'],
+   ints:['Workday Learning','Cornerstone','LinkedIn Learning','Degreed','Slack'],
+   tags:['L&D','Skills Graph','Learning','ROI'],
+   metrics:[{n:'40%',l:'Skill Gap Closure Rate'},{n:'3×',l:'Learning Engagement'},{n:'Measurable',l:'Business Impact'}],
+   deploy:'Deploy in 25 min · LMS integration required'},
+];
+
+
+const INTS_DATA = [
+  // CRM & Sales
+  {id:'i01',icon:'☁️',name:'Salesforce',cat:'CRM & Sales',
+   desc:'Full bidirectional sync with Salesforce CRM — agents can read, create, and update leads, contacts, opportunities, cases, and custom objects in real time.',
+   actions:['Query and update any CRM object','Create leads and contacts from research','Log meeting notes and call summaries','Update opportunity stages and forecasts'],
+   triggers:['New lead created','Deal stage change','Case opened or escalated','Contract signed'],
+   auth:['OAuth 2.0','API Key'],setup:'OAuth connection · 10 min setup · Sandbox testing available'},
+  {id:'i02',icon:'🧡',name:'HubSpot',cat:'CRM & Sales',
+   desc:'Deep integration with HubSpot CRM, Marketing Hub, and Sales Hub. Agents automate deal management, sequence enrolment, and contact enrichment.',
+   actions:['Enrol contacts in sequences','Update deal pipeline and properties','Pull engagement history for context','Create and update marketing lists'],
+   triggers:['Deal created or updated','Form submission','Email opened','Contact property change'],
+   auth:['OAuth 2.0'],setup:'OAuth connection · 5 min setup · Free tier supported'},
+  {id:'i03',icon:'📊',name:'Salesforce Marketing Cloud',cat:'CRM & Sales',
+   desc:'Connect agents to Marketing Cloud journeys, audience segments, and campaign analytics. Automate personalised outreach at scale.',
+   actions:['Trigger journey entry events','Pull campaign performance data','Update audience segments','Generate personalised email copy'],
+   triggers:['Campaign launched','Journey step completed','Subscription event'],
+   auth:['OAuth 2.0','Client Credentials'],setup:'Server-to-server OAuth · 20 min setup'},
+  // Collaboration
+  {id:'i04',icon:'💬',name:'Slack',cat:'Collaboration',
+   desc:'Agents post summaries, alerts, and reports to Slack channels, respond to slash commands, and trigger workflows from Slack messages.',
+   actions:['Post formatted messages and alerts','Respond to slash commands','Create and update canvas documents','Start and summarise huddles'],
+   triggers:['Message in monitored channel','Slash command invoked','Reaction added','Workflow step triggered'],
+   auth:['OAuth 2.0','Bot Token'],setup:'Slack App install · 5 min setup · Free tier supported'},
+  {id:'i05',icon:'🔵',name:'Microsoft Teams',cat:'Collaboration',
+   desc:'Full integration with Teams for notifications, meeting summaries, channel posts, and bot-based agent interactions across your organisation.',
+   actions:['Post channel and chat messages','Send adaptive card notifications','Create and share meeting summaries','Update shared wikis and tabs'],
+   triggers:['Meeting ended','Message @mentioned','Channel message posted','Workflow triggered'],
+   auth:['Azure AD OAuth','Bot Framework'],setup:'Azure App registration · 15 min setup'},
+  {id:'i06',icon:'📁',name:'SharePoint',cat:'Collaboration',
+   desc:'Read and write documents, lists, and libraries in SharePoint Online. Agents ground RAG pipelines on SharePoint content and keep documents updated.',
+   actions:['Read and write documents and lists','Search across sites and libraries','Create and update SharePoint pages','Trigger Power Automate flows'],
+   triggers:['Document created or modified','List item added','File shared'],
+   auth:['Microsoft Graph OAuth'],setup:'Microsoft 365 OAuth · 15 min setup'},
+  {id:'i07',icon:'📝',name:'Notion',cat:'Collaboration',
+   desc:'Read from and write to Notion databases, pages, and wikis. Agents update project trackers, generate page content, and retrieve knowledge base articles.',
+   actions:['Create and update database entries','Generate and edit page content','Search across workspace','Query structured databases'],
+   triggers:['Page created or updated','Database entry added','Comment added'],
+   auth:['OAuth 2.0','Internal Integration Token'],setup:'Notion integration token · 5 min setup'},
+  {id:'i08',icon:'🗂️',name:'Confluence',cat:'Collaboration',
+   desc:'Search and write Confluence pages, spaces, and knowledge bases. Agents ground answers on Confluence documentation and auto-update pages from task outputs.',
+   actions:['Search across spaces and pages','Create and update pages','Add comments and labels','Trigger Jira from Confluence macros'],
+   triggers:['Page created or updated','Comment posted','Space content changed'],
+   auth:['OAuth 2.0','API Token'],setup:'Atlassian OAuth · 10 min setup'},
+  // Project Management
+  {id:'i09',icon:'📋',name:'Jira',cat:'Project Management',
+   desc:'Create, update, and query Jira issues, sprints, and backlogs. Agents generate tickets from conversations, update statuses, and track sprint progress automatically.',
+   actions:['Create and update issues and epics','Assign and transition ticket status','Query sprint and backlog state','Generate release notes from tickets'],
+   triggers:['Issue created or transitioned','Sprint started or completed','Comment added','SLA breached'],
+   auth:['OAuth 2.0','API Token'],setup:'Atlassian OAuth · 10 min setup'},
+  {id:'i10',icon:'🟣',name:'Asana',cat:'Project Management',
+   desc:'Full task, project, and portfolio integration. Agents create tasks from meeting notes, track milestone progress, and surface blockers before they delay delivery.',
+   actions:['Create and update tasks and projects','Track milestone completion','Generate project status reports','Assign tasks based on workload'],
+   triggers:['Task created, completed, or overdue','Project milestone reached','Dependency blocked'],
+   auth:['OAuth 2.0'],setup:'Asana OAuth · 5 min setup'},
+  {id:'i11',icon:'🟡',name:'Monday.com',cat:'Project Management',
+   desc:'Read and write Monday.com boards, items, and automations. Agents keep project boards up to date from team activity across email, Slack, and code commits.',
+   actions:['Create and update board items','Change item status and assignee','Post updates to timeline','Query cross-board analytics'],
+   triggers:['Item created or status changed','Due date approaching','Automation triggered'],
+   auth:['OAuth 2.0'],setup:'Monday OAuth · 10 min setup'},
+  {id:'i12',icon:'🔺',name:'Linear',cat:'Project Management',
+   desc:'Native integration with Linear for issue tracking and product roadmaps. Agents triage bug reports, update cycle priorities, and generate sprint summaries.',
+   actions:['Create and update issues and cycles','Assign priority and labels','Pull team velocity metrics','Generate cycle summary reports'],
+   triggers:['Issue created or completed','Cycle started','Priority changed'],
+   auth:['OAuth 2.0','API Key'],setup:'Linear OAuth · 5 min setup'},
+  // Data & Analytics
+  {id:'i13',icon:'❄️',name:'Snowflake',cat:'Data & Analytics',
+   desc:'Query Snowflake data warehouses using natural language. Agents translate business questions into SQL, execute queries, and return formatted analytics results.',
+   actions:['Execute natural language to SQL queries','Run stored procedures','Pull time-series analytics','Write query results to tables'],
+   triggers:['Task completion event','Query result threshold','Schedule-based trigger'],
+   auth:['OAuth 2.0','Key-Pair Auth','Service Account'],setup:'Snowflake OAuth · 20 min setup · VPN compatible'},
+  {id:'i14',icon:'☁️',name:'BigQuery',cat:'Data & Analytics',
+   desc:'Run analytical queries against Google BigQuery datasets. Agents pull business metrics, detect anomalies, and generate narrative reports from raw warehouse data.',
+   actions:['Query datasets and tables','Run scheduled analytical jobs','Export results to Sheets or GCS','Monitor query cost and performance'],
+   triggers:['Table updated','Job completed','Cost threshold exceeded'],
+   auth:['Google OAuth','Service Account'],setup:'GCP Service Account · 15 min setup'},
+  {id:'i15',icon:'🔴',name:'Redshift',cat:'Data & Analytics',
+   desc:'Connect agents to Amazon Redshift clusters for enterprise-scale analytics. Supports NL-to-SQL, stored procedure execution, and automated reporting pipelines.',
+   actions:['Natural language to SQL querying','Stored procedure execution','Data quality monitoring','Automated reporting and export'],
+   triggers:['Load job completed','Query SLA breached','Anomaly detected'],
+   auth:['IAM Role','Username/Password'],setup:'AWS IAM Role · 20 min setup'},
+  {id:'i16',icon:'📊',name:'Tableau',cat:'Data & Analytics',
+   desc:'Pull and publish Tableau workbook data. Agents refresh data sources, extract KPIs from dashboards, and generate narrative summaries of visual insights.',
+   actions:['Extract data from published views','Refresh data source on trigger','Publish calculated fields','Generate insight narratives from charts'],
+   triggers:['Data source refreshed','Alert threshold hit','Subscription delivered'],
+   auth:['Personal Access Token','OAuth 2.0'],setup:'Tableau PAT · 10 min setup'},
+  {id:'i17',icon:'🔵',name:'Looker',cat:'Data & Analytics',
+   desc:'Query Looker Explores and Looks programmatically. Agents pull governed metrics, run LookML queries, and embed dashboard data into reports and briefings.',
+   actions:['Run Explore queries via API','Pull pre-built Look results','Embed dashboard data in reports','Trigger data refreshes'],
+   triggers:['Alert threshold hit','Scheduled delivery','Data action triggered'],
+   auth:['OAuth 2.0','API Credentials'],setup:'Looker API credentials · 15 min setup'},
+  // Cloud Infrastructure
+  {id:'i18',icon:'🟠',name:'AWS',cat:'Cloud & DevOps',
+   desc:'Comprehensive AWS integration covering EC2, S3, Lambda, CloudWatch, and 50+ services. Agents monitor infrastructure, execute runbooks, and manage resources.',
+   actions:['Query CloudWatch metrics and logs','Execute Lambda functions','Manage S3 objects','Invoke ECS tasks and SSM commands'],
+   triggers:['CloudWatch alarm fired','Cost threshold exceeded','Security Hub finding','Health event'],
+   auth:['IAM Role','Access Key'],setup:'IAM Role with least-privilege · 20 min setup · GovCloud supported'},
+  {id:'i19',icon:'🔷',name:'Azure',cat:'Cloud & DevOps',
+   desc:'Full Azure integration via Azure Resource Manager and Microsoft Graph. Agents monitor resources, manage AD users, and execute Azure Automation runbooks.',
+   actions:['Query Azure Monitor logs and metrics','Manage Azure AD users and groups','Execute Automation runbooks','Deploy ARM templates'],
+   triggers:['Alert rule fired','Service health event','Cost anomaly detected','AD event'],
+   auth:['Azure AD Service Principal','Managed Identity'],setup:'Service Principal · 20 min setup · GovCloud supported'},
+  {id:'i20',icon:'🟡',name:'Google Cloud',cat:'Cloud & DevOps',
+   desc:'GCP integration covering Cloud Monitoring, BigQuery, GCS, Vertex AI, and IAM. Agents monitor, analyse, and operate GCP workloads autonomously.',
+   actions:['Query Cloud Monitoring metrics','Manage GCS buckets and objects','Invoke Cloud Functions','Monitor Vertex AI model deployments'],
+   triggers:['Alert policy triggered','Pub/Sub message','Budget alert','IAM change'],
+   auth:['Service Account','Workload Identity'],setup:'GCP Service Account · 15 min setup'},
+  // DevOps & Engineering
+  {id:'i21',icon:'🐙',name:'GitHub',cat:'DevOps & Engineering',
+   desc:'Full GitHub integration for code review, issue tracking, CI/CD, and release management. Agents review PRs, triage issues, and generate release notes automatically.',
+   actions:['Review and comment on pull requests','Create and update issues','Trigger CI/CD workflows','Generate release notes from commits'],
+   triggers:['PR opened or merged','Issue created or labelled','CI check completed','Security alert'],
+   auth:['OAuth App','GitHub App','PAT'],setup:'GitHub App · 10 min setup · GHES supported'},
+  {id:'i22',icon:'🦊',name:'GitLab',cat:'DevOps & Engineering',
+   desc:'GitLab integration for MR reviews, pipeline management, and issue tracking. Agents automate code quality, security scanning, and deployment coordination.',
+   actions:['Review merge requests and pipelines','Manage issues and milestones','Trigger and monitor CI/CD pipelines','Run SAST and dependency scans'],
+   triggers:['MR created or updated','Pipeline failed or succeeded','Security finding','Deployment event'],
+   auth:['OAuth 2.0','Project Token'],setup:'GitLab OAuth · 10 min setup · Self-hosted supported'},
+  {id:'i23',icon:'🔵',name:'Datadog',cat:'DevOps & Engineering',
+   desc:'Connect agents to Datadog for APM, log analytics, and incident management. Agents triage alerts, correlate events, and execute runbooks based on monitor state.',
+   actions:['Query metrics, logs, and traces','Acknowledge and resolve monitors','Post incident updates','Trigger synthetic tests'],
+   triggers:['Monitor alert or recovery','Log anomaly detected','SLO breach','Incident created'],
+   auth:['API Key + App Key'],setup:'API Key pair · 10 min setup'},
+  {id:'i24',icon:'📟',name:'PagerDuty',cat:'DevOps & Engineering',
+   desc:'Integrate agents into PagerDuty on-call workflows. Agents triage incoming alerts, escalate with context, and resolve incidents after executing remediation runbooks.',
+   actions:['Create and update incidents','Acknowledge and resolve alerts','Add incident notes and context','Trigger escalation policies'],
+   triggers:['Alert triggered','Incident acknowledged','Escalation fired','On-call change'],
+   auth:['OAuth 2.0','API Key'],setup:'PagerDuty OAuth · 10 min setup'},
+  // ITSM & Operations
+  {id:'i25',icon:'🔵',name:'ServiceNow',cat:'ITSM & Operations',
+   desc:'Full ServiceNow ITSM integration — agents create incidents, change requests, and CIs, and execute approval workflows without human intervention.',
+   actions:['Create and update incidents and changes','Query CMDB configuration items','Trigger approval workflows','Generate ITSM reports and metrics'],
+   triggers:['Incident created or escalated','Change approved or rejected','SLA breached','Alert from monitoring tool'],
+   auth:['OAuth 2.0','Basic Auth'],setup:'ServiceNow OAuth · 20 min setup'},
+  {id:'i26',icon:'🟢',name:'Freshdesk',cat:'ITSM & Operations',
+   desc:'Integrate agents into Freshdesk for automated ticket triage, first-response drafting, and resolution workflows across support channels.',
+   actions:['Create and update tickets','Route and categorise by sentiment','Draft first-response messages','Escalate with context package'],
+   triggers:['Ticket created','Status changed','SLA violated','Agent replied'],
+   auth:['API Key','OAuth 2.0'],setup:'Freshdesk API Key · 5 min setup'},
+  {id:'i27',icon:'🌐',name:'Zendesk',cat:'ITSM & Operations',
+   desc:'Automate Zendesk ticket lifecycle with agents that triage, categorise, draft replies, and escalate based on sentiment, topic, and SLA risk.',
+   actions:['Create, update, and merge tickets','Apply tags and macros','Draft and send replies','Escalate to senior support tier'],
+   triggers:['Ticket created','Priority escalated','SLA breach imminent','Customer replied'],
+   auth:['OAuth 2.0','API Token'],setup:'Zendesk OAuth · 10 min setup'},
+  // ERP & Finance
+  {id:'i28',icon:'🔵',name:'SAP',cat:'ERP & Finance',
+   desc:'Connect agents to SAP ERP, S/4HANA, and Ariba for procurement, finance, and supply chain automation. Supports RFC, BAPI, and REST APIs.',
+   actions:['Query and update ERP master data','Create purchase orders and invoices','Pull financial reports and cost centres','Trigger workflow approvals'],
+   triggers:['PO created or approved','Invoice exception','Goods receipt posted','Budget threshold exceeded'],
+   auth:['OAuth 2.0','SAP Principal Propagation','API Key'],setup:'SAP BTP Integration · 30 min setup'},
+  {id:'i29',icon:'🔴',name:'Oracle ERP',cat:'ERP & Finance',
+   desc:'Integration with Oracle Cloud ERP for finance, procurement, and project management. Agents automate journal entries, invoice processing, and approval chains.',
+   actions:['Create and query financial transactions','Process accounts payable and receivable','Run financial close tasks','Pull project budgets and actuals'],
+   triggers:['Invoice received','Approval pending','Budget variance detected','Period close initiated'],
+   auth:['OAuth 2.0','Basic Auth'],setup:'Oracle IDCS OAuth · 25 min setup'},
+  {id:'i30',icon:'🟢',name:'NetSuite',cat:'ERP & Finance',
+   desc:'Full NetSuite ERP integration for order management, financials, and inventory. Agents process transactions, generate reports, and manage approval workflows.',
+   actions:['Create sales orders, POs, and invoices','Query financial dashboards','Update inventory records','Trigger approval workflows'],
+   triggers:['Transaction created','Approval required','Low stock alert','Cash flow threshold'],
+   auth:['TBA OAuth 2.0','Token-Based Auth'],setup:'NetSuite TBA · 20 min setup'},
+  // HR
+  {id:'i31',icon:'👥',name:'Workday',cat:'HR & People',
+   desc:'Deep Workday HCM integration for HR automation — agents query employee data, trigger onboarding workflows, and generate workforce analytics reports.',
+   actions:['Query employee and org data','Trigger hiring and onboarding workflows','Update job requisitions','Pull workforce analytics'],
+   triggers:['New hire started','Position opened','Performance review due','Termination initiated'],
+   auth:['OAuth 2.0','ISU Service Account'],setup:'Workday OAuth · 25 min setup'},
+  {id:'i32',icon:'🌿',name:'BambooHR',cat:'HR & People',
+   desc:'Connect agents to BambooHR for employee records, time-off requests, and performance data. Automate HR operations and workforce reporting.',
+   actions:['Query employee profiles and org chart','Process time-off requests','Pull performance review data','Generate headcount reports'],
+   triggers:['New employee added','Time-off approved','Review cycle started','Employee changed department'],
+   auth:['API Key'],setup:'BambooHR API Key · 5 min setup'},
+  {id:'i33',icon:'🟣',name:'Greenhouse',cat:'HR & People',
+   desc:'Full ATS integration with Greenhouse for recruiting automation. Agents screen applications, schedule interviews, and update candidate pipeline stages.',
+   actions:['Retrieve and score applications','Schedule interview stages','Send rejection or advance emails','Update candidate pipeline stage'],
+   triggers:['Application submitted','Interview completed','Offer extended','Candidate rejected'],
+   auth:['API Key','OAuth 2.0'],setup:'Greenhouse Harvest API · 10 min setup'},
+  // Marketing
+  {id:'i34',icon:'🟠',name:'Marketo',cat:'Marketing',
+   desc:'Integrate agents with Marketo Engage for lead management, campaign execution, and marketing attribution. Automate nurture sequences and score updates.',
+   actions:['Create and update leads and programmes','Enrol contacts in email sequences','Pull campaign performance metrics','Update lead scores and status'],
+   triggers:['Lead score threshold','Form filled','Email clicked','Campaign launched'],
+   auth:['OAuth 2.0','Client Credentials'],setup:'Marketo REST API · 15 min setup'},
+  {id:'i35',icon:'🐒',name:'Mailchimp',cat:'Marketing',
+   desc:'Automate Mailchimp email campaigns, audience management, and performance reporting with NexAgent agents.',
+   actions:['Create and send campaigns','Manage audience segments and tags','Pull open/click analytics','Add or update subscribers'],
+   triggers:['Campaign sent','Subscriber added','Unsubscribe event','Automation step triggered'],
+   auth:['OAuth 2.0','API Key'],setup:'Mailchimp OAuth · 5 min setup'},
+  {id:'i36',icon:'📊',name:'Google Analytics',cat:'Marketing',
+   desc:'Pull GA4 data into agent workflows for real-time web analytics, traffic analysis, and conversion reporting.',
+   actions:['Query GA4 reports and metrics','Detect traffic anomalies','Generate SEO and content reports','Pull conversion funnel analysis'],
+   triggers:['Metric threshold crossed','Goal completed','Real-time spike detected'],
+   auth:['Google OAuth','Service Account'],setup:'Google OAuth · 10 min setup'},
+  // Communication
+  {id:'i37',icon:'📧',name:'Gmail',cat:'Communication',
+   desc:'Agents read, draft, send, and organise Gmail messages. Supports full inbox management, thread summarisation, and smart reply automation.',
+   actions:['Read and draft emails','Send replies and new messages','Apply labels and archive','Summarise email threads'],
+   triggers:['Email received in label','Star added','Thread replied to','Attachment received'],
+   auth:['Google OAuth'],setup:'Google OAuth · 5 min setup · Workspace supported'},
+  {id:'i38',icon:'📅',name:'Google Calendar',cat:'Communication',
+   desc:'Agents schedule meetings, check availability, update events, and send invitations across Google Calendar accounts.',
+   actions:['Create, update, and delete events','Check availability across participants','Send calendar invitations','Generate daily/weekly agenda summaries'],
+   triggers:['Event created or changed','Meeting reminder triggered','Invitation accepted/declined'],
+   auth:['Google OAuth'],setup:'Google OAuth · 5 min setup'},
+  {id:'i39',icon:'📮',name:'Outlook',cat:'Communication',
+   desc:'Full Microsoft 365 Outlook integration for email, calendar, and contacts. Agents manage inbox workflows, draft replies, and schedule meetings.',
+   actions:['Read, draft, and send emails','Schedule and update calendar events','Manage contacts and distribution lists','Summarise long email threads'],
+   triggers:['Email received in folder','Meeting scheduled','Reply received','Flag added'],
+   auth:['Microsoft Graph OAuth'],setup:'Microsoft 365 OAuth · 10 min setup'},
+  // Security
+  {id:'i40',icon:'🦅',name:'CrowdStrike',cat:'Security',
+   desc:'Integrate agents with CrowdStrike Falcon for endpoint telemetry, threat detection, and incident response automation.',
+   actions:['Query endpoint detections and events','Contain compromised endpoints','Enrich IOCs with threat intelligence','Generate incident response reports'],
+   triggers:['Detection alert fired','Host isolation triggered','Threat actor identified'],
+   auth:['OAuth 2.0','API Key'],setup:'CrowdStrike API Client · 15 min setup'},
+  {id:'i41',icon:'🔐',name:'Okta',cat:'Security',
+   desc:'Automate identity and access management with Okta. Agents provision users, manage group memberships, and enforce access policies.',
+   actions:['Create and deactivate users','Assign and revoke group memberships','Trigger MFA enrollment','Pull access audit logs'],
+   triggers:['User created or deactivated','Suspicious sign-in detected','Policy violation','MFA event'],
+   auth:['OAuth 2.0','API Token'],setup:'Okta OAuth · 15 min setup'},
+  {id:'i42',icon:'🕵️',name:'Splunk',cat:'Security',
+   desc:'Connect agents to Splunk for log analytics, threat hunting, and SIEM alert triage. Agents run SPL queries and generate security investigation reports.',
+   actions:['Run SPL search queries','Pull dashboard data and saved searches','Create and update notable events','Generate security investigation reports'],
+   triggers:['Alert triggered','Correlation search matched','Risk score threshold','Scheduled search completed'],
+   auth:['Bearer Token','Username/Password'],setup:'Splunk Token Auth · 15 min setup'},
+  // E-Commerce & Payments
+  {id:'i43',icon:'💳',name:'Stripe',cat:'Payments & E-Commerce',
+   desc:'Agents interact with Stripe for payment processing, subscription management, dispute resolution, and revenue analytics.',
+   actions:['Query customers, charges, and subscriptions','Handle refund and dispute workflows','Pull MRR and churn analytics','Generate revenue reports'],
+   triggers:['Payment succeeded or failed','Subscription created or cancelled','Dispute opened','Invoice upcoming'],
+   auth:['API Key (Restricted)'],setup:'Stripe API Key · 10 min setup'},
+  {id:'i44',icon:'🛒',name:'Shopify',cat:'Payments & E-Commerce',
+   desc:'Full Shopify integration for inventory management, order processing, and customer support automation.',
+   actions:['Query and update orders and inventory','Process refunds and cancellations','Pull sales and inventory analytics','Update product listings'],
+   triggers:['Order placed or fulfilled','Inventory low alert','Refund requested','Abandoned cart'],
+   auth:['OAuth 2.0','Admin API Key'],setup:'Shopify Partners OAuth · 10 min setup'},
+  // Document & Storage
+  {id:'i45',icon:'📄',name:'Google Drive',cat:'Documents & Storage',
+   desc:'Read, write, and manage files in Google Drive and Shared Drives. Agents ground RAG pipelines on Drive content and generate documents directly.',
+   actions:['Read and write Docs, Sheets, Slides','Search across Drive content','Create and organise folders','Share files with specific users'],
+   triggers:['File created or modified','Permission changed','Comment added','Sharing event'],
+   auth:['Google OAuth'],setup:'Google OAuth · 5 min setup'},
+  {id:'i46',icon:'📦',name:'AWS S3',cat:'Documents & Storage',
+   desc:'Read and write objects in S3 buckets. Agents retrieve documents for RAG, store outputs, and trigger downstream Lambda functions.',
+   actions:['Read and write objects and prefixes','Generate presigned URLs','Trigger Lambda on object events','Sync to and from local storage'],
+   triggers:['Object created or deleted','Bucket event notification','Replication complete'],
+   auth:['IAM Role','Access Key'],setup:'IAM Role · 10 min setup'},
+  {id:'i47',icon:'🗄️',name:'Dropbox',cat:'Documents & Storage',
+   desc:'Connect agents to Dropbox Business for document retrieval, storage, and team folder management.',
+   actions:['Read and write files and folders','Search across Dropbox content','Share files with links','Trigger paper document workflows'],
+   triggers:['File modified','Folder shared','Comment added'],
+   auth:['OAuth 2.0'],setup:'Dropbox OAuth · 5 min setup'},
+  // Database
+  {id:'i48',icon:'🐘',name:'PostgreSQL',cat:'Databases',
+   desc:'Direct PostgreSQL integration for transactional queries and analytics. Agents run NL-to-SQL queries, monitor table health, and trigger on data changes.',
+   actions:['Run parameterised SQL queries','Monitor table metrics and query plans','Insert and update records','Generate schema documentation'],
+   triggers:['Row inserted or updated','Threshold query result','Scheduled cron query'],
+   auth:['Username/Password','SSL Certificate'],setup:'Connection string config · 10 min setup'},
+  {id:'i49',icon:'🍃',name:'MongoDB',cat:'Databases',
+   desc:'Connect agents to MongoDB Atlas or self-hosted clusters. Agents query collections, run aggregations, and manage documents using natural language.',
+   actions:['Query and aggregate collections','Insert and update documents','Run Atlas Search queries','Monitor collection metrics'],
+   triggers:['Change stream event','Atlas trigger fired','Query threshold'],
+   auth:['API Key','Username/Password','X.509'],setup:'MongoDB Atlas API · 10 min setup'},
+  {id:'i50',icon:'🔴',name:'Redis',cat:'Databases',
+   desc:'Use Redis as an agent memory layer, cache, and pub/sub broker. Agents store session context, queue tasks, and publish events between agent workers.',
+   actions:['Get and set key-value pairs','Publish and subscribe to channels','Manage queues with Lists and Streams','Set TTL and expiry policies'],
+   triggers:['Keyspace notification','Stream entry added','Queue threshold'],
+   auth:['Password','TLS Certificates'],setup:'Redis connection string · 5 min setup'},
+  // AI & ML
+  {id:'i51',icon:'⚫',name:'OpenAI',cat:'AI & ML',
+   desc:'Use GPT-4o, o3, and DALL·E as underlying reasoning and generation engines within NexAgent workflows.',
+   actions:['Run GPT-4o completions and function calls','Generate images with DALL·E','Create and query vector embeddings','Run fine-tuned model inference'],
+   triggers:['Tool call response','Structured output returned','Token budget alert'],
+   auth:['API Key'],setup:'OpenAI API Key · 2 min setup'},
+  {id:'i52',icon:'🟣',name:'Anthropic Claude',cat:'AI & ML',
+   desc:'Use Claude Sonnet and Opus models for reasoning-heavy agent tasks. Supports extended thinking, tool use, and document analysis.',
+   actions:['Run Claude completions with tool use','Analyse documents and images','Extended thinking for complex reasoning','Batch processing for high-volume tasks'],
+   triggers:['Tool use response','Thinking block returned','Message completed'],
+   auth:['API Key'],setup:'Anthropic API Key · 2 min setup'},
+  {id:'i53',icon:'🔵',name:'Pinecone',cat:'AI & ML',
+   desc:'Vector database integration for semantic search and RAG pipelines. Agents index documents, query by similarity, and maintain knowledge freshness.',
+   actions:['Upsert and query vector embeddings','Namespace and metadata filtering','Manage indexes and pods','Hybrid keyword + vector search'],
+   triggers:['Index threshold reached','Query latency alert','Namespace updated'],
+   auth:['API Key'],setup:'Pinecone API Key · 5 min setup'},
+  {id:'i54',icon:'🌊',name:'Hugging Face',cat:'AI & ML',
+   desc:'Access 500,000+ open-source models via the Inference API. Agents can classify, embed, generate, and translate using any Hugging Face model.',
+   actions:['Run text generation and classification','Compute sentence embeddings','Image and audio model inference','Deploy and query Inference Endpoints'],
+   triggers:['Endpoint ready','Model update published'],
+   auth:['API Token'],setup:'HuggingFace Token · 5 min setup'},
+  // Streaming & Messaging
+  {id:'i55',icon:'🌊',name:'Apache Kafka',cat:'Streaming & Messaging',
+   desc:'Connect agents to Kafka topics for real-time event ingestion and publishing. Agents consume streams, process events, and produce transformed outputs.',
+   actions:['Consume messages from topics','Produce processed events','Monitor consumer lag','Schema registry validation'],
+   triggers:['Message threshold on topic','Consumer group lag alert','Partition rebalance'],
+   auth:['SASL/SCRAM','mTLS','API Key'],setup:'Kafka bootstrap config · 15 min setup · MSK supported'},
+  {id:'i56',icon:'🔴',name:'AWS EventBridge',cat:'Streaming & Messaging',
+   desc:'Trigger agents from EventBridge rules and event buses. Agents react to AWS events, SaaS events, and custom application events in real time.',
+   actions:['Subscribe to event bus rules','Publish custom events','Archive and replay events','Create scheduled rules for cron tasks'],
+   triggers:['Rule matched','Scheduled event fired','Partner event received'],
+   auth:['IAM Role'],setup:'IAM Role · 10 min setup'},
+  {id:'i57',icon:'🐰',name:'RabbitMQ',cat:'Streaming & Messaging',
+   desc:'Connect agents to RabbitMQ for task queuing and message distribution. Agents consume work items, process payloads, and acknowledge messages on completion.',
+   actions:['Consume and acknowledge messages','Publish to exchanges and queues','Manage dead-letter routing','Monitor queue depth and throughput'],
+   triggers:['Message arrived','Queue depth threshold','Consumer disconnect'],
+   auth:['Username/Password','TLS Certificates'],setup:'AMQP connection string · 10 min setup'},
+  // Analytics & BI
+  {id:'i58',icon:'🔵',name:'Power BI',cat:'Analytics & BI',
+   desc:'Connect agents to Power BI datasets and reports. Agents refresh data, pull KPI values, and generate narrative summaries from visual reports.',
+   actions:['Refresh datasets and reports','Query DAX measures via API','Export report visuals','Push real-time data to streaming datasets'],
+   triggers:['Refresh completed','Alert threshold hit','Subscription delivered'],
+   auth:['Azure AD OAuth'],setup:'Azure AD OAuth · 15 min setup'},
+  {id:'i59',icon:'🟠',name:'Amplitude',cat:'Analytics & BI',
+   desc:'Pull product analytics from Amplitude for user behaviour analysis and feature impact reporting. Agents surface insights and anomalies from event streams.',
+   actions:['Query user event funnels and retention','Pull cohort and segmentation data','Detect metric anomalies','Generate product analytics reports'],
+   triggers:['Metric alert triggered','Funnel drop detected','Cohort threshold'],
+   auth:['API Key + Secret Key'],setup:'Amplitude API credentials · 10 min setup'},
+  {id:'i60',icon:'🟣',name:'Mixpanel',cat:'Analytics & BI',
+   desc:'Integrate agents with Mixpanel for behavioural analytics, A/B test results, and conversion funnel analysis.',
+   actions:['Query event and user data','Pull A/B test results and significance','Analyse conversion funnels','Generate product growth reports'],
+   triggers:['Alert fired','Experiment concluded','Funnel drop detected'],
+   auth:['Service Account','API Secret'],setup:'Mixpanel API Secret · 10 min setup'},
+];
+
+
+// ── STATE ─────────────────────────────────────
+var _running    = false;
+var _output     = '';
+var _query      = '';
+var _taskCount  = 0;
+var _agentCat   = 'All';
+var _intCat     = 'All';
+var _trialTasks = 0;
+var _trialConv  = false;
+var _savedOutputs = [];
+
+var TEMPLATES = [
+  { icon:'&#x1F4CA;', label:'Sales Performance Report',   prompt:'Analyse Q1 sales performance vs last year. Identify top 3 underperforming regions and draft an executive briefing with recommended actions.' },
+  { icon:'&#x1F52C;', label:'Clinical Research Summary',  prompt:'Conduct a clinical analysis of Phase III trial results for GLP-1 receptor agonists in Type 2 diabetes. Summarise efficacy, safety, and market implications.' },
+  { icon:'&#x2696;&#xFE0F;', label:'Contract Risk Analysis', prompt:'Review a standard SaaS enterprise agreement. Identify top 5 legal risks, red-flag clauses, and recommended negotiation points.' },
+  { icon:'&#x1F30D;', label:'Market Entry Strategy',      prompt:'Develop a market entry strategy for an AI healthcare platform in West Africa (Ghana, Nigeria, Kenya). Include competitive landscape, regulatory environment, and go-to-market plan.' },
+  { icon:'&#x1F4A1;', label:'Investment Memo',             prompt:'Write a concise Series A investment memo for a legal tech SaaS company targeting African law firms. Include market size, advantages, risks, and recommendation.' },
+  { icon:'&#x1F4CB;', label:'Product Requirements Doc',   prompt:'Create a comprehensive PRD for an AI-powered document generation platform targeting enterprise life sciences companies.' },
+];
+
+// ── INIT ──────────────────────────────────────
+(function init() {
+  loadTrial();
+  loadSaved();
+  buildTemplates();
+  buildAgentCats();
+  buildIntCats();
+  updateStats();
+})();
+
+// ── TRIAL ─────────────────────────────────────
+function loadTrial() {
+  var raw = localStorage.getItem('na_trial'); var t = raw ? JSON.parse(raw) : {tasks:0,converted:false};
+  _trialTasks = t.tasks || 0;
+  _trialConv  = t.converted || false;
+  updateTrialBar();
+}
+
+function saveTrial() {
+  localStorage.setItem('na_trial', JSON.stringify({ tasks: _trialTasks, converted: _trialConv }));
+}
+
+function updateTrialBar() {
+  var bar = document.getElementById('trialBar');
+  var txt = document.getElementById('trialTxt');
+  var nav = document.getElementById('trialCountNav');
+  if (_trialConv) { if (bar) bar.style.display = 'none'; return; }
+  var rem = Math.max(0, 3 - _trialTasks);
+  if (txt) txt.innerHTML = rem > 0
+    ? '<strong style="color:var(--accent)">' + rem + ' free task' + (rem !== 1 ? 's' : '') + '</strong> &mdash; no credit card required'
+    : '<strong style="color:#FFB84D">Free trial complete</strong> &mdash; upgrade to continue';
+  if (nav) { nav.textContent = rem + ' left'; nav.style.display = rem > 0 ? 'inline-block' : 'none'; }
+}
+
+function checkTrial() {
+  if (_trialConv) return true;
+  if (_trialTasks >= 3) { document.getElementById('upgradeWall').classList.add('on'); return false; }
+  return true;
+}
+
+function incrementTrial() {
+  if (!_trialConv) { _trialTasks++; saveTrial(); updateTrialBar(); }
+}
+
+// ── TEMPLATES ─────────────────────────────────
+function buildTemplates() {
+  var el = document.getElementById('tmplList');
+  if (!el) return;
+  el.innerHTML = TEMPLATES.map(function(t, i) {
+    return '<button class="sb-tmpl" onclick="loadTemplate(' + i + ')">' + t.icon + ' ' + t.label + '</button>';
+  }).join('');
+}
+
+function loadTemplate(i) {
+  var t = TEMPLATES[i]; if (!t) return;
+  var p = document.getElementById('prompt');
+  if (p) { p.value = t.prompt; p.focus(); }
+  showToast(t.icon + ' Template loaded — press Run');
+}
+
+// ── PIPELINE STATUS ────────────────────────────
+function setPipe(agent) {
+  var agents = ['research','analysis','action','quality'];
+  agents.forEach(function(a) {
+    var row = document.getElementById('pr-' + a);
+    var dot = row ? row.querySelector('.pipe-dot') : null;
+    var st  = document.getElementById('ps-' + a);
+    if (!row) return;
+    if (!agent) {
+      row.classList.remove('active');
+      if (dot) { dot.style.background = 'var(--muted)'; dot.style.boxShadow = 'none'; }
+      if (st) { st.textContent = 'idle'; st.style.color = 'var(--muted)'; }
+    } else if (a === agent) {
+      row.classList.add('active');
+      if (dot) { dot.style.background = 'var(--accent)'; dot.style.boxShadow = '0 0 5px var(--accent)'; }
+      if (st) { st.textContent = 'running…'; st.style.color = 'var(--accent)'; }
+    } else if (agents.indexOf(a) < agents.indexOf(agent)) {
+      row.classList.remove('active');
+      if (dot) { dot.style.background = 'rgba(0,200,255,.4)'; dot.style.boxShadow = 'none'; }
+      if (st) { st.textContent = 'done ✓'; st.style.color = 'rgba(0,200,255,.6)'; }
+    }
+  });
+}
+
+// ── WORKSPACE ─────────────────────────────────
+function clearWorkspace() {
+  var feed = document.getElementById('feed');
+  if (!feed) return;
+  var op = document.getElementById('outPanel');
+  if (op) op.remove();
+  feed.innerHTML = '<div class="welcome" id="welcome"><div style="font-size:40px">&#x26A1;</div><div style="font-size:15px;font-weight:700;color:var(--fg)">Ready for your next task</div><div style="font-size:12.5px;color:var(--dim)">Type below or select a template</div></div>';
+  setPipe(null);
+  showToast('Workspace cleared');
+}
+
+function addMsg(html) {
+  var feed = document.getElementById('feed');
+  if (!feed) return;
+  var w = document.getElementById('welcome');
+  if (w) w.remove();
+  var d = document.createElement('div');
+  d.innerHTML = html;
+  feed.appendChild(d.firstChild || d);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function setThinking(show) {
+  var el = document.getElementById('thinkRow');
+  if (show && !el) {
+    var feed = document.getElementById('feed');
+    if (!feed) return;
+    var d = document.createElement('div');
+    d.id = 'thinkRow';
+    d.className = 'msg-row';
+    d.innerHTML = '<div class="av"><span>&#x26A1;</span></div>'
+      + '<div><div class="agent-lbl">Orchestrator</div>'
+      + '<div class="bubble sys" style="display:flex;align-items:center;gap:8px">'
+        + '<div class="typing"><span></span><span></span><span></span></div>'
+        + '<span id="thinkTxt" style="font-size:11px">Analysing task…</span>'
+      + '</div></div>';
+    feed.appendChild(d);
+    feed.scrollTop = feed.scrollHeight;
+    var msgs = ['Analysing task…','Designing workflow…','Dispatching agents…'];
+    var mi = 0;
+    d._iv = setInterval(function(){ var t=document.getElementById('thinkTxt'); if(t) t.textContent=msgs[mi++%msgs.length]; }, 1400);
+    setPipe('research');
+  } else if (!show && el) {
+    clearInterval(el._iv);
+    el.remove();
+  }
+}
+
+// ── MAIN RUN ──────────────────────────────────
+async function runTask() {
+  if (_running) return;
+  var userText = (document.getElementById('prompt') || {}).value || '';
+  userText = userText.trim();
+  if (!userText) return;
+  if (!checkTrial()) return;
+
+  _running = true;
+  document.getElementById('prompt').value = '';
+  var btn = document.getElementById('runBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Running…'; }
+  document.getElementById('wsStatus').textContent = 'Running…';
+
+  addMsg('<div class="msg-row"><div class="av user"><span style="font-size:13px">U</span></div><div><div class="agent-lbl" style="color:rgba(0,200,255,.6)">You</div><div class="bubble user">' + esc(userText) + '</div></div></div>');
+  await delay(300);
+  setThinking(true);
+
+  var SECS = [
+    { key:'RESEARCH_AGENT', id:'research', icon:'&#x1F50D;', label:'Research Agent'  },
+    { key:'ANALYSIS_AGENT', id:'analysis', icon:'&#x1F4CA;', label:'Analysis Agent'  },
+    { key:'ACTION_AGENT',   id:'action',   icon:'&#x26A1;',  label:'Action Agent'    },
+    { key:'QUALITY_AGENT',  id:'quality',  icon:'&#x2705;',  label:'Quality Agent'  },
+  ];
+  var bubbles = {};
+  var full = '';
+
+  function getOrCreateBubble(sec, icon, label) {
+    if (!bubbles[sec]) {
+      bubbles[sec] = true;
+      addMsg('<div class="msg-row" id="mb-' + sec + '"><div class="av">' + icon + '</div><div><div class="agent-lbl">' + label + ' &middot; NexGen Ultra</div><div class="bubble" id="bc-' + sec + '" style="min-height:20px"></div></div></div>');
+    }
+    return document.getElementById('bc-' + sec);
+  }
+
+  function updateBubbles(text) {
+    var found = [];
+    SECS.forEach(function(s) {
+      var idx = text.indexOf('## ' + s.key);
+      if (idx !== -1) found.push({ pos: idx, s: s });
+    });
+    if (!found.length) return;
+    found.sort(function(a,b){ return a.pos-b.pos; });
+    found.forEach(function(f, i) {
+      var start = f.pos + ('## ' + f.s.key).length;
+      var end = i+1 < found.length ? found[i+1].pos : text.length;
+      var content = text.slice(start, end).replace(/^[\n\r]+/,'').trim();
+      if (!content) return;
+      var el = getOrCreateBubble(f.s.id, f.s.icon, f.s.label);
+      if (el) {
+        el.innerHTML = mdRender(content) + '<span class="cursor">█</span>';
+        setPipe(f.s.id);
+        var feed = document.getElementById('feed');
+        if (feed) feed.scrollTop = feed.scrollHeight;
+      }
+    });
+  }
+
+  try {
+    // Route through server-side proxy — API key stays on Vercel server
+    var apiKey = localStorage.getItem('na_api_key') || '';
+    var useProxy = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    var endpoint = useProxy ? '/api/chat' : 'https://api.anthropic.com/v1/messages';
+
+    var reqBody = {
+      model: 'claude-sonnet-4-6',
+      max_tokens: 8000,
+      stream: true,
+      system: 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]',
+      messages: [{ role: 'user', content: userText }],
+    };
+
+    // Proxy needs apiKey in body; direct call needs it in headers
+    if (useProxy) {
+      reqBody.apiKey = apiKey || '';
+    }
+
+    var fetchHeaders = { 'Content-Type': 'application/json' };
+    if (!useProxy) {
+      fetchHeaders['x-api-key'] = apiKey || '';
+      fetchHeaders['anthropic-version'] = '2023-06-01';
+      fetchHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
+    }
+
+    var resp = await fetch(endpoint, {
+      method: 'POST',
+      headers: fetchHeaders,
+      body: JSON.stringify(reqBody),
+    });
+
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      throw new Error((err.error && err.error.message) || 'HTTP ' + resp.status);
+    }
+
+    setThinking(false);
+
+    var reader = resp.body.getReader();
+    var dec = new TextDecoder();
+    var buf = '';
+    full = '';
+
+    while (true) {
+      var chunk = await reader.read();
+      if (chunk.done) break;
+      buf += dec.decode(chunk.value, { stream: true });
+      var nl;
+      while ((nl = buf.indexOf('\n')) !== -1) {
+        var line = buf.slice(0, nl).trim();
+        buf = buf.slice(nl + 1);
+        if (!line || line === 'data: [DONE]') continue;
+        if (!line.startsWith('data: ')) continue;
+        try {
+          var ev = JSON.parse(line.slice(6));
+          if (ev.type === 'content_block_delta' && ev.delta && ev.delta.text) {
+            full += ev.delta.text;
+            updateBubbles(full);
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Remove cursors
+    SECS.forEach(function(s) {
+      var el = document.getElementById('bc-' + s.id);
+      if (el) el.innerHTML = el.innerHTML.replace(/<span class="cursor">[^<]*<\/span>/g, '');
+    });
+
+    // Fallback: show raw if no sections
+    if (full.indexOf('## RESEARCH_AGENT') === -1 && full.trim()) {
+      var el = getOrCreateBubble('action','&#x26A1;','Action Agent');
+      if (el) el.innerHTML = mdRender(full);
+    }
+
+    _output = full;
+    _query  = userText;
+    showOutput();
+    incrementTrial();
+    _taskCount++;
+    updateStats();
+    setPipe(null);
+    document.getElementById('wsStatus').textContent = 'NexGen Ultra Ready';
+
+  } catch(err) {
+    setThinking(false);
+    setPipe(null);
+    addMsg('<div class="msg-row"><div class="av" style="background:rgba(255,107,107,.15)">&#x26A0;</div><div><div class="agent-lbl" style="color:#FF6B6B">Error</div><div class="bubble" style="border-color:rgba(255,107,107,.3);color:#FF6B6B">' + esc(err.message || 'Generation failed') + '</div></div></div>');
+    document.getElementById('wsStatus').textContent = 'Error';
+    showToast(err.message || 'Generation failed');
+  } finally {
+    _running = false;
+    var btn2 = document.getElementById('runBtn');
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Run &#x26A1;'; }
+  }
+}
+
+function delay(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function mdRender(text) {
+  if (!text) return '';
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```[\s\S]*?```/g,function(m){return '<pre style="background:var(--panel);padding:10px;border-radius:5px;overflow-x:auto;margin:8px 0"><code style="font-family:var(--fm);font-size:11px;color:var(--accent)">'+m.slice(3).replace(/^\w+\n/,'').slice(0,-3)+'</code></pre>';})
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g,'<em>$1</em>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+}
+
+// ── OUTPUT ─────────────────────────────────────
+function showOutput() {
+  var aStart = _output.indexOf('## ACTION_AGENT');
+  var aEnd   = _output.indexOf('## QUALITY_AGENT');
+  var content = aStart !== -1 ? _output.slice(aStart + 15, aEnd !== -1 ? aEnd : undefined).trim() : _output;
+
+  var existing = document.getElementById('outPanel');
+  if (existing) existing.remove();
+
+  var panel = document.createElement('div');
+  panel.id = 'outPanel';
+  panel.className = 'out-panel';
+  panel.innerHTML =
+    '<div class="out-header">'
+      + '<div style="display:flex;align-items:center;gap:7px">'
+        + '<div style="width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 5px var(--accent)"></div>'
+        + '<span style="font-family:var(--fm);font-size:9px;color:var(--accent);letter-spacing:2px">NEXGEN ULTRA &middot; OUTPUT</span>'
+      + '</div>'
+      + '<span style="font-family:var(--fm);font-size:8.5px;color:var(--muted)">' + new Date().toLocaleTimeString() + '</span>'
+    + '</div>'
+    + '<div class="out-content">' + mdRender(content) + '</div>'
+    + '<div class="out-toolbar">'
+      + '<span style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-right:4px">EXPORT:</span>'
+      + '<button class="out-btn primary" onclick="copyOutput()">&#x2398; Copy</button>'
+      + '<button class="out-btn" onclick="dlMd()">&#x2193; .md</button>'
+      + '<button class="out-btn" onclick="dlPdf()">&#x2193; PDF</button>'
+      + '<button class="out-btn" onclick="dlWord()">&#x2193; Word</button>'
+      + '<button class="out-btn" onclick="dlTxt()">&#x2193; .txt</button>'
+      + '<button class="out-btn" onclick="saveOutput()" id="saveBtn">&#x2713; Save</button>'
+      + '<button class="out-btn" onclick="showHistory()" style="margin-left:auto">&#x1F4BE; History</button>'
+    + '</div>';
+
+  var workspace = document.querySelector('.workspace');
+  if (workspace) workspace.appendChild(panel);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── EXPORT ─────────────────────────────────────
+function getActionContent() {
+  var a = _output.indexOf('## ACTION_AGENT');
+  var b = _output.indexOf('## QUALITY_AGENT');
+  return a !== -1 ? _output.slice(a + 15, b !== -1 ? b : undefined).trim() : _output;
+}
+
+function copyOutput() {
+  var t = getActionContent();
+  if (!t) return;
+  navigator.clipboard && navigator.clipboard.writeText(t).then(function(){ showToast('Copied ✓'); });
+}
+
+function dlMd() {
+  var t = getActionContent(); if (!t) return;
+  dlBlob(t, 'nexagent-' + Date.now() + '.md', 'text/markdown');
+  showToast('Markdown downloaded ✓');
+}
+
+function dlTxt() {
+  var t = getActionContent().replace(/[#*`]/g,''); if (!t) return;
+  dlBlob(t, 'nexagent-' + Date.now() + '.txt', 'text/plain');
+  showToast('Text file downloaded ✓');
+}
+
+function dlBlob(content, name, type) {
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], {type:type}));
+  a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 3000);
+}
+
+function dlPdf() {
+  var t = getActionContent(); if (!t) return;
+  var w = window.open('','_blank'); if (!w) { showToast('Popup blocked'); return; }
+  var css = 'body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;line-height:1.8;font-size:12pt}h1{font-size:20pt;border-bottom:2px solid #00C8FF;padding-bottom:6pt}h2{font-size:16pt;margin-top:20pt}h3{font-size:10pt;text-transform:uppercase;color:#0099CC;letter-spacing:1pt}blockquote{border-left:3pt solid #00C8FF;padding:6pt 10pt;background:#f0f8ff}@media print{body{margin:0}}';
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>'
+    + '<div style="border-bottom:2pt solid #0B1725;padding-bottom:10pt;margin-bottom:14pt"><p style="font-size:18pt;font-weight:700;color:#0B1725;margin:0">NexAgent</p><p style="font-size:9pt;color:#888;margin:3pt 0">Powered by NexGen Ultra · Corverxis Technologies</p></div>'
+    + '<p style="background:#f0f8ff;border-left:3pt solid #0099CC;padding:6pt 10pt;font-style:italic"><strong>Task:</strong> ' + esc(_query) + '</p>'
+    + mdRender(t) + '</body></html>');
+  w.document.close(); w.focus();
+  setTimeout(function(){ w.print(); }, 500);
+  showToast('PDF dialog opened ✓');
+}
+
+function dlWord() {
+  var t = getActionContent(); if (!t) return;
+  var body = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/\n\n/g,'</p><p>');
+  var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:10pt;text-transform:uppercase}</style></head><body><h1>NexAgent Output</h1><p><em>Task: ' + esc(_query) + '</em></p><p>' + body + '</p></body></html>';
+  dlBlob(html, 'nexagent-' + Date.now() + '.doc', 'application/msword');
+  showToast('Word document downloaded ✓');
+}
+
+// ── SAVE / HISTORY ──────────────────────────────
+function loadSaved() {
+  try { _savedOutputs = JSON.parse(localStorage.getItem('na_saved') || '[]'); } catch(e) { _savedOutputs = []; }
+}
+
+function updateStats() {
+  var t = document.getElementById('statTasks'); if(t) t.textContent = _taskCount;
+  var s = document.getElementById('statSaved');  if(s) s.textContent = _savedOutputs.length;
+}
+
+function saveOutput() {
+  var t = getActionContent(); if (!t) return;
+  _savedOutputs.unshift({ query: _query, content: t, savedAt: new Date().toISOString() });
+  if (_savedOutputs.length > 30) _savedOutputs = _savedOutputs.slice(0, 30);
+  localStorage.setItem('na_saved', JSON.stringify(_savedOutputs));
+  updateStats();
+  var btn = document.getElementById('saveBtn');
+  if (btn) { btn.textContent = '✓ Saved'; btn.style.borderColor = 'var(--accent)'; btn.style.color = 'var(--accent)'; setTimeout(function(){ btn.textContent = '✓ Save'; btn.style.borderColor = ''; btn.style.color = ''; }, 2000); }
+  showToast('Saved ✓');
+}
+
+function showHistory() {
+  var modal = document.getElementById('historyModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'historyModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(11,23,37,.95);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px';
+    modal.onclick = function(e){ if(e.target===modal) modal.style.display='none'; };
+    document.body.appendChild(modal);
+  }
+  loadSaved();
+  var items = _savedOutputs.length ? _savedOutputs.map(function(s,i){
+    return '<div style="padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:9px">'
+      + '<div style="display:flex;justify-content:space-between;margin-bottom:5px">'
+        + '<div style="font-size:13px;font-weight:600;color:var(--fg)">' + esc((s.query||'').slice(0,70)) + '</div>'
+        + '<div style="font-family:var(--fm);font-size:8px;color:var(--muted)">' + new Date(s.savedAt).toLocaleDateString() + '</div>'
+      + '</div>'
+      + '<div style="font-size:11.5px;color:var(--dim);margin-bottom:9px">' + esc((s.content||'').slice(0,100)) + '…</div>'
+      + '<div style="display:flex;gap:6px">'
+        + '<button data-hi="' + i + '" onclick="loadHistory(this.dataset.hi)" style="padding:4px 11px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Load</button>'
+        + '<button data-hi="' + i + '" onclick="delHistory(this.dataset.hi)" style="padding:4px 11px;background:transparent;border:1px solid rgba(255,107,107,.3);color:rgba(255,107,107,.7);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Delete</button>'
+      + '</div>'
+    + '</div>';
+  }).join('') : '<div style="text-align:center;padding:32px;font-family:var(--fm);font-size:12px;color:var(--muted)">No saved outputs yet</div>';
+
+  modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;max-width:580px;width:100%;max-height:80vh;display:flex;flex-direction:column">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)">'
+      + '<div style="font-family:var(--fm);font-size:11px;font-weight:700;color:var(--fg)">&#x1F4BE; Saved Outputs</div>'
+      + '<button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">&#x2715;</button>'
+    + '</div>'
+    + '<div style="overflow-y:auto;padding:14px 20px">' + items + '</div>'
+    + '</div>';
+  modal.style.display = 'flex';
+}
+
+function loadHistory(i) {
+  var s = _savedOutputs[parseInt(i)]; if (!s) return;
+  _output = s.content; _query = s.query;
+  showOutput();
+  document.getElementById('historyModal').style.display = 'none';
+  showToast('Output loaded ✓');
+}
+
+function delHistory(i) {
+  _savedOutputs.splice(parseInt(i), 1);
+  localStorage.setItem('na_saved', JSON.stringify(_savedOutputs));
+  updateStats();
+  showHistory();
+}
+
+// ── TOAST ──────────────────────────────────────
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.className = 'toast on';
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.className = 'toast'; }, 2800);
+}
+
+// ── PANELS ─────────────────────────────────────
+var _openPanel = null;
+
+function openPanel(which) {
+  closePanel();
+  var panel = document.getElementById(which === 'agents' ? 'agentsPanel' : 'intsPanel');
+  if (!panel) return;
+  document.getElementById('overlay').classList.add('on');
+  panel.classList.add('on');
+  _openPanel = which;
+  if (which === 'agents') renderAgents();
+  else renderInts();
+}
+
+function closePanel() {
+  document.getElementById('overlay').classList.remove('on');
+  ['agentsPanel','intsPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.classList.remove('on');
+  });
+  _openPanel = null;
+}
+
+// ── AGENTS PANEL ───────────────────────────────
+function buildAgentCats() {
+  var cats = ['All'];
+  AGENTS.forEach(function(a){ if (cats.indexOf(a.cat) === -1) cats.push(a.cat); });
+  var el = document.getElementById('agentCats');
+  if (!el) return;
+  el.innerHTML = cats.map(function(cat, i) {
+    return '<button class="p-cat' + (i === 0 ? ' on' : '') + '" data-cat="' + cat + '">' + cat + '</button>';
+  }).join('');
+  el.addEventListener('click', function(e){
+    var btn = e.target.closest('.p-cat'); if (!btn) return;
+    el.querySelectorAll('.p-cat').forEach(function(b){ b.classList.remove('on'); });
+    btn.classList.add('on');
+    _agentCat = btn.dataset.cat;
+    renderAgents();
+  });
+}
+
+function renderAgents() {
+  var q = ((document.getElementById('agentSearch') || {}).value || '').toLowerCase().trim();
+  var filtered = AGENTS.filter(function(a){
+    return (_agentCat === 'All' || a.cat === _agentCat) &&
+      (!q || a.name.toLowerCase().includes(q) || a.role.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q));
+  });
+  var cnt = document.getElementById('agentCount');
+  if (cnt) cnt.textContent = filtered.length + ' agents';
+  var grid = document.getElementById('agentGrid');
+  if (!grid) return;
+  grid.innerHTML = filtered.map(function(a) {
+    var pill = a.status === 'live'
+      ? '<span class="a-status live">Live</span>'
+      : '<span class="a-status beta">Beta</span>';
+    return '<div class="a-card" data-id="' + a.id + '">'
+      + pill
+      + '<div class="a-icon">' + a.icon + '</div>'
+      + '<div class="a-name">' + a.name + '</div>'
+      + '<div class="a-role">' + a.role + '</div>'
+      + '<div class="a-desc">' + (a.desc||'').slice(0,75) + '…</div>'
+      + '<div class="a-tags">' + (a.tags||[]).slice(0,3).map(function(t){ return '<span class="a-tag">'+t+'</span>'; }).join('') + '</div>'
+      + '<button class="a-deploy" data-id="' + a.id + '">Deploy &#x26A1;</button>'
+    + '</div>';
+  }).join('');
+
+  // Event delegation
+  grid.onclick = function(e) {
+    var deploy = e.target.closest('.a-deploy');
+    if (deploy) { deployAgent(deploy.dataset.id); return; }
+    var card = e.target.closest('.a-card');
+    if (card) showAgentDetail(card.dataset.id);
+  };
+}
+
+function showAgentDetail(id) {
+  var a = AGENTS.find(function(x){ return x.id === id; }); if (!a) return;
+  var m = document.getElementById('aglModal'); if (!m) return;
+  var s = function(eid, v, html){ var e=document.getElementById(eid); if(e) e[html?'innerHTML':'textContent']=v; };
+  var icon = document.getElementById('aglModalIcon');
+  if (icon) { icon.textContent = a.icon; icon.style.background = a.bg || 'var(--adim)'; }
+  s('aglModalName', a.name);
+  s('aglModalMeta', a.cat + ' · ' + a.role + '  ·  ' + (a.status === 'live' ? '✓ Live' : '⚡ Beta'));
+  s('aglModalDesc', a.desc);
+  s('aglModalCaps', (a.caps||[]).map(function(c){ return '<li>'+c+'</li>'; }).join(''), true);
+  s('aglModalInts', (a.ints||[]).map(function(i){ return '<li>'+i+'</li>'; }).join(''), true);
+  s('aglModalTags', (a.tags||[]).map(function(t){ return '<span class="tag">'+t+'</span>'; }).join(''), true);
+  s('aglModalMetrics', (a.metrics||[]).map(function(m){ return '<div class="agl-metric"><div class="agl-metric-num">'+m.n+'</div><div class="agl-metric-label">'+m.l+'</div></div>'; }).join(''), true);
+  s('aglModalDeploy', a.deploy || '');
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function deployAgent(id) {
+  var a = AGENTS.find(function(x){ return x.id === id; }); if (!a) return;
+  closePanel();
+  closeAglModal && closeAglModal();
+  var prompt = 'Run the ' + a.name + ' (' + a.role + '): ' + a.desc + '. Demonstrate its full capabilities including: ' + (a.caps||[]).slice(0,3).join(', ') + '.';
+  var inp = document.getElementById('prompt');
+  if (inp) { inp.value = prompt; inp.focus(); }
+  showToast(a.icon + ' ' + a.name + ' loaded — press Run to deploy');
+}
+
+// ── INTEGRATIONS PANEL ─────────────────────────
+function buildIntCats() {
+  var cats = ['All'];
+  INTS_DATA.forEach(function(i){ if (cats.indexOf(i.cat) === -1) cats.push(i.cat); });
+  var el = document.getElementById('intCats');
+  if (!el) return;
+  el.innerHTML = cats.map(function(cat, i) {
+    return '<button class="p-cat' + (i === 0 ? ' on' : '') + '" data-cat="' + cat + '">' + cat + '</button>';
+  }).join('');
+  el.addEventListener('click', function(e){
+    var btn = e.target.closest('.p-cat'); if (!btn) return;
+    el.querySelectorAll('.p-cat').forEach(function(b){ b.classList.remove('on'); });
+    btn.classList.add('on');
+    _intCat = btn.dataset.cat;
+    renderInts();
+  });
+}
+
+function renderInts() {
+  var q = ((document.getElementById('intSearch') || {}).value || '').toLowerCase().trim();
+  var filtered = INTS_DATA.filter(function(i){
+    return (_intCat === 'All' || i.cat === _intCat) &&
+      (!q || i.name.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q));
+  });
+  var cnt = document.getElementById('intCount');
+  if (cnt) cnt.textContent = filtered.length + ' integrations';
+  var grid = document.getElementById('intGrid');
+  if (!grid) return;
+  grid.innerHTML = filtered.map(function(i) {
+    return '<div class="i-card" data-id="' + i.id + '">'
+      + '<div class="i-icon">' + i.icon + '</div>'
+      + '<div class="i-name">' + i.name + '</div>'
+      + '<div class="i-cat">' + i.cat + '</div>'
+    + '</div>';
+  }).join('');
+
+  grid.onclick = function(e) {
+    var card = e.target.closest('.i-card');
+    if (card) showIntDetail(card.dataset.id);
+  };
+}
+
+function showIntDetail(id) {
+  var i = INTS_DATA.find(function(x){ return x.id === id; }); if (!i) return;
+  var m = document.getElementById('intModal'); if (!m) return;
+  var s = function(eid, v, html){ var e=document.getElementById(eid); if(e) e[html?'innerHTML':'textContent']=v; };
+  var icon = document.getElementById('intModalIcon');
+  if (icon) { icon.textContent = i.icon; }
+  s('intModalName', i.name);
+  s('intModalCat', i.cat);
+  s('intModalDesc', i.desc);
+  s('intModalActions', (i.actions||[]).map(function(a){ return '<li>'+a+'</li>'; }).join(''), true);
+  s('intModalTriggers', (i.triggers||[]).map(function(t){ return '<li>'+t+'</li>'; }).join(''), true);
+  s('intModalAuth', (i.auth||[]).map(function(a){ return '<span class="tag">'+a+'</span>'; }).join(''), true);
+  s('intModalSetup', '⚡ ' + (i.setup || ''));
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function connectInt(id) {
+  var i = INTS_DATA.find(function(x){ return x.id === id; }); if (!i) return;
+  closeIntModal && closeIntModal();
+  closePanel();
+  var prompt = 'Use the ' + i.name + ' integration to ' + (i.actions||[]).slice(0,2).join(' and ') + '. Show a complete real-world example with actual data retrieval, analysis, and actionable output.';
+  var inp = document.getElementById('prompt');
+  if (inp) { inp.value = prompt; inp.focus(); }
+  showToast(i.icon + ' ' + i.name + ' loaded — press Run');
+}
+
+// Close modal helpers
+function closeHistoryModal() { var m=document.getElementById('historyModal'); if(m) m.style.display='none'; }
+function closeAglModal() { var m=document.getElementById('aglModal'); if(m){m.classList.remove('open');document.body.style.overflow='';} }
+function closeIntModal() { var m=document.getElementById('intModal'); if(m){m.classList.remove('open');document.body.style.overflow='';} }
+
+// Wire modal close buttons  
+document.addEventListener('click', function(e) {
+  if (e.target.closest('#aglModal') === document.getElementById('aglModal')) closeAglModal();
+  if (e.target.closest('#intModal') === document.getElementById('intModal')) closeIntModal();
+});
+document.addEventListener('keydown', function(e) { if(e.key==='Escape'){ closeAglModal(); closeIntModal(); closePanel(); } });
+
+</script>
+</body>
+</html>
