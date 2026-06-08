@@ -1533,40 +1533,31 @@ async function runTask() {
   }
 
   try {
-    // Route through server-side proxy — API key stays on Vercel server
+    // Always use /api/chat — works on Vercel (server key) and local (body key)
     var apiKey = localStorage.getItem('na_api_key') || '';
-    var useProxy = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    var endpoint = useProxy ? '/api/chat' : 'https://api.anthropic.com/v1/messages';
-
-    var reqBody = {
-      model: 'claude-sonnet-4-6',
-      max_tokens: 8000,
-      stream: true,
-      system: 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]',
-      messages: [{ role: 'user', content: userText }],
-    };
-
-    // Proxy needs apiKey in body; direct call needs it in headers
-    if (useProxy) {
-      reqBody.apiKey = apiKey || '';
-    }
-
-    var fetchHeaders = { 'Content-Type': 'application/json' };
-    if (!useProxy) {
-      fetchHeaders['x-api-key'] = apiKey || '';
-      fetchHeaders['anthropic-version'] = '2023-06-01';
-      fetchHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
-    }
+    var endpoint = '/api/chat';
 
     var resp = await fetch(endpoint, {
       method: 'POST',
-      headers: fetchHeaders,
-      body: JSON.stringify(reqBody),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey:     apiKey,
+        model:      'claude-sonnet-4-6',
+        max_tokens: 8000,
+        stream:     true,
+        system:     'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]',
+        messages:   [{ role: 'user', content: userText }],
+      }),
     });
 
     if (!resp.ok) {
-      var err = await resp.json().catch(function(){ return {}; });
-      throw new Error((err.error && err.error.message) || 'HTTP ' + resp.status);
+      var errText = await resp.text().catch(function(){ return ''; });
+      var errJson = {};
+      try { errJson = JSON.parse(errText); } catch(e) {}
+      var msg = errJson.error || ('HTTP ' + resp.status);
+      if (resp.status === 404) msg = 'API route not found. Make sure package.json and api/chat.js are committed to GitHub and Vercel is redeployed.';
+      if (resp.status === 401) msg = 'API key missing. Add ANTHROPIC_API_KEY in Vercel → Settings → Environment Variables, then redeploy.';
+      throw new Error(msg);
     }
 
     setThinking(false);
