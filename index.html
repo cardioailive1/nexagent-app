@@ -669,6 +669,10 @@ textarea#prompt:focus{border-color:var(--border2)}
 </div>
 
 <script>
+// ── OWNER CONFIG — replace with your Anthropic API key before deploying ──
+window.NEXAGENT_CONFIG_KEY = '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';
+// ─────────────────────────────────────────────────────────────────────────
+
 // ═══════════════════════════════════════════════
 // NEXAGENT STUDIO — CLEAN REBUILD
 // NexGen Ultra by Corverxis Technologies
@@ -1533,15 +1537,22 @@ async function runTask() {
   }
 
   try {
-    // Always use /api/chat — works on Vercel (server key) and local (body key)
-    var apiKey = localStorage.getItem('na_api_key') || '';
-    var endpoint = '/api/chat';
+    // Use server config key (set by owner) or localStorage fallback
+    var apiKey = window.NEXAGENT_CONFIG_KEY || localStorage.getItem('na_api_key') || '';
 
-    var resp = await fetch(endpoint, {
+    if (!apiKey || !apiKey.startsWith('sk-ant-')) {
+      throw new Error('API key not configured. Owner: add your key to NEXAGENT_CONFIG_KEY in the HTML file before deploying.');
+    }
+
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
       body: JSON.stringify({
-        apiKey:     apiKey,
         model:      'claude-sonnet-4-6',
         max_tokens: 8000,
         stream:     true,
@@ -1551,12 +1562,10 @@ async function runTask() {
     });
 
     if (!resp.ok) {
-      var errText = await resp.text().catch(function(){ return ''; });
-      var errJson = {};
-      try { errJson = JSON.parse(errText); } catch(e) {}
-      var msg = errJson.error || ('HTTP ' + resp.status);
-      if (resp.status === 404) msg = 'API route not found. Make sure package.json and api/chat.js are committed to GitHub and Vercel is redeployed.';
-      if (resp.status === 401) msg = 'API key missing. Add ANTHROPIC_API_KEY in Vercel → Settings → Environment Variables, then redeploy.';
+      var errJson = await resp.json().catch(function(){ return {}; });
+      var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
+      if (resp.status === 401) msg = 'Invalid API key. Check your NEXAGENT_CONFIG_KEY in the HTML file.';
+      if (resp.status === 429) msg = 'Rate limit reached. Please wait a moment and try again.';
       throw new Error(msg);
     }
 
