@@ -1,62 +1,49 @@
-// Vercel Edge Function — NexAgent API Proxy
-// File: api/chat.js → POST /api/chat
-// Uses ANTHROPIC_API_KEY env var (set in Vercel dashboard)
-// Customers never see or enter an API key
+// api/chat.js — NexAgent API Proxy
+// Vercel Serverless Function (Node.js runtime)
+// Add ANTHROPIC_API_KEY to Vercel Environment Variables
 
-export const config = { runtime: 'edge' };
+export default async function handler(req, res) {
+  // CORS preflight
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-};
-
-export default async function handler(req) {
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: CORS });
+    return res.status(204).end();
   }
+
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405, headers: { ...CORS, 'Content-Type': 'application/json' },
-    });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let body;
-  try {
-    body = await req.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
-      status: 400, headers: { ...CORS, 'Content-Type': 'application/json' },
-    });
-  }
-
-  // 1. Use server-side env var (Vercel dashboard) — customers never see this
-  // 2. Fall back to apiKey from body (dev/testing only)
-  const apiKey = process.env.ANTHROPIC_API_KEY || body.apiKey || '';
+  // API key: from Vercel env var (production) or request body (dev fallback)
+  const apiKey = process.env.ANTHROPIC_API_KEY || req.body?.apiKey || '';
 
   if (!apiKey || !apiKey.startsWith('sk-ant-')) {
-    return new Response(JSON.stringify({
-      error: 'API key not configured. Add ANTHROPIC_API_KEY to your Vercel environment variables.',
-    }), {
-      status: 401, headers: { ...CORS, 'Content-Type': 'application/json' },
+    return res.status(401).json({
+      error: 'ANTHROPIC_API_KEY not configured. Go to Vercel → Settings → Environment Variables and add it.',
     });
   }
 
-  const anthropicBody = {
-    model:      body.model      || 'claude-sonnet-4-6',
-    max_tokens: body.max_tokens || 8000,
-    messages:   body.messages   || [],
-    stream:     body.stream     !== false,
-  };
+  const {
+    model        = 'claude-sonnet-4-6',
+    max_tokens   = 8000,
+    messages     = [],
+    system,
+    stream       = true,
+    temperature,
+    tools,
+    tool_choice,
+  } = req.body || {};
 
-  if (body.system)      anthropicBody.system      = body.system;
-  if (body.temperature != null) anthropicBody.temperature = body.temperature;
-  if (body.tools)       anthropicBody.tools       = body.tools;
-  if (body.tool_choice) anthropicBody.tool_choice = body.tool_choice;
+  const anthropicBody = { model, max_tokens, messages, stream };
+  if (system)      anthropicBody.system      = system;
+  if (temperature != null) anthropicBody.temperature = temperature;
+  if (tools)       anthropicBody.tools       = tools;
+  if (tool_choice) anthropicBody.tool_choice = tool_choice;
 
-  let anthropicResp;
   try {
-    anthropicResp = await fetch('https://api.anthropic.com/v1/messages', {
+    const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -65,19 +52,22 @@ export default async function handler(req) {
       },
       body: JSON.stringify(anthropicBody),
     });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: 'Failed to reach Anthropic: ' + err.message }), {
-      status: 502, headers: { ...CORS, 'Content-Type': 'application/json' },
-    });
-  }
 
-  return new Response(anthropicResp.body, {
-    status: anthropicResp.status,
-    headers: {
-      ...CORS,
-      'Content-Type': anthropicResp.headers.get('content-type') || 'text/event-stream',
-      'Cache-Control': 'no-cache, no-store',
-      'X-Accel-Buffering': 'no',
-    },
-  });
+    // Stream the response back
+    res.setHeader('Content-Type', upstream.headers.get('content-type') || 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache, no-store');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.status(upstream.status);
+
+    const reader = upstream.body.getReader();
+    const write  = () => reader.read().then(({ done, value }) => {
+      if (done) { res.end(); return; }
+      res.write(Buffer.from(value));
+      write();
+    });
+    write();
+
+  } catch (err) {
+    return res.status(502).json({ error: 'Failed to reach Anthropic: ' + err.message });
+  }
 }
