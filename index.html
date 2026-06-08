@@ -670,7 +670,8 @@ textarea#prompt:focus{border-color:var(--border2)}
 
 <script>
 // ── OWNER CONFIG — replace with your Anthropic API key before deploying ──
-window.NEXAGENT_CONFIG_KEY = window.__NK || '';
+// Set NEXAGENT_PROXY_URL to your Render.com service URL after deploying render-proxy.js
+window.NEXAGENT_PROXY_URL = 'PASTE_YOUR_RENDER_URL_HERE';
 // Optional: set to your Cloudflare Worker URL to use server-side proxy
 // e.g. window.NEXAGENT_WORKER_URL = '';
 window.NEXAGENT_WORKER_URL = '';
@@ -1544,7 +1545,12 @@ async function runTask() {
     // Uses anthropic-dangerous-direct-browser-access header for browser access
     var SYSTEM = 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]';
 
-    var resp = await fetch('/api/chat', {
+    var PROXY = window.NEXAGENT_PROXY_URL || '';
+    if (!PROXY || PROXY === 'PASTE_YOUR_RENDER_URL_HERE') {
+      throw new Error('Proxy not configured. Deploy render-proxy.js to Render.com and set NEXAGENT_PROXY_URL.');
+    }
+
+    var resp = await fetch(PROXY, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
