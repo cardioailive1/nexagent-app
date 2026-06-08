@@ -179,6 +179,21 @@ textarea#prompt:focus{border-color:var(--border2)}
   html,body{overflow:auto}
   .app{height:auto;min-height:calc(100vh - 50px)}
 }
+
+/* ── INTEGRATION MODAL ── */
+.int-modal-overlay{position:fixed;inset:0;background:rgba(11,23,37,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.int-modal-overlay.open{display:flex;animation:fadeIn .18s ease}
+.int-modal-box{background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+.int-modal-top{padding:22px 24px 18px;border-bottom:1px solid rgba(0,200,255,.08)}
+.int-modal-body{padding:20px 24px}
+.int-modal-footer{padding:16px 24px;border-top:1px solid rgba(0,200,255,.08);display:flex;gap:10px}
+
+
+/* ── AGENT MODAL ── */
+.agl-modal-overlay{position:fixed;inset:0;background:rgba(11,23,37,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.agl-modal-overlay.open{display:flex;animation:fadeIn .18s ease}
+.agl-modal-box{background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto}
+
 </style>
 </head>
 <body>
@@ -1907,6 +1922,7 @@ function showAgentDetail(id) {
   s('aglModalMetrics', (a.metrics||[]).map(function(m){ return '<div class="agl-metric"><div class="agl-metric-num">'+m.n+'</div><div class="agl-metric-label">'+m.l+'</div></div>'; }).join(''), true);
   s('aglModalDeploy', a.deploy || '');
   m.classList.add('open');
+  m.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
 
@@ -1958,7 +1974,7 @@ function renderInts() {
 
   grid.onclick = function(e) {
     var card = e.target.closest('.i-card');
-    if (card) showIntDetail(card.dataset.id);
+    if (card) { showIntDetail(card.dataset.id); }
   };
 }
 
@@ -1975,7 +1991,9 @@ function showIntDetail(id) {
   s('intModalTriggers', (i.triggers||[]).map(function(t){ return '<li>'+t+'</li>'; }).join(''), true);
   s('intModalAuth', (i.auth||[]).map(function(a){ return '<span class="tag">'+a+'</span>'; }).join(''), true);
   s('intModalSetup', '⚡ ' + (i.setup || ''));
+  m.dataset.currentId = i.id;
   m.classList.add('open');
+  m.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 }
 
@@ -1991,8 +2009,18 @@ function connectInt(id) {
 
 // Close modal helpers
 function closeHistoryModal() { var m=document.getElementById('historyModal'); if(m) m.style.display='none'; }
-function closeAglModal() { var m=document.getElementById('aglModal'); if(m){m.classList.remove('open');document.body.style.overflow='';} }
-function closeIntModal() { var m=document.getElementById('intModal'); if(m){m.classList.remove('open');document.body.style.overflow='';} }
+window.connectIntegration = function() {
+  var m = document.getElementById('intModal');
+  var id = m && m.dataset.currentId;
+  if (id) connectInt(id);
+};
+
+function closeAglModal() { var m=document.getElementById('aglModal'); if(m){m.classList.remove('open');m.style.display='none';document.body.style.overflow='';} }
+function closeIntModal() { var m=document.getElementById('intModal'); if(m){m.classList.remove('open');m.style.display='none';document.body.style.overflow='';} }
+
+window.openIntModal = function(id) {
+  showIntDetail(id);
+};
 
 // Wire modal close buttons  
 document.addEventListener('click', function(e) {
