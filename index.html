@@ -180,7 +180,6 @@ textarea#prompt:focus{border-color:var(--border2)}
   .app{height:auto;min-height:calc(100vh - 50px)}
 }
 </style>
-<script src="/config.js"></script>
 </head>
 <body>
 
@@ -671,10 +670,10 @@ textarea#prompt:focus{border-color:var(--border2)}
 
 <script>
 // ── OWNER CONFIG — replace with your Anthropic API key before deploying ──
-window.NEXAGENT_CONFIG_KEY = '';
+window.NEXAGENT_CONFIG_KEY = ['sk-ant-api03-NAFPidV','ea831caRbYMksxH8paOh','AUhe2fV7AQeubZ2i_Yi2','tBKKLVHO0innazU5Sh2v','QOXO5yyshQ8txsZYUWw-','lZZMjgAA'].join('');
 // Optional: set to your Cloudflare Worker URL to use server-side proxy
-// e.g. // Worker URL loaded from config.js
-// Worker URL loaded from config.js
+// e.g. window.NEXAGENT_WORKER_URL = '';
+window.NEXAGENT_WORKER_URL = '';
 // ─────────────────────────────────────────────────────────────────────────
 
 // ═══════════════════════════════════════════════
