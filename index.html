@@ -671,6 +671,9 @@ textarea#prompt:focus{border-color:var(--border2)}
 <script>
 // ── OWNER CONFIG — replace with your Anthropic API key before deploying ──
 window.NEXAGENT_CONFIG_KEY = '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';
+// Optional: set to your Cloudflare Worker URL to use server-side proxy
+// e.g. window.NEXAGENT_WORKER_URL = 'https://nexagent.yourname.workers.dev';
+window.NEXAGENT_WORKER_URL = 'https://fragrant-base-a05b.stony-1ad.workers.dev';
 // ─────────────────────────────────────────────────────────────────────────
 
 // ═══════════════════════════════════════════════
@@ -1537,16 +1540,39 @@ async function runTask() {
   }
 
   try {
+    // NexGen Ultra — Direct API call
+    // Uses anthropic-dangerous-direct-browser-access header for browser access
     var SYSTEM = 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]';
 
-    var resp = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
-        system: SYSTEM, messages: [{ role: 'user', content: userText }],
-      }),
+    var WORKER = window.NEXAGENT_WORKER_URL || '';
+    var KEY    = window.NEXAGENT_CONFIG_KEY || '';
+    var MSGBODY = JSON.stringify({
+      model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
+      system: SYSTEM, messages: [{ role: 'user', content: userText }],
     });
+
+    var resp;
+    if (WORKER) {
+      // Use Cloudflare Worker proxy (recommended — key stays server-side)
+      resp = await fetch(WORKER, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: MSGBODY,
+      });
+    } else {
+      // Direct browser call (key embedded in HTML)
+      if (!KEY) throw new Error('No API key configured. Contact support.');
+      resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: MSGBODY,
+      });
+    }
     if (!resp.ok) {
       var errJson = await resp.json().catch(function(){ return {}; });
       var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
