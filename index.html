@@ -220,7 +220,11 @@ textarea#prompt:focus{border-color:var(--border2)}
 <div class="trial-bar" id="trialBar">
   <div class="trial-dot"></div>
   <span id="trialTxt" style="font-family:var(--fm);font-size:10px;color:var(--fg)"><strong style="color:var(--accent)">3 free tasks</strong> &mdash; no credit card required</span>
-  <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="padding:4px 12px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8.5px;font-weight:700;cursor:pointer">Upgrade $299/mo</button>
+  <div style="display:flex;gap:6px;align-items:center">
+    <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Starter $299</button>
+    <button onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')" style="padding:4px 10px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Pro $999 &#x2605;</button>
+    <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.15);color:var(--dim);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Enterprise</button>
+  </div>
 </div>
 
 <!-- MAIN APP -->
@@ -2138,11 +2142,14 @@ function selectGatePlan(plan) {
   _gatePlan = plan;
   var plans = {starter:'gPlanStarter', pro:'gPlanPro', enterprise:'gPlanEnt'};
   Object.keys(plans).forEach(function(p) {
-    var el = document.getElementById(plans[p]); if(!el) return;
+    var el = document.getElementById(plans[p]); if (!el) return;
     var active = p === plan;
-    el.style.background  = active ? 'rgba(0,200,255,.08)' : 'transparent';
-    el.style.borderColor = active ? 'rgba(0,200,255,.35)' : 'rgba(0,200,255,.1)';
-    el.querySelector('div').style.color = active ? '#00C8FF' : '#8BAFC8';
+    el.style.background  = active ? 'rgba(0,200,255,.1)' : 'transparent';
+    el.style.borderColor = active ? 'rgba(0,200,255,.5)' : 'rgba(0,200,255,.12)';
+    el.style.boxShadow   = active ? '0 0 14px rgba(0,200,255,.15)' : 'none';
+    // Update name div color
+    var nameDiv = el.querySelector('div div');
+    if (nameDiv) nameDiv.style.color = active ? '#00C8FF' : '#8BAFC8';
   });
 }
 
@@ -2654,20 +2661,25 @@ function wzDeployAgent() {
       </div>
       <!-- Plan selector -->
       <div style="margin-bottom:18px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Choose Plan</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-          <div id="gPlanStarter" onclick="selectGatePlan('starter')" style="padding:9px 6px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.35);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
-            <div style="font-family:monospace;font-size:9px;color:#00C8FF;font-weight:700">Starter</div>
-            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">$299/mo</div>
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Choose Your Plan</div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+
+          <div id="gPlanStarter" onclick="selectGatePlan('starter')" style="padding:11px 14px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.4);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between">
+            <div><div style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">Starter</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">50 tasks &middot; 4 agents &middot; 20 integrations</div></div>
+            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#00C8FF;font-weight:700">$299</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">/mo</div></div>
           </div>
-          <div id="gPlanPro" onclick="selectGatePlan('pro')" style="padding:9px 6px;background:transparent;border:1px solid rgba(0,200,255,.1);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
-            <div style="font-family:monospace;font-size:9px;color:#8BAFC8;font-weight:700">Pro</div>
-            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">$999/mo</div>
+
+          <div id="gPlanPro" onclick="selectGatePlan('pro')" style="padding:11px 14px;background:transparent;border:1px solid rgba(0,200,255,.12);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between;position:relative">
+            <div style="position:absolute;top:-9px;left:12px;background:#00C8FF;color:#04080E;font-family:monospace;font-size:7px;font-weight:700;padding:2px 8px;border-radius:8px">MOST POPULAR</div>
+            <div><div style="font-family:monospace;font-size:10px;color:#8BAFC8;font-weight:700">Professional</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">Unlimited &middot; All 40+ agents &middot; 200+ integrations</div></div>
+            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#8BAFC8;font-weight:700">$999</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">/mo</div></div>
           </div>
-          <div id="gPlanEnt" onclick="selectGatePlan('enterprise')" style="padding:9px 6px;background:transparent;border:1px solid rgba(0,200,255,.1);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
-            <div style="font-family:monospace;font-size:9px;color:#8BAFC8;font-weight:700">Enterprise</div>
-            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">Custom</div>
+
+          <div id="gPlanEnt" onclick="selectGatePlan('enterprise')" style="padding:11px 14px;background:transparent;border:1px solid rgba(0,200,255,.12);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between">
+            <div><div style="font-family:monospace;font-size:10px;color:#8BAFC8;font-weight:700">Enterprise</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">Private cloud &middot; HIPAA/SOC2 &middot; Dedicated support</div></div>
+            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#8BAFC8;font-weight:700">Custom</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">pricing</div></div>
           </div>
+
         </div>
       </div>
       <button id="gateBtnUp" onclick="gateSignUp()" style="width:100%;padding:12px;background:#00C8FF;color:#04080E;border:none;border-radius:8px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Account &amp; Start Free Trial &#x2192;</button>
