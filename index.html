@@ -686,7 +686,9 @@ textarea#prompt:focus{border-color:var(--border2)}
 
 <script>
 // ── SUPABASE AUTH CHECK ────────────────────────────────
-var _supaApp = supabase.createClient('https://bvwgqafekmfqpylsrteu.supabase.co', 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis');
+// Single shared Supabase instance
+var _supa = window._supaInst || (window._supaInst = supabase.createClient('https://bvwgqafekmfqpylsrteu.supabase.co', 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis'));
+var _supaApp = _supa;
 var _currentUser = null;
 
 async function checkAuth() {
@@ -1791,7 +1793,7 @@ function dlWord() {
   var body = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/\n\n/g,'</p><p>');
-  var html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:10pt;text-transform:uppercase}</style></head><body><h1>NexAgent Output</h1><p><em>Task: ' + esc(_query) + '</em></p><p>' + body + '</p></body></html>';
+  var html = '<html><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:10pt;text-transform:uppercase}</style></head><body><h1>NexAgent Output</h1><p><em>Task: ' + esc(_query) + '</em></p><p>' + body + '</p></body></html>';
   dlBlob(html, 'nexagent-' + Date.now() + '.doc', 'application/msword');
   showToast('Word document downloaded ✓');
 }
@@ -1823,7 +1825,7 @@ function showHistory() {
     modal = document.createElement('div');
     modal.id = 'historyModal';
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(11,23,37,.95);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px';
-    modal.onclick = function(e){ if(e.target===modal) modal.style.display='none'; };
+    modal.onclick = function(e){ if(e.target===modal) closeHistoryModal(); };
     document.body.appendChild(modal);
   }
   loadSaved();
@@ -1851,11 +1853,13 @@ function showHistory() {
   modal.style.display = 'flex';
 }
 
+function closeHistoryModal() { var m=document.getElementById('historyModal'); if(m) m.style.display='none'; }
+
 function loadHistory(i) {
   var s = _savedOutputs[parseInt(i)]; if (!s) return;
   _output = s.content; _query = s.query;
   showOutput();
-  document.getElementById('historyModal').style.display = 'none';
+  closeHistoryModal();
   showToast('Output loaded ✓');
 }
 
@@ -1934,13 +1938,12 @@ function renderAgents() {
       + '<div class="a-icon">' + a.icon + '</div>'
       + '<div class="a-name">' + a.name + '</div>'
       + '<div class="a-role">' + a.role + '</div>'
-      + '<div class="a-desc">' + (a.desc||'').slice(0,75) + '…</div>'
+      + '<div class="a-desc">' + (a.desc||'').slice(0,75) + '\u2026</div>'
       + '<div class="a-tags">' + (a.tags||[]).slice(0,3).map(function(t){ return '<span class="a-tag">'+t+'</span>'; }).join('') + '</div>'
       + '<button class="a-deploy" data-id="' + a.id + '">Deploy &#x26A1;</button>'
     + '</div>';
   }).join('');
 
-  // Event delegation
   grid.onclick = function(e) {
     var deploy = e.target.closest('.a-deploy');
     if (deploy) { deployAgent(deploy.dataset.id); return; }
@@ -1956,7 +1959,7 @@ function showAgentDetail(id) {
   var icon = document.getElementById('aglModalIcon');
   if (icon) { icon.textContent = a.icon; icon.style.background = a.bg || 'var(--adim)'; }
   s('aglModalName', a.name);
-  s('aglModalMeta', a.cat + ' · ' + a.role + '  ·  ' + (a.status === 'live' ? '✓ Live' : '⚡ Beta'));
+  s('aglModalMeta', a.cat + ' \u00b7 ' + a.role + '  \u00b7  ' + (a.status === 'live' ? '\u2713 Live' : '\u26A1 Beta'));
   s('aglModalDesc', a.desc);
   s('aglModalCaps', (a.caps||[]).map(function(c){ return '<li>'+c+'</li>'; }).join(''), true);
   s('aglModalInts', (a.ints||[]).map(function(i){ return '<li>'+i+'</li>'; }).join(''), true);
@@ -1975,7 +1978,7 @@ function deployAgent(id) {
   var prompt = 'Run the ' + a.name + ' (' + a.role + '): ' + a.desc + '. Demonstrate its full capabilities including: ' + (a.caps||[]).slice(0,3).join(', ') + '.';
   var inp = document.getElementById('prompt');
   if (inp) { inp.value = prompt; inp.focus(); }
-  showToast(a.icon + ' ' + a.name + ' loaded — press Run to deploy');
+  showToast(a.icon + ' ' + a.name + ' loaded \u2014 press Run to deploy');
 }
 
 // ── INTEGRATIONS PANEL ─────────────────────────
@@ -2032,7 +2035,7 @@ function showIntDetail(id) {
   s('intModalActions', (i.actions||[]).map(function(a){ return '<li>'+a+'</li>'; }).join(''), true);
   s('intModalTriggers', (i.triggers||[]).map(function(t){ return '<li>'+t+'</li>'; }).join(''), true);
   s('intModalAuth', (i.auth||[]).map(function(a){ return '<span class="tag">'+a+'</span>'; }).join(''), true);
-  s('intModalSetup', '⚡ ' + (i.setup || ''));
+  s('intModalSetup', '\u26A1 ' + (i.setup || ''));
   m.dataset.currentId = i.id;
   m.classList.add('open');
   m.style.display = 'flex';
@@ -2046,31 +2049,317 @@ function connectInt(id) {
   var prompt = 'Use the ' + i.name + ' integration to ' + (i.actions||[]).slice(0,2).join(' and ') + '. Show a complete real-world example with actual data retrieval, analysis, and actionable output.';
   var inp = document.getElementById('prompt');
   if (inp) { inp.value = prompt; inp.focus(); }
-  showToast(i.icon + ' ' + i.name + ' loaded — press Run');
+  showToast(i.icon + ' ' + i.name + ' loaded \u2014 press Run');
 }
 
-// Close modal helpers
-function closeHistoryModal() { var m=document.getElementById('historyModal'); if(m) m.style.display='none'; }
 window.connectIntegration = function() {
   var m = document.getElementById('intModal');
   var id = m && m.dataset.currentId;
   if (id) connectInt(id);
 };
 
+window.openIntModal = function(id) { showIntDetail(id); };
+
 function closeAglModal() { var m=document.getElementById('aglModal'); if(m){m.classList.remove('open');m.style.display='none';document.body.style.overflow='';} }
 function closeIntModal() { var m=document.getElementById('intModal'); if(m){m.classList.remove('open');m.style.display='none';document.body.style.overflow='';} }
 
-window.openIntModal = function(id) {
-  showIntDetail(id);
-};
-
-// Wire modal close buttons  
 document.addEventListener('click', function(e) {
   if (e.target.closest('#aglModal') === document.getElementById('aglModal')) closeAglModal();
   if (e.target.closest('#intModal') === document.getElementById('intModal')) closeIntModal();
 });
 document.addEventListener('keydown', function(e) { if(e.key==='Escape'){ closeAglModal(); closeIntModal(); closePanel(); } });
 
+// ── AUTH GATE JS ──────────────────────────────────────
+var _gateSupa = window._supaInst || (window._supaInst = supabase.createClient('https://bvwgqafekmfqpylsrteu.supabase.co', 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis'));
+var _gatePlan = 'starter';
+
+_gateSupa.auth.getSession().then(function(result) {
+  if (result.data && result.data.session) {
+    hideGate(result.data.session.user);
+  }
+});
+
+function hideGate(user) {
+  var gate = document.getElementById('authGate');
+  if (gate) { gate.style.opacity = '0'; gate.style.transition = 'opacity .3s'; setTimeout(function(){ gate.style.display = 'none'; }, 300); }
+  if (user) {
+    var name = (user.user_metadata && user.user_metadata.full_name) ? user.user_metadata.full_name.split(' ')[0] : user.email.split('@')[0];
+    var trialTxt = document.getElementById('trialTxt');
+    if (trialTxt) trialTxt.innerHTML = '<strong style="color:var(--accent)">Welcome back, ' + name + '</strong> &mdash; NexGen Ultra ready';
+  }
+}
+
+function gateTab(tab) {
+  var fi = document.getElementById('gateFormIn');
+  var fu = document.getElementById('gateFormUp');
+  var ti = document.getElementById('gateTabIn');
+  var tu = document.getElementById('gateTabUp');
+  if (tab === 'in') {
+    fi.style.display = 'block'; fu.style.display = 'none';
+    ti.style.color = '#00C8FF'; ti.style.borderBottomColor = '#00C8FF';
+    tu.style.color = '#4A6C84'; tu.style.borderBottomColor = 'transparent';
+  } else {
+    fi.style.display = 'none'; fu.style.display = 'block';
+    tu.style.color = '#00C8FF'; tu.style.borderBottomColor = '#00C8FF';
+    ti.style.color = '#4A6C84'; ti.style.borderBottomColor = 'transparent';
+  }
+}
+
+function gateErr(id, msg) { var e=document.getElementById(id); if(e){e.textContent=msg;e.style.display='block';} }
+function gateClearErr(id) { var e=document.getElementById(id); if(e) e.style.display='none'; }
+function gateLoading(id, on) { var b=document.getElementById(id); if(b){b.disabled=on;b.style.opacity=on?'.5':'1';} }
+
+function selectGatePlan(plan) {
+  _gatePlan = plan;
+  var plans = {starter:'gPlanStarter', pro:'gPlanPro', enterprise:'gPlanEnt'};
+  Object.keys(plans).forEach(function(p) {
+    var el = document.getElementById(plans[p]); if(!el) return;
+    var active = p === plan;
+    el.style.background  = active ? 'rgba(0,200,255,.08)' : 'transparent';
+    el.style.borderColor = active ? 'rgba(0,200,255,.35)' : 'rgba(0,200,255,.1)';
+    el.querySelector('div').style.color = active ? '#00C8FF' : '#8BAFC8';
+  });
+}
+
+async function gateSignIn() {
+  gateClearErr('gateErrIn');
+  var email = (document.getElementById('giEmail')||{}).value||'';
+  var pass  = (document.getElementById('giPass') ||{}).value||'';
+  if (!email || !email.includes('@')) { gateErr('gateErrIn','Enter a valid email'); return; }
+  if (!pass)                          { gateErr('gateErrIn','Enter your password');  return; }
+  gateLoading('gateBtnIn', true);
+  var r = await _gateSupa.auth.signInWithPassword({email:email, password:pass});
+  gateLoading('gateBtnIn', false);
+  if (r.error) { gateErr('gateErrIn', r.error.message || 'Sign in failed'); return; }
+  hideGate(r.data.user);
+}
+
+async function gateSignUp() {
+  gateClearErr('gateErrUp');
+  var name  = (document.getElementById('guName') ||{}).value||'';
+  var email = (document.getElementById('guEmail')||{}).value||'';
+  var pass  = (document.getElementById('guPass') ||{}).value||'';
+  if (!name.trim())                   { gateErr('gateErrUp','Enter your full name');   return; }
+  if (!email||!email.includes('@'))   { gateErr('gateErrUp','Enter a valid email');    return; }
+  if (!pass||pass.length<8)           { gateErr('gateErrUp','Password min 8 characters'); return; }
+  gateLoading('gateBtnUp', true);
+  var r = await _gateSupa.auth.signUp({
+    email: email, password: pass,
+    options: { data: {full_name:name.trim(), plan:_gatePlan}, emailRedirectTo:'https://nxagent.studio' }
+  });
+  gateLoading('gateBtnUp', false);
+  if (r.error) { gateErr('gateErrUp', r.error.message||'Sign up failed'); return; }
+  var stripe = {
+    starter:    'https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04',
+    pro:        'https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05',
+    enterprise: 'https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06',
+  };
+  if (_gatePlan === 'enterprise') {
+    window.open('mailto:hello@corverxis.ai?subject=NexAgent Enterprise', '_blank');
+  } else {
+    window.open(stripe[_gatePlan]||stripe.starter, '_blank');
+  }
+  hideGate(r.data.user);
+  showToast('\u2713 Account created! Check your email to verify.');
+}
+
+
 </script>
+
+<!-- ── AUTH GATE ── -->
+<div id="authGate" style="position:fixed;inset:0;background:#080F18;z-index:99999;display:flex;overflow-y:auto">
+
+  <!-- LEFT PANEL — Branding & Marketing -->
+  <div style="flex:1;min-width:0;background:linear-gradient(145deg,#0B1725 0%,#0D1F35 50%,#071018 100%);display:flex;flex-direction:column;justify-content:center;padding:48px 52px;position:relative;overflow:hidden">
+
+    <!-- Background glow -->
+    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,200,255,.08) 0%,transparent 70%);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(0,153,204,.06) 0%,transparent 70%);pointer-events:none"></div>
+
+    <!-- Logo -->
+    <div style="margin-bottom:36px">
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMjYwIDcwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIyNjAiIGhlaWdodD0iNzAiIHJ4PSIxMiIgZmlsbD0iIzBCMTcyNSIvPgogIDxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSIyNTgiIGhlaWdodD0iNjgiIHJ4PSIxMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDAsMjAwLDI1NSwwLjI1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBJY29uIC0tPgogIDxjaXJjbGUgY3g9IjM1IiBjeT0iMzUiIHI9IjIyIiBmaWxsPSJyZ2JhKDAsMjAwLDI1NSwwLjEpIiBzdHJva2U9IiMwMEM4RkYiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHBhdGggZD0iTTI2IDM1IEwzNSAyNSBMNDQgMzUgTDM1IDQ1IFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwQzhGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iNCIgZmlsbD0iIzAwQzhGRiIvPgogIDwhLS0gVGV4dCAtLT4KICA8dGV4dCB4PSI2NyIgeT0iMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjRkZGRkZGIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+Q29ydmVyeGlzPC90ZXh0PgogIDx0ZXh0IHg9IjY3IiB5PSI1MiIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMwMEM4RkYiIGxldHRlci1zcGFjaW5nPSIxLjUiPlRFQ0hOT0xPR0lFUzwvdGV4dD4KPC9zdmc+" style="height:44px;object-fit:contain" alt="Corverxis Technologies"/>
+      <div style="font-family:monospace;font-size:8px;color:rgba(0,200,255,.6);letter-spacing:3px;text-transform:uppercase;margin-top:8px">NexAgent Studio &middot; v2.0</div>
+    </div>
+
+    <!-- Headline -->
+    <div style="font-family:'Playfair Display',serif;font-size:32px;color:#EEF4F8;line-height:1.25;letter-spacing:-.5px;margin-bottom:16px">
+      Your AI Workforce,<br><em style="color:#00C8FF">Live Right Now</em>
+    </div>
+    <div style="font-size:14px;color:#8BAFC8;line-height:1.75;margin-bottom:40px;max-width:380px">
+      NexAgent Studio deploys 4 specialist agents — Research, Analysis, Action, and Quality — that work together to deliver enterprise-grade outputs in seconds.
+    </div>
+
+    <!-- Marketing highlights -->
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:32px">
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F916;</div>
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">40+ Pre-Built Specialist Agents</div>
+          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Deploy instantly across every function — Research, Sales, Legal, Clinical, Finance, Engineering and more. No setup required.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F50D;</div>
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">4-Agent Pipeline</div>
+          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Research, Analysis, Action &amp; Quality agents working in parallel — streaming live enterprise-grade results.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F517;</div>
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">200+ Native Integrations</div>
+          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Salesforce, Slack, Jira, SAP, AWS and 195+ more — one-click connections to your entire stack.</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F512;</div>
+        <div>
+          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">Enterprise-Grade Security</div>
+          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">SOC 2 compliant, HIPAA ready, GDPR aligned. Your data stays yours.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent category pills -->
+    <div style="margin-bottom:32px">
+      <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Agent Categories</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F52C; Research</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4CA; Analytics</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x2696;&#xFE0F; Compliance</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3E5; Healthcare</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4B0; Finance</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4BC; Sales &amp; CRM</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4CB; Marketing</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F477; HR &amp; People</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3DB;&#xFE0F; Government</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x2699;&#xFE0F; Engineering</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3ED; Manufacturing</span>
+        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F9E0; AI &amp; ML</span>
+      </div>
+    </div>
+
+    <!-- Social proof -->
+    <div style="border-top:1px solid rgba(0,200,255,.08);padding-top:24px">
+      <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Trusted by teams at</div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Goldman Sachs</span>
+        <span style="color:#4A6C84">&middot;</span>
+        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Johns Hopkins</span>
+        <span style="color:#4A6C84">&middot;</span>
+        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Siemens Energy</span>
+        <span style="color:#4A6C84">&middot;</span>
+        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">US Dept. HHS</span>
+      </div>
+    </div>
+
+    <!-- Metric pills -->
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
+        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">40+</span>
+        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> Agents</span>
+      </div>
+      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
+        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">200+</span>
+        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> Integrations</span>
+      </div>
+      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
+        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">3 free</span>
+        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> tasks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL — Auth Form -->
+  <div style="width:420px;flex-shrink:0;background:#0D1B2E;border-left:1px solid rgba(0,200,255,.1);display:flex;flex-direction:column;justify-content:center;padding:40px 36px;overflow-y:auto">
+
+    <div style="margin-bottom:28px">
+      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#EEF4F8;margin-bottom:6px">Welcome</div>
+      <div style="font-family:monospace;font-size:9px;color:#4A6C84;letter-spacing:1px">Sign in or create your free account</div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid rgba(0,200,255,.1);margin-bottom:24px">
+      <button id="gateTabIn" onclick="gateTab('in')" style="flex:1;padding:11px;background:transparent;border:none;font-family:monospace;font-size:10px;color:#00C8FF;cursor:pointer;border-bottom:2px solid #00C8FF;transition:all .2s">Sign In</button>
+      <button id="gateTabUp" onclick="gateTab('up')" style="flex:1;padding:11px;background:transparent;border:none;font-family:monospace;font-size:10px;color:#4A6C84;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s">Create Account</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="gateFormIn">
+      <div id="gateErrIn" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:6px;padding:8px 12px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px"></div>
+      <div style="margin-bottom:14px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Email</div>
+        <input id="giEmail" type="email" placeholder="you@company.com" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'" onkeydown="if(event.key==='Enter')gateSignIn()"/>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Password</div>
+        <input id="giPass" type="password" placeholder="••••••••" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'" onkeydown="if(event.key==='Enter')gateSignIn()"/>
+      </div>
+      <button id="gateBtnIn" onclick="gateSignIn()" style="width:100%;padding:12px;background:#00C8FF;color:#04080E;border:none;border-radius:8px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Sign In &#x2192;</button>
+      <div style="text-align:center;font-family:monospace;font-size:9px;color:#4A6C84">No account? <span onclick="gateTab('up')" style="color:#00C8FF;cursor:pointer">Create one free</span></div>
+    </div>
+
+    <!-- Create Account Form -->
+    <div id="gateFormUp" style="display:none">
+      <div id="gateErrUp" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:6px;padding:8px 12px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px"></div>
+      <div style="margin-bottom:12px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Full Name</div>
+        <input id="guName" type="text" placeholder="Sampson Kontomah" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Work Email</div>
+        <input id="guEmail" type="email" placeholder="you@company.com" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
+      </div>
+      <div style="margin-bottom:14px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Password (min 8 chars)</div>
+        <input id="guPass" type="password" placeholder="••••••••" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
+      </div>
+      <!-- Plan selector -->
+      <div style="margin-bottom:18px">
+        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Choose Plan</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+          <div id="gPlanStarter" onclick="selectGatePlan('starter')" style="padding:9px 6px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.35);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
+            <div style="font-family:monospace;font-size:9px;color:#00C8FF;font-weight:700">Starter</div>
+            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">$299/mo</div>
+          </div>
+          <div id="gPlanPro" onclick="selectGatePlan('pro')" style="padding:9px 6px;background:transparent;border:1px solid rgba(0,200,255,.1);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
+            <div style="font-family:monospace;font-size:9px;color:#8BAFC8;font-weight:700">Pro</div>
+            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">$999/mo</div>
+          </div>
+          <div id="gPlanEnt" onclick="selectGatePlan('enterprise')" style="padding:9px 6px;background:transparent;border:1px solid rgba(0,200,255,.1);border-radius:7px;text-align:center;cursor:pointer;transition:all .15s">
+            <div style="font-family:monospace;font-size:9px;color:#8BAFC8;font-weight:700">Enterprise</div>
+            <div style="font-family:monospace;font-size:7.5px;color:#4A6C84;margin-top:2px">Custom</div>
+          </div>
+        </div>
+      </div>
+      <button id="gateBtnUp" onclick="gateSignUp()" style="width:100%;padding:12px;background:#00C8FF;color:#04080E;border:none;border-radius:8px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Account &amp; Start Free Trial &#x2192;</button>
+      <div style="text-align:center;font-family:monospace;font-size:9px;color:#4A6C84;margin-bottom:10px">Already have an account? <span onclick="gateTab('in')" style="color:#00C8FF;cursor:pointer">Sign in</span></div>
+      <div style="text-align:center;font-family:monospace;font-size:8px;color:#4A6C84">3 free tasks &middot; no card required &middot; cancel anytime</div>
+    </div>
+
+    <!-- Trust row -->
+    <div style="display:flex;justify-content:center;gap:14px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,200,255,.07);flex-wrap:wrap">
+      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x1F512; SOC 2</span>
+      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x2713; GDPR</span>
+      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x26A1; Instant Access</span>
+      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x2713; Cancel Anytime</span>
+    </div>
+
+    <div style="text-align:center;margin-top:16px">
+      <a href="nexagent.html" style="font-family:monospace;font-size:8px;color:#4A6C84;text-decoration:none">&#x2190; Back to NexAgent</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- Mobile: hide left panel on small screens -->
+<style>
+@media(max-width:768px){
+  #authGate > div:first-child { display:none !important; }
+  #authGate > div:last-child  { width:100% !important; border-left:none !important; }
+}
+</style>
 </body>
 </html>
