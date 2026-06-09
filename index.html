@@ -253,6 +253,11 @@ textarea#prompt:focus{border-color:var(--border2)}
         <div><div style="font-weight:600">200+ Integrations</div><div style="font-size:7.5px;color:var(--muted)">Browse &amp; connect</div></div>
         <span class="sb-action-count">200+</span>
       </button>
+      <button class="sb-action" onclick="openConnectWizard()" style="border-color:rgba(0,200,255,.2);background:rgba(0,200,255,.04)">
+        <span style="font-size:16px">&#x1F50C;</span>
+        <div><div style="font-weight:600;color:var(--accent)">Connect Your System</div><div style="font-size:7.5px;color:var(--muted)">Step-by-step guide</div></div>
+        <span style="font-family:var(--fm);font-size:7px;background:rgba(0,200,255,.15);border:1px solid rgba(0,200,255,.3);color:var(--accent);padding:2px 6px;border-radius:8px">New</span>
+      </button>
     </div>
     <!-- Quick tasks -->
     <div class="sb-section">
@@ -1547,6 +1552,14 @@ async function runTask() {
   if (!userText) return;
   if (!checkTrial()) return;
 
+  // Check we're on an allowed origin for direct browser API access
+  var __origin = window.location.hostname;
+  var __allowed = ['nxagent.studio', 'localhost', '127.0.0.1'];
+  var __isAllowed = __allowed.some(function(h){ return __origin === h || __origin.endsWith('.' + h); });
+  if (!__isAllowed) {
+    addMsg('<div class="msg-row"><div class="av" style="background:rgba(255,184,77,.15)">&#x26A0;</div><div><div class="agent-lbl" style="color:#FFB84D">Notice</div><div class="bubble sys">You are accessing NexAgent from <strong>' + __origin + '</strong>. For best results, please use <a href="https://nxagent.studio" target="_blank" style="color:var(--accent)">nxagent.studio</a>. Direct API access may be restricted on other domains.</div></div></div>');
+  }
+
   _running = true;
   document.getElementById('prompt').value = '';
   var btn = document.getElementById('runBtn');
@@ -1602,19 +1615,31 @@ async function runTask() {
     // Uses anthropic-dangerous-direct-browser-access header for browser access
     var SYSTEM = 'You are NexGen Ultra by Corverxis Technologies. Respond as a 4-agent system using EXACTLY these headers:\n\n## RESEARCH_AGENT\n[Research findings - 2-3 paragraphs]\n\n## ANALYSIS_AGENT\n[Analysis, key insights, strategic implications]\n\n## ACTION_AGENT\n[The complete deliverable - full report, plan, document or code. Be thorough.]\n\n## QUALITY_AGENT\n[Review summary, confidence score e.g. 94%, strengths, 2-3 improvements]';
 
-    var resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-api-key': window.__K,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
-        system: SYSTEM, messages: [{ role: 'user', content: userText }],
-      }),
+    // Build request
+    var __key = window.__K;
+    if (!__key) throw new Error('API key not configured. Please contact support.');
+
+    var __body = JSON.stringify({
+      model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
+      system: SYSTEM, messages: [{ role: 'user', content: userText }],
     });
+
+    var resp;
+    try {
+      resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': __key,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: __body,
+      });
+    } catch(fetchErr) {
+      // CORS or network error — show helpful message
+      throw new Error('Network error: Unable to reach the AI service. This may be a CORS issue. Please ensure you are accessing the app from nxagent.studio and try again. (' + fetchErr.message + ')');
+    }
     if (!resp.ok) {
       var errJson = await resp.json().catch(function(){ return {}; });
       var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
@@ -1785,7 +1810,7 @@ function dlPdf() {
     + mdRender(t) + '</body></html>');
   w.document.close(); w.focus();
   setTimeout(function(){ w.print(); }, 500);
-  showToast('PDF dialog opened ✓');
+  showToast('PDF dialog opened \u2713');
 }
 
 function dlWord() {
@@ -2164,7 +2189,318 @@ async function gateSignUp() {
 }
 
 
+
+// ── CONNECTION WIZARD ─────────────────────────────────
+
+var WZ_SYSTEMS = [
+  { id:'salesforce', icon:'☁️', name:'Salesforce', cat:'CRM', auth:'oauth',
+    steps:[
+      'Log in to your Salesforce account',
+      'Go to Setup → Apps → App Manager → New Connected App',
+      'Enable OAuth Settings → add callback URL: `https://nxagent.studio/callback`',
+      'Select scopes: api, refresh_token, offline_access',
+      'Save and copy your Consumer Key and Consumer Secret'
+    ],
+    fields:[{label:'Instance URL', id:'sf_url', placeholder:'https://yourorg.salesforce.com'},{label:'Consumer Key', id:'sf_key', placeholder:'3MVG9...'},{label:'Consumer Secret', id:'sf_secret', placeholder:'your_secret', type:'password'}],
+    agents:['Sales Intelligence Agent','Deal Coach Agent','Customer Insights Agent'],
+    testPrompt:'Use the Salesforce integration to list my top 5 open opportunities by value and draft a follow-up strategy for each.'
+  },
+  { id:'slack', icon:'💬', name:'Slack', cat:'Collaboration', auth:'oauth',
+    steps:[
+      'Go to api.slack.com/apps → Create New App → From Scratch',
+      'Name it NexAgent and select your workspace',
+      'Go to OAuth & Permissions → add scopes: channels:read, chat:write, users:read',
+      'Click Install to Workspace → Allow',
+      'Copy the Bot User OAuth Token (starts with xoxb-)'
+    ],
+    fields:[{label:'Bot OAuth Token', id:'slack_token', placeholder:'xoxb-...', type:'password'},{label:'Workspace Name', id:'slack_workspace', placeholder:'yourcompany'}],
+    agents:['Email Agent','Meeting Agent','Planning Agent'],
+    testPrompt:'Use the Slack integration to summarise the last 10 messages in my most active channel and identify any action items.'
+  },
+  { id:'postgres', icon:'🐘', name:'PostgreSQL', cat:'Database', auth:'credentials',
+    steps:[
+      'Ensure your PostgreSQL server allows remote connections (check `pg_hba.conf`)',
+      'Create a read-only user for NexAgent: CREATE USER nexagent WITH PASSWORD yourpass;',
+      'Grant access: `GRANT SELECT ON ALL TABLES IN SCHEMA public TO nexagent;`',
+      'Note your host, port (default 5432), and database name',
+      'If using cloud (RDS, Supabase, etc.) whitelist NexAgent IP or use connection pooling'
+    ],
+    fields:[{label:'Host', id:'pg_host', placeholder:'db.yourcompany.com'},{label:'Port', id:'pg_port', placeholder:'5432'},{label:'Database', id:'pg_db', placeholder:'production'},{label:'Username', id:'pg_user', placeholder:'nexagent'},{label:'Password', id:'pg_pass', placeholder:'••••••••', type:'password'}],
+    agents:['Data Analysis Agent','Financial Analysis Agent','Campaign Analyst Agent'],
+    testPrompt:'Use the PostgreSQL database to show me the top 10 records by revenue from the last 30 days with a summary of trends.'
+  },
+  { id:'aws', icon:'🟠', name:'AWS', cat:'Cloud', auth:'iam',
+    steps:[
+      'Go to AWS Console → IAM → Users → Add User',
+      'Name it nexagent-readonly, select Programmatic access',
+      'Attach policy: ReadOnlyAccess (or custom least-privilege policy)',
+      'Complete creation and download the CSV with Access Key ID and Secret',
+      'Note your default AWS Region (e.g. us-east-1)'
+    ],
+    fields:[{label:'Access Key ID', id:'aws_key', placeholder:'AKIAIOSFODNN7EXAMPLE'},{label:'Secret Access Key', id:'aws_secret', placeholder:'wJalrXUtnFEMI/K7MDENG...', type:'password'},{label:'Region', id:'aws_region', placeholder:'us-east-1'}],
+    agents:['IT Ops Agent','Security Agent','Data Pipeline Agent'],
+    testPrompt:'Use the AWS integration to check CloudWatch for any alarms fired in the last 24 hours and summarise infrastructure health.'
+  },
+  { id:'hubspot', icon:'🧡', name:'HubSpot', cat:'CRM', auth:'apikey',
+    steps:[
+      'Log in to HubSpot → click your account name → Profile & Preferences',
+      'Go to Integrations → Private Apps → Create a private app',
+      'Name it NexAgent and add scopes: crm.objects.contacts.read, crm.objects.deals.read',
+      'Click Create App and copy the Access Token',
+      'The token starts with pat-'
+    ],
+    fields:[{label:'Access Token', id:'hs_token', placeholder:'pat-eu1-...', type:'password'},{label:'Portal ID', id:'hs_portal', placeholder:'12345678'}],
+    agents:['Sales Intelligence Agent','Content Marketing Agent','Email Agent'],
+    testPrompt:'Use the HubSpot integration to analyse my sales pipeline, identify deals at risk, and draft personalised follow-up messages for the top 3.'
+  },
+  { id:'jira', icon:'📋', name:'Jira', cat:'Project Management', auth:'apikey',
+    steps:[
+      'Log in to Atlassian → go to id.atlassian.com/manage-profile/security/api-tokens',
+      'Click Create API Token → name it NexAgent',
+      'Copy the token immediately (it won&#39;t show again)',
+      'Your Jira base URL is: https://yourorg.atlassian.net',
+      'Use your Atlassian email address as the username'
+    ],
+    fields:[{label:'Jira Base URL', id:'jira_url', placeholder:'https://yourorg.atlassian.net'},{label:'Email', id:'jira_email', placeholder:'you@company.com'},{label:'API Token', id:'jira_token', placeholder:'ATATT3x...', type:'password'}],
+    agents:['Planning Agent','Code Review Agent','IT Ops Agent'],
+    testPrompt:'Use the Jira integration to show all open critical bugs, group them by component, and draft a sprint plan to resolve them this week.'
+  },
+  { id:'snowflake', icon:'❄️', name:'Snowflake', cat:'Data Warehouse', auth:'credentials',
+    steps:[
+      'Log in to Snowflake → go to Admin → Users & Roles',
+      'Create a new user: NEXAGENT_USER with SYSADMIN or a custom read-only role',
+      'Note your Account Identifier (found in Admin → Accounts)',
+      'Format: orgname-accountname (e.g. myorg-prod123)',
+      'Ensure the user has SELECT privileges on the schemas you want to query'
+    ],
+    fields:[{label:'Account Identifier', id:'sf2_account', placeholder:'myorg-prod123'},{label:'Username', id:'sf2_user', placeholder:'NEXAGENT_USER'},{label:'Password', id:'sf2_pass', placeholder:'••••••••', type:'password'},{label:'Warehouse', id:'sf2_wh', placeholder:'COMPUTE_WH'},{label:'Database', id:'sf2_db', placeholder:'ANALYTICS'}],
+    agents:['Data Analysis Agent','Financial Analysis Agent','Campaign Analyst Agent'],
+    testPrompt:'Use the Snowflake integration to query our analytics database, find the top performing products by revenue this quarter, and generate an executive summary.'
+  },
+  { id:'github', icon:'🐙', name:'GitHub', cat:'Engineering', auth:'apikey',
+    steps:[
+      'Log in to GitHub → click your avatar → Settings',
+      'Go to Developer Settings → Personal Access Tokens → Tokens (classic)',
+      'Click Generate new token → name it NexAgent',
+      'Select scopes: repo, read:org, read:user',
+      'Click Generate token and copy it immediately'
+    ],
+    fields:[{label:'Personal Access Token', id:'gh_token', placeholder:'ghp_...', type:'password'},{label:'Organisation (optional)', id:'gh_org', placeholder:'your-org-name'}],
+    agents:['Code Review Agent','Documentation Agent','Test Generation Agent'],
+    testPrompt:'Use the GitHub integration to review all open pull requests, identify any with security vulnerabilities or failing tests, and draft review comments.'
+  },
+];
+
+var _wzCurrentSystem = null;
+var _wzStep = 1;
+
+function openConnectWizard() {
+  var m = document.getElementById('connectWizard');
+  if (m) { m.style.display = 'flex'; _wzStep = 1; wzBuildGrid(); wzShowPage(1); }
+}
+
+function closeConnectWizard() {
+  var m = document.getElementById('connectWizard');
+  if (m) m.style.display = 'none';
+}
+
+function wzBuildGrid() {
+  var grid = document.getElementById('wzSystemGrid');
+  if (!grid) return;
+  grid.innerHTML = WZ_SYSTEMS.map(function(s) {
+    return '<div class="wz-card" data-id="' + s.id + '" style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--panel);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s">'
+      + '<span style="font-size:22px">' + s.icon + '</span>'
+      + '<div><div style="font-size:12.5px;font-weight:600;color:var(--fg)">' + s.name + '</div>'
+      + '<div style="font-family:var(--fm);font-size:8px;color:var(--muted)">' + s.cat + '</div></div>'
+      + '</div>';
+  }).join('');
+  grid.onclick = function(e) {
+    var card = e.target.closest('.wz-card');
+    if (card) wzSelectSystem(card.dataset.id);
+  };
+}
+function wzSelectSystem(id) {
+  _wzCurrentSystem = WZ_SYSTEMS.find(function(s){ return s.id === id; });
+  document.querySelectorAll('.wz-card').forEach(function(el) {
+    var active = el.dataset.id === id;
+    el.style.borderColor    = active ? 'rgba(0,200,255,.5)' : '';
+    el.style.background     = active ? 'rgba(0,200,255,.06)' : '';
+    if (active) el.classList.add('selected'); else el.classList.remove('selected');
+  });
+  var btn = document.getElementById('wzNextBtn1');
+  if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+}
+
+function wzShowPage(n) {
+  _wzStep = n;
+  [1,2,3].forEach(function(i) {
+    var pg = document.getElementById('wzPage' + i);
+    if (pg) pg.style.display = i === n ? 'block' : 'none';
+  });
+  // Update step indicators
+  [1,2,3].forEach(function(i) {
+    var stepEl = document.getElementById('wz-step-' + i);
+    if (!stepEl) return;
+    var dot = stepEl.querySelector('div');
+    var label = stepEl.querySelector('span');
+    if (i < n) {
+      dot.style.background = 'rgba(0,200,255,.3)'; dot.style.color = 'var(--accent)'; dot.innerHTML = '&#x2713;';
+      label.style.color = 'rgba(0,200,255,.5)';
+    } else if (i === n) {
+      dot.style.background = 'var(--accent)'; dot.style.color = 'var(--black)'; dot.textContent = i;
+      label.style.color = 'var(--accent)';
+    } else {
+      dot.style.background = 'var(--panel)'; dot.style.color = 'var(--muted)'; dot.textContent = i;
+      label.style.color = 'var(--muted)';
+    }
+  });
+}
+
+function wzNext(n) {
+  if (n === 2 && _wzCurrentSystem) {
+    wzBuildAuthStep();
+  }
+  wzShowPage(n);
+}
+
+function wzBuildAuthStep() {
+  var s = _wzCurrentSystem; if (!s) return;
+  var title = document.getElementById('wzAuthTitle');
+  var sub   = document.getElementById('wzAuthSubtitle');
+  var steps = document.getElementById('wzAuthSteps');
+  var form  = document.getElementById('wzCredForm');
+  if (title) title.textContent = 'Connect ' + s.name;
+  if (sub)   sub.innerHTML = '<span style="font-family:var(--fm);font-size:8.5px;padding:3px 9px;border-radius:8px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);color:var(--accent)">' + s.cat + '</span>';
+
+  if (steps) {
+    steps.innerHTML = '<div style="margin-bottom:16px">'
+      + '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Setup Steps</div>'
+      + s.steps.map(function(st, i) {
+          return '<div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-start">'
+            + '<div style="width:20px;height:20px;border-radius:50%;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:8px;color:var(--accent);flex-shrink:0;margin-top:1px">' + (i+1) + '</div>'
+            + '<div style="font-size:12.5px;color:var(--dim);line-height:1.6">' + st + '</div>'
+          + '</div>';
+        }).join('')
+    + '</div>';
+  }
+
+  if (form) {
+    var formHTML = '<div style="border-top:1px solid var(--border);padding-top:16px">'
+      + '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">Your Credentials</div>';
+    s.fields.forEach(function(f) {
+      formHTML += '<div style="margin-bottom:12px">'
+        + '<div style="font-family:var(--fm);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">' + f.label + '</div>'
+        + '<input id="' + f.id + '" type="' + (f.type || 'text') + '" placeholder="' + f.placeholder + '" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:9px 12px;font-family:var(--fm);font-size:11.5px;color:var(--fg);outline:none;box-sizing:border-box"/>'
+        + '</div>';
+    });
+    formHTML += '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-top:6px">&#x1F512; Credentials are encrypted and never stored in plain text</div></div>';
+    form.innerHTML = formHTML;
+  }
+}
+function wzTestConnection() {
+  wzShowPage(3);
+  var s = _wzCurrentSystem;
+  var result   = document.getElementById('wzResult');
+  var resTitle = document.getElementById('wzResultTitle');
+  var resMsg   = document.getElementById('wzResultMsg');
+  var suggestions = document.getElementById('wzAgentSuggestions');
+  var deployBtn   = document.getElementById('wzDeployBtn');
+
+  if (result) result.textContent = '&#x231B;';
+  if (resTitle) resTitle.textContent = 'Testing connection...';
+  if (resMsg) resMsg.textContent = 'Verifying credentials and checking connectivity to ' + (s ? s.name : 'your system') + '.';
+  if (deployBtn) deployBtn.style.display = 'none';
+
+  // Simulate connection test
+  setTimeout(function() {
+    if (result) result.innerHTML = '&#x2705;';
+    if (resTitle) { resTitle.textContent = 'Connection Successful!'; resTitle.style.color = 'var(--accent)'; }
+    if (resMsg) resMsg.innerHTML = '<strong style="color:var(--fg)">' + (s ? s.name : 'Your system') + '</strong> is connected to NexAgent Studio. Your agents can now read and write data from this integration in real time.';
+
+    // Show recommended agents
+    if (suggestions && s && s.agents) {
+      suggestions.innerHTML = '<div style="background:rgba(0,200,255,.04);border:1px solid rgba(0,200,255,.1);border-radius:10px;padding:16px;text-align:left">'
+        + '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Recommended Agents for ' + s.name + '</div>'
+        + s.agents.map(function(a) {
+            return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
+              + '<span style="color:var(--accent)">&#x2713;</span>'
+              + '<span style="font-size:12.5px;color:var(--dim)">' + a + '</span>'
+            + '</div>';
+          }).join('')
+      + '</div>';
+    }
+
+    if (deployBtn) { deployBtn.style.display = 'inline-block'; }
+
+    // Store connection
+    var conns = JSON.parse(localStorage.getItem('na_connections') || '[]');
+    if (s && !conns.find(function(c){ return c.id === s.id; })) {
+      conns.push({ id: s.id, name: s.name, icon: s.icon, connected: new Date().toISOString() });
+      localStorage.setItem('na_connections', JSON.stringify(conns));
+    }
+    showToast(s ? s.icon + ' ' + s.name + ' connected \u2713' : 'Connected \u2713');
+  }, 2000);
+}
+
+function wzDeployAgent() {
+  var s = _wzCurrentSystem; if (!s) return;
+  closeConnectWizard();
+  var inp = document.getElementById('prompt');
+  if (inp) { inp.value = s.testPrompt; inp.focus(); }
+  showToast(s.icon + ' ' + s.name + ' agent loaded \u2014 press Run \u26A1');
+}
+
 </script>
+
+<!-- ── CONNECTION WIZARD MODAL ────────────────── -->
+<div id="connectWizard" style="display:none;position:fixed;inset:0;background:rgba(8,15,24,.95);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px;overflow-y:auto">
+  <div style="background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:16px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:12px;padding:22px 26px;border-bottom:1px solid rgba(0,200,255,.1)">
+      <div style="width:40px;height:40px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F50C;</div>
+      <div>
+        <div style="font-family:var(--fd);font-size:17px;color:var(--fg)">Connect Your System</div>
+        <div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);letter-spacing:.5px">Step-by-step integration guide</div>
+      </div>
+      <button onclick="closeConnectWizard()" style="margin-left:auto;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer">&#x2715;</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;padding:16px 26px;border-bottom:1px solid rgba(0,200,255,.06)">
+      <div id="wz-step-1" style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--black);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:9px;font-weight:700">1</div><span style="font-family:var(--fm);font-size:9px;color:var(--accent)">Choose System</span></div>
+      <div style="flex:1;height:1px;background:rgba(0,200,255,.15);margin:0 8px"></div>
+      <div id="wz-step-2" style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:var(--panel);border:1px solid rgba(0,200,255,.15);color:var(--muted);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:9px">2</div><span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Authenticate</span></div>
+      <div style="flex:1;height:1px;background:rgba(0,200,255,.15);margin:0 8px"></div>
+      <div id="wz-step-3" style="display:flex;align-items:center;gap:6px"><div style="width:24px;height:24px;border-radius:50%;background:var(--panel);border:1px solid rgba(0,200,255,.15);color:var(--muted);display:flex;align-items:center;justify-content:center;font-family:var(--fm);font-size:9px">3</div><span style="font-family:var(--fm);font-size:9px;color:var(--muted)">Test &amp; Deploy</span></div>
+    </div>
+    <div id="wzPage1" style="padding:24px 26px">
+      <div style="font-size:14px;font-weight:600;color:var(--fg);margin-bottom:6px">Which system do you want to connect?</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:20px">Select your integration type. Each takes 5&#x2013;30 minutes to set up.</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:24px" id="wzSystemGrid"></div>
+      <div style="display:flex;justify-content:flex-end"><button onclick="wzNext(2)" id="wzNextBtn1" disabled style="padding:10px 24px;background:var(--accent);color:var(--black);border:none;border-radius:8px;font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer;opacity:.4">Next &#x2192;</button></div>
+    </div>
+    <div id="wzPage2" style="padding:24px 26px;display:none">
+      <div style="font-size:14px;font-weight:600;color:var(--fg);margin-bottom:6px" id="wzAuthTitle">Connect</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:20px" id="wzAuthSubtitle"></div>
+      <div id="wzAuthSteps"></div>
+      <div id="wzCredForm" style="margin-top:16px"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px">
+        <button onclick="wzNext(1)" style="padding:10px 20px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--dim);border-radius:8px;font-family:var(--fm);font-size:10px;cursor:pointer">&#x2190; Back</button>
+        <button onclick="wzTestConnection()" style="padding:10px 24px;background:var(--accent);color:var(--black);border:none;border-radius:8px;font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer">Test Connection &#x26A1;</button>
+      </div>
+    </div>
+    <div id="wzPage3" style="padding:24px 26px;display:none">
+      <div style="text-align:center;padding:20px 0">
+        <div id="wzResult" style="font-size:44px;margin-bottom:14px">&#x26A1;</div>
+        <div id="wzResultTitle" style="font-size:17px;font-weight:700;color:var(--fg);margin-bottom:8px">Testing...</div>
+        <div id="wzResultMsg" style="font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.7"></div>
+        <div id="wzAgentSuggestions" style="margin-bottom:24px"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button onclick="wzDeployAgent()" id="wzDeployBtn" style="display:none;padding:10px 24px;background:var(--accent);color:var(--black);border:none;border-radius:8px;font-family:var(--fm);font-size:10px;font-weight:700;cursor:pointer">&#x26A1; Deploy Agent Now</button>
+          <button onclick="wzNext(1)" style="padding:10px 20px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--dim);border-radius:8px;font-family:var(--fm);font-size:10px;cursor:pointer">Connect Another</button>
+          <button onclick="closeConnectWizard()" style="padding:10px 20px;background:transparent;border:1px solid rgba(255,255,255,.08);color:var(--muted);border-radius:8px;font-family:var(--fm);font-size:10px;cursor:pointer">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ── AUTH GATE ── -->
 <div id="authGate" style="position:fixed;inset:0;background:#080F18;z-index:99999;display:flex;overflow-y:auto">
