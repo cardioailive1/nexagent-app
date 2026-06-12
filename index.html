@@ -9,11 +9,11 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0B1725;--surface:#0D1B2E;--panel:#0F2035;
-  --border:rgba(0,200,255,.08);--border2:rgba(0,200,255,.2);
-  --fg:#EEF4F8;--dim:#8BAFC8;--muted:#4A6C84;
-  --accent:#00C8FF;--accent2:#0099CC;--adim:rgba(0,200,255,.1);
-  --black:#04080E;--dark:#080F18;
+  --bg:#0F2645;--surface:#162E52;--panel:#1B3560;
+  --border:rgba(0,200,255,.12);--border2:rgba(0,200,255,.28);
+  --fg:#EEF4F8;--dim:#9BC0D8;--muted:#5A84A8;
+  --accent:#00C8FF;--accent2:#0099CC;--adim:rgba(0,200,255,.12);
+  --black:#0F2645;--dark:#162E52;
   --fm:'DM Mono',monospace;--fd:'Playfair Display',serif;--fs:'DM Sans',sans-serif;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:var(--fs);font-size:14px}
@@ -21,7 +21,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-
 /* NAV */
 .nav{display:flex;align-items:center;gap:8px;padding:0 14px;height:46px;background:var(--dark);border-bottom:1px solid var(--border);flex-shrink:0}
 .nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
-.nav-logo{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-logo{width:28px;height:28px;border-radius:7px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);display:flex;align-items:center;justify-content:center;font-size:15px}
 .nav-name{font-family:var(--fd);font-size:15px;color:var(--fg)}
 .nav-name span{color:var(--accent)}
 .nav-badge{font-family:var(--fm);font-size:8px;padding:2px 8px;border-radius:8px;background:var(--adim);border:1px solid rgba(0,200,255,.2);color:var(--accent);letter-spacing:1px}
@@ -105,9 +105,9 @@ textarea#prompt:focus{border-color:var(--border2)}
 .out-btn.primary{background:var(--accent);color:var(--black);border-color:var(--accent);font-weight:700}
 
 /* SLIDE PANELS */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;display:none}
+.overlay{position:fixed;inset:0;background:rgba(15,38,69,.7);z-index:400;display:none}
 .overlay.on{display:block}
-.panel{position:fixed;top:50px;right:0;bottom:0;width:500px;max-width:90vw;background:var(--dark);border-left:1px solid var(--border2);z-index:500;display:none;flex-direction:column;box-shadow:-6px 0 30px rgba(0,0,0,.5)}
+.panel{position:fixed;top:50px;right:0;bottom:0;width:500px;max-width:90vw;background:var(--dark);border-left:1px solid var(--border2);z-index:500;display:none;flex-direction:column;box-shadow:-6px 0 30px rgba(15,38,69,.7)}
 .panel.on{display:flex;animation:slideIn .2s ease}
 @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
 .ph{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
@@ -147,12 +147,12 @@ textarea#prompt:focus{border-color:var(--border2)}
 .i-cat{font-family:var(--fm);font-size:7.5px;color:var(--muted)}
 
 /* MODALS */
-.modal-ovl{position:fixed;inset:0;background:rgba(10,20,32,.85);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.modal-ovl{position:fixed;inset:0;background:rgba(15,38,69,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
 .modal-ovl.open{display:flex;animation:fadeIn .18s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* UPGRADE WALL */
-.upgrade-wall{position:fixed;inset:0;background:rgba(11,23,37,.96);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(20px);padding:20px}
+.upgrade-wall{position:fixed;inset:0;background:rgba(15,38,69,.96);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(20px);padding:20px}
 .upgrade-wall.on{display:flex}
 
 /* TOAST */
@@ -181,18 +181,18 @@ textarea#prompt:focus{border-color:var(--border2)}
 }
 
 /* ── INTEGRATION MODAL ── */
-.int-modal-overlay{position:fixed;inset:0;background:rgba(11,23,37,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.int-modal-overlay{position:fixed;inset:0;background:rgba(15,38,69,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
 .int-modal-overlay.open{display:flex;animation:fadeIn .18s ease}
-.int-modal-box{background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
+.int-modal-box{background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:540px;width:100%;max-height:88vh;overflow-y:auto;position:relative}
 .int-modal-top{padding:22px 24px 18px;border-bottom:1px solid rgba(0,200,255,.08)}
 .int-modal-body{padding:20px 24px}
 .int-modal-footer{padding:16px 24px;border-top:1px solid rgba(0,200,255,.08);display:flex;gap:10px}
 
 
 /* ── AGENT MODAL ── */
-.agl-modal-overlay{position:fixed;inset:0;background:rgba(11,23,37,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
+.agl-modal-overlay{position:fixed;inset:0;background:rgba(15,38,69,.88);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px}
 .agl-modal-overlay.open{display:flex;animation:fadeIn .18s ease}
-.agl-modal-box{background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto}
+.agl-modal-box{background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:14px;max-width:600px;width:100%;max-height:88vh;overflow-y:auto}
 
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -202,7 +202,7 @@ textarea#prompt:focus{border-color:var(--border2)}
 <!-- NAV -->
 <nav class="nav">
   <a class="nav-brand" href="nexagent.html">
-    <div class="nav-logo">&#x26A1;</div>
+    <div class="nav-logo" style="display:flex;align-items:center"><svg width="22" height="22" viewBox="0 0 28 28" fill="none"><polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" stroke="#00C8FF" stroke-width="1.5" fill="none"/><polygon points="14,7 20,10.5 20,17.5 14,21 8,17.5 8,10.5" stroke="#00C8FF" stroke-width="1" fill="none" opacity=".6"/><circle cx="14" cy="14" r="2.5" fill="#00C8FF"/><line x1="14" y1="2" x2="14" y2="7" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="4" y1="7.5" x2="8" y2="10.5" stroke="#00C8FF" stroke-width="1" opacity=".5"/></svg></div>
     <div class="nav-name">NexAgent <span>Studio</span></div>
   </a>
   <span class="nav-badge">NexGen Ultra</span>
@@ -212,7 +212,9 @@ textarea#prompt:focus{border-color:var(--border2)}
     <button class="nav-btn ghost" onclick="showHistory()">&#x1F4BE; History</button>
     <button class="nav-btn ghost" onclick="clearWorkspace()">Clear</button>
     <a class="nav-btn ghost" href="nexagent.html">&#x2190; Back</a>
-    <button class="nav-btn primary" onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')">Upgrade &#x2192;</button>
+    <button id="naMFANavBtn" onclick="document.getElementById('nxMFASettings').style.display='flex';nxMFALoadStatus();" style="display:none;padding:5px 12px;background:transparent;border:1px solid rgba(0,200,255,.2);color:#00C8FF;border-radius:6px;font-family:monospace;font-size:9px;cursor:pointer" title="Security &amp; MFA">&#x1F512; MFA</button>
+    <button id="naSignInBtn" onclick="showNAAuth('up')" class="nav-btn primary">Get Access</button>
+    <button id="naUserPill" onclick="signOut()" style="display:none;padding:5px 13px;background:transparent;border:1px solid rgba(0,200,255,.2);color:var(--accent,#00C8FF);border-radius:6px;font-family:monospace;font-size:9px;cursor:pointer" title="Click to sign out"></button>
   </div>
 </nav>
 
@@ -221,8 +223,8 @@ textarea#prompt:focus{border-color:var(--border2)}
   <div class="trial-dot"></div>
   <span id="trialTxt" style="font-family:var(--fm);font-size:10px;color:var(--fg)"><strong style="color:var(--accent)">3 free tasks</strong> &mdash; no credit card required</span>
   <div style="display:flex;gap:6px;align-items:center">
-    <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Starter $299</button>
-    <button onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')" style="padding:4px 10px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Pro $999 &#x2605;</button>
+    <button onclick="window.open('https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Starter $99</button>
+    <button onclick="window.open('https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g','_blank')" style="padding:4px 10px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Pro $299 &#x2605;</button>
     <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.15);color:var(--dim);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Enterprise</button>
   </div>
 </div>
@@ -367,9 +369,10 @@ textarea#prompt:focus{border-color:var(--border2)}
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;text-align:left">
       <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
         <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Starter</div>
-        <div style="font-size:26px;font-weight:800;color:var(--accent);margin-bottom:2px">$299<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div>
+        <div style="font-family:var(--fm);font-size:7.5px;color:#FFB830;letter-spacing:1px;background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);border-radius:20px;padding:2px 9px;display:inline-block;margin-bottom:6px">&#x1F525; EARLY ADOPTER — 67% OFF</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px"><div style="font-size:26px;font-weight:800;color:var(--accent)">$99<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div><div style="font-size:12px;color:var(--muted);text-decoration:line-through">$299</div></div>
         <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:12px">cancel anytime</div>
-        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">For individuals and small teams running 50 tasks/month.</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">Early adopter rate — locked for life. For individuals and small teams running 50 tasks/month.</div>
         <div style="font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:14px">
           &#x2713; 50 agent tasks/month<br>
           &#x2713; 4-agent pipeline<br>
@@ -379,14 +382,15 @@ textarea#prompt:focus{border-color:var(--border2)}
           <span style="color:var(--muted)">&#8212; API &amp; SDK access</span><br>
           <span style="color:var(--muted)">&#8212; Team collaboration</span>
         </div>
-        <button onclick="window.open('https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Start Free Trial &#x2192;</button>
+        <button onclick="window.open('https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Start Free Trial &#x2192;</button>
       </div>
       <div style="background:var(--panel);border:2px solid rgba(0,200,255,.4);border-radius:10px;padding:18px;position:relative">
         <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--black);font-family:var(--fm);font-size:7px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap">MOST POPULAR</div>
         <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Professional</div>
-        <div style="font-size:26px;font-weight:800;color:var(--accent);margin-bottom:2px">$999<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div>
+        <div style="font-family:var(--fm);font-size:7.5px;color:#FFB830;letter-spacing:1px;background:rgba(255,184,48,.1);border:1px solid rgba(255,184,48,.25);border-radius:20px;padding:2px 9px;display:inline-block;margin-bottom:6px">&#x1F525; EARLY ADOPTER — 70% OFF</div>
+        <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px"><div style="font-size:26px;font-weight:800;color:var(--accent)">$299<span style="font-size:11px;font-weight:400;color:var(--muted)">/mo</span></div><div style="font-size:12px;color:var(--muted);text-decoration:line-through">$999</div></div>
         <div style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-bottom:12px">cancel anytime</div>
-        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">Unlimited tasks, all agents, full SDK and 200+ integrations.</div>
+        <div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:14px">Early adopter rate — locked for life. Unlimited tasks, all 40+ agents, full SDK and 200+ integrations.</div>
         <div style="font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:14px">
           &#x2713; <strong style="color:var(--fg)">Unlimited</strong> tasks<br>
           &#x2713; All 40+ specialist agents<br>
@@ -396,7 +400,7 @@ textarea#prompt:focus{border-color:var(--border2)}
           &#x2713; Team collaboration (10 users)<br>
           &#x2713; Priority support (24h)
         </div>
-        <button onclick="window.open('https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05','_blank')" style="width:100%;padding:9px;background:var(--accent);color:var(--black);border:none;border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Get Started &#x2192;</button>
+        <button onclick="window.open('https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g','_blank')" style="width:100%;padding:9px;background:var(--accent);color:var(--black);border:none;border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Get Started &#x2192;</button>
       </div>
       <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
         <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Enterprise</div>
@@ -415,7 +419,7 @@ textarea#prompt:focus{border-color:var(--border2)}
         <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Contact Sales &#x2192;</button>
       </div>
     </div>
-    <div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-bottom:12px">&#x2713; Cancel anytime &nbsp;&middot;&nbsp; &#x2713; 14-day money-back guarantee &nbsp;&middot;&nbsp; &#x2713; Instant access</div>
+    <div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-bottom:12px">&#x1F525; Early adopter prices — locked for life &nbsp;&middot;&nbsp; &#x2713; 14-day money-back guarantee &nbsp;&middot;&nbsp; &#x2713; Cancel anytime</div>
     <button onclick="document.getElementById('upgradeWall').classList.remove('on')" style="padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:7px;font-family:var(--fm);font-size:9px;cursor:pointer">Maybe later</button>
   </div>
 </div>
@@ -584,7 +588,7 @@ textarea#prompt:focus{border-color:var(--border2)}
           <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Export PDF/Word</span>
           <span style="font-family:var(--font-m);font-size:8px;padding:3px 9px;border-radius:10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.15);color:var(--accent)">Save History</span>
         </div>
-        <button onclick="event.stopPropagation();var el=document.getElementById('demo');if(el)el.scrollIntoView({behavior:'smooth'})" style="margin-top:14px;width:100%;padding:8px;background:var(--accent);border:none;color:#04080E;border-radius:6px;font-family:var(--font-m);font-size:9px;font-weight:700;cursor:pointer">
+        <button onclick="event.stopPropagation();var el=document.getElementById('demo');if(el)el.scrollIntoView({behavior:'smooth'})" style="margin-top:14px;width:100%;padding:8px;background:var(--accent);border:none;color:#0F2645;border-radius:6px;font-family:var(--font-m);font-size:9px;font-weight:700;cursor:pointer">
           &#x26A1; Run Live Demo &#x2192;
         </button>
       </div>
@@ -695,46 +699,12 @@ textarea#prompt:focus{border-color:var(--border2)}
 
 <script>
 // ── SUPABASE AUTH CHECK ────────────────────────────────
-// Single shared Supabase instance
-var _supa = window._supaInst || (window._supaInst = supabase.createClient('https://bvwgqafekmfqpylsrteu.supabase.co', 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis'));
-var _supaApp = _supa;
-var _currentUser = null;
+// Supabase instance created in auth module below
 
-async function checkAuth() {
-  var session = await _supaApp.auth.getSession();
-  if (session.data && session.data.session) {
-    _currentUser = session.data.session.user;
-    updateAppNav(_currentUser);
-    return true;
-  }
-  // Not signed in — show sign in prompt (don't hard redirect, allow trial)
-  return false;
-}
 
-function updateAppNav(user) {
-  if (!user) return;
-  var name = (user.user_metadata && user.user_metadata.full_name)
-    ? user.user_metadata.full_name.split(' ')[0]
-    : user.email.split('@')[0];
-  // Update nav to show user name
-  var navRight = document.querySelector('.nav-btn.ghost[onclick*="showHistory"]');
-  if (navRight) {
-    var userBtn = document.createElement('span');
-    userBtn.style.cssText = 'font-family:var(--fm);font-size:9px;color:var(--accent);padding:5px 10px;border:1px solid rgba(0,200,255,.2);border-radius:6px';
-    userBtn.textContent = '\u26A1 ' + name;
-    navRight.parentNode.insertBefore(userBtn, navRight);
-  }
-}
 
-async function signOut() {
-  await _supaApp.auth.signOut();
-  window.location.href = 'nexagent.html';
-}
+// signOut defined in auth module below
 
-// Check auth on load
-document.addEventListener('DOMContentLoaded', function() {
-  checkAuth();
-});
 // ─────────────────────────────────────────────────────────
 
 // ── OWNER CONFIG — replace with your Anthropic API key before deploying ──
@@ -1408,12 +1378,12 @@ var _trialConv  = false;
 var _savedOutputs = [];
 
 var TEMPLATES = [
-  { icon:'&#x1F4CA;', label:'Sales Performance Report',   prompt:'Analyse Q1 sales performance vs last year. Identify top 3 underperforming regions and draft an executive briefing with recommended actions.' },
-  { icon:'&#x1F52C;', label:'Clinical Research Summary',  prompt:'Conduct a clinical analysis of Phase III trial results for GLP-1 receptor agonists in Type 2 diabetes. Summarise efficacy, safety, and market implications.' },
-  { icon:'&#x2696;&#xFE0F;', label:'Contract Risk Analysis', prompt:'Review a standard SaaS enterprise agreement. Identify top 5 legal risks, red-flag clauses, and recommended negotiation points.' },
-  { icon:'&#x1F30D;', label:'Market Entry Strategy',      prompt:'Develop a market entry strategy for an AI healthcare platform in West Africa (Ghana, Nigeria, Kenya). Include competitive landscape, regulatory environment, and go-to-market plan.' },
-  { icon:'&#x1F4A1;', label:'Investment Memo',             prompt:'Write a concise Series A investment memo for a legal tech SaaS company targeting African law firms. Include market size, advantages, risks, and recommendation.' },
-  { icon:'&#x1F4CB;', label:'Product Requirements Doc',   prompt:'Create a comprehensive PRD for an AI-powered document generation platform targeting enterprise life sciences companies.' },
+  { icon:'📊', label:'Sales Performance Report',   prompt:'Analyse Q1 sales performance vs last year. Identify top 3 underperforming regions and draft an executive briefing with recommended actions.' },
+  { icon:'🔬', label:'Clinical Research Summary',  prompt:'Conduct a clinical analysis of Phase III trial results for GLP-1 receptor agonists in Type 2 diabetes. Summarise efficacy, safety, and market implications.' },
+  { icon:'⚖️', label:'Contract Risk Analysis', prompt:'Review a standard SaaS enterprise agreement. Identify top 5 legal risks, red-flag clauses, and recommended negotiation points.' },
+  { icon:'🌍', label:'Market Entry Strategy',      prompt:'Develop a market entry strategy for an AI healthcare platform in West Africa (Ghana, Nigeria, Kenya). Include competitive landscape, regulatory environment, and go-to-market plan.' },
+  { icon:'💡', label:'Investment Memo',             prompt:'Write a concise Series A investment memo for a legal tech SaaS company targeting African law firms. Include market size, advantages, risks, and recommendation.' },
+  { icon:'📋', label:'Product Requirements Doc',   prompt:'Create a comprehensive PRD for an AI-powered document generation platform targeting enterprise life sciences companies.' },
 ];
 
 // ── INIT ──────────────────────────────────────
@@ -1506,7 +1476,7 @@ function clearWorkspace() {
   if (!feed) return;
   var op = document.getElementById('outPanel');
   if (op) op.remove();
-  feed.innerHTML = '<div class="welcome" id="welcome"><div style="font-size:40px">&#x26A1;</div><div style="font-size:15px;font-weight:700;color:var(--fg)">Ready for your next task</div><div style="font-size:12.5px;color:var(--dim)">Type below or select a template</div></div>';
+  feed.innerHTML = '<div class="welcome" id="welcome"><div style="font-size:40px">⚡</div><div style="font-size:15px;font-weight:700;color:var(--fg)">Ready for your next task</div><div style="font-size:12.5px;color:var(--dim)">Type below or select a template</div></div>';
   setPipe(null);
   showToast('Workspace cleared');
 }
@@ -1530,7 +1500,7 @@ function setThinking(show) {
     var d = document.createElement('div');
     d.id = 'thinkRow';
     d.className = 'msg-row';
-    d.innerHTML = '<div class="av"><span>&#x26A1;</span></div>'
+    d.innerHTML = '<div class="av"><span>⚡</span></div>'
       + '<div><div class="agent-lbl">Orchestrator</div>'
       + '<div class="bubble sys" style="display:flex;align-items:center;gap:8px">'
         + '<div class="typing"><span></span><span></span><span></span></div>'
@@ -1556,14 +1526,6 @@ async function runTask() {
   if (!userText) return;
   if (!checkTrial()) return;
 
-  // Check we're on an allowed origin for direct browser API access
-  var __origin = window.location.hostname;
-  var __allowed = ['nxagent.studio', 'localhost', '127.0.0.1'];
-  var __isAllowed = __allowed.some(function(h){ return __origin === h || __origin.endsWith('.' + h); });
-  if (!__isAllowed) {
-    addMsg('<div class="msg-row"><div class="av" style="background:rgba(255,184,77,.15)">&#x26A0;</div><div><div class="agent-lbl" style="color:#FFB84D">Notice</div><div class="bubble sys">You are accessing NexAgent from <strong>' + __origin + '</strong>. For best results, please use <a href="https://nxagent.studio" target="_blank" style="color:var(--accent)">nxagent.studio</a>. Direct API access may be restricted on other domains.</div></div></div>');
-  }
-
   _running = true;
   document.getElementById('prompt').value = '';
   var btn = document.getElementById('runBtn');
@@ -1575,10 +1537,10 @@ async function runTask() {
   setThinking(true);
 
   var SECS = [
-    { key:'RESEARCH_AGENT', id:'research', icon:'&#x1F50D;', label:'Research Agent'  },
-    { key:'ANALYSIS_AGENT', id:'analysis', icon:'&#x1F4CA;', label:'Analysis Agent'  },
-    { key:'ACTION_AGENT',   id:'action',   icon:'&#x26A1;',  label:'Action Agent'    },
-    { key:'QUALITY_AGENT',  id:'quality',  icon:'&#x2705;',  label:'Quality Agent'  },
+    { key:'RESEARCH_AGENT', id:'research', icon:'🔍', label:'Research Agent'  },
+    { key:'ANALYSIS_AGENT', id:'analysis', icon:'📊', label:'Analysis Agent'  },
+    { key:'ACTION_AGENT',   id:'action',   icon:'⚡',  label:'Action Agent'    },
+    { key:'QUALITY_AGENT',  id:'quality',  icon:'✅',  label:'Quality Agent'  },
   ];
   var bubbles = {};
   var full = '';
@@ -1628,22 +1590,17 @@ async function runTask() {
       system: SYSTEM, messages: [{ role: 'user', content: userText }],
     });
 
-    var resp;
-    try {
-      resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          'x-api-key': __key,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: __body,
-      });
-    } catch(fetchErr) {
-      // CORS or network error — show helpful message
-      throw new Error('Network error: Unable to reach the AI service. This may be a CORS issue. Please ensure you are accessing the app from nxagent.studio and try again. (' + fetchErr.message + ')');
-    }
+    // Direct browser call — works from nxagent.studio
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-api-key': __key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: __body,
+    });
     if (!resp.ok) {
       var errJson = await resp.json().catch(function(){ return {}; });
       var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
@@ -1687,7 +1644,7 @@ async function runTask() {
 
     // Fallback: show raw if no sections
     if (full.indexOf('## RESEARCH_AGENT') === -1 && full.trim()) {
-      var el = getOrCreateBubble('action','&#x26A1;','Action Agent');
+      var el = getOrCreateBubble('action','⚡','Action Agent');
       if (el) el.innerHTML = mdRender(full);
     }
 
@@ -1703,23 +1660,23 @@ async function runTask() {
   } catch(err) {
     setThinking(false);
     setPipe(null);
-    addMsg('<div class="msg-row"><div class="av" style="background:rgba(255,107,107,.15)">&#x26A0;</div><div><div class="agent-lbl" style="color:#FF6B6B">Error</div><div class="bubble" style="border-color:rgba(255,107,107,.3);color:#FF6B6B">' + esc(err.message || 'Generation failed') + '</div></div></div>');
+    addMsg('<div class="msg-row"><div class="av" style="background:rgba(255,107,107,.15)">⚠</div><div><div class="agent-lbl" style="color:#FF6B6B">Error</div><div class="bubble" style="border-color:rgba(255,107,107,.3);color:#FF6B6B">' + esc(err.message || 'Generation failed') + '</div></div></div>');
     document.getElementById('wsStatus').textContent = 'Error';
     showToast(err.message || 'Generation failed');
   } finally {
     _running = false;
     var btn2 = document.getElementById('runBtn');
-    if (btn2) { btn2.disabled = false; btn2.textContent = 'Run &#x26A1;'; }
+    if (btn2) { btn2.disabled = false; btn2.textContent = 'Run ⚡'; }
   }
 }
 
 function delay(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function esc(s) { return (s||'').replace(/&/g,'\u0026amp;').replace(/</g,'\u003C').replace(/>/g,'\u003E'); }
 
 function mdRender(text) {
   if (!text) return '';
   return text
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/&/g,'\u0026').replace(/</g,'\u003C').replace(/>/g,'\u003E')
     .replace(/```[\s\S]*?```/g,function(m){return '<pre style="background:var(--panel);padding:10px;border-radius:5px;overflow-x:auto;margin:8px 0"><code style="font-family:var(--fm);font-size:11px;color:var(--accent)">'+m.slice(3).replace(/^\w+\n/,'').slice(0,-3)+'</code></pre>';})
     .replace(/`([^`]+)`/g,'<code>$1</code>')
     .replace(/^### (.+)$/gm,'<h3>$1</h3>')
@@ -1757,13 +1714,13 @@ function showOutput() {
     + '<div class="out-content">' + mdRender(content) + '</div>'
     + '<div class="out-toolbar">'
       + '<span style="font-family:var(--fm);font-size:8px;color:var(--muted);margin-right:4px">EXPORT:</span>'
-      + '<button class="out-btn primary" onclick="copyOutput()">&#x2398; Copy</button>'
-      + '<button class="out-btn" onclick="dlMd()">&#x2193; .md</button>'
-      + '<button class="out-btn" onclick="dlPdf()">&#x2193; PDF</button>'
-      + '<button class="out-btn" onclick="dlWord()">&#x2193; Word</button>'
-      + '<button class="out-btn" onclick="dlTxt()">&#x2193; .txt</button>'
-      + '<button class="out-btn" onclick="saveOutput()" id="saveBtn">&#x2713; Save</button>'
-      + '<button class="out-btn" onclick="showHistory()" style="margin-left:auto">&#x1F4BE; History</button>'
+      + '<button class="out-btn primary" onclick="copyOutput()">⎘ Copy</button>'
+      + '<button class="out-btn" onclick="dlMd()">↓ .md</button>'
+      + '<button class="out-btn" onclick="dlPdf()">↓ PDF</button>'
+      + '<button class="out-btn" onclick="dlWord()">↓ Word</button>'
+      + '<button class="out-btn" onclick="dlTxt()">↓ .txt</button>'
+      + '<button class="out-btn" onclick="saveOutput()" id="saveBtn">✓ Save</button>'
+      + '<button class="out-btn" onclick="showHistory()" style="margin-left:auto">💾 History</button>'
     + '</div>';
 
   var workspace = document.querySelector('.workspace');
@@ -1808,10 +1765,10 @@ function dlPdf() {
   var t = getActionContent(); if (!t) return;
   var w = window.open('','_blank'); if (!w) { showToast('Popup blocked'); return; }
   var css = 'body{font-family:Georgia,serif;max-width:800px;margin:40px auto;color:#111;line-height:1.8;font-size:12pt}h1{font-size:20pt;border-bottom:2px solid #00C8FF;padding-bottom:6pt}h2{font-size:16pt;margin-top:20pt}h3{font-size:10pt;text-transform:uppercase;color:#0099CC;letter-spacing:1pt}blockquote{border-left:3pt solid #00C8FF;padding:6pt 10pt;background:#f0f8ff}@media print{body{margin:0}}';
-  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '</style></head><body>'
-    + '<div style="border-bottom:2pt solid #0B1725;padding-bottom:10pt;margin-bottom:14pt"><p style="font-size:18pt;font-weight:700;color:#0B1725;margin:0">NexAgent</p><p style="font-size:9pt;color:#888;margin:3pt 0">Powered by NexGen Ultra · Corverxis Technologies</p></div>'
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><style>' + css + '<\/st'+'yle><\/he'+'ad><body>'
+    + '<div style="border-bottom:2pt solid #0F2645;padding-bottom:10pt;margin-bottom:14pt"><p style="font-size:18pt;font-weight:700;color:#0F2645;margin:0">NexAgent</p><p style="font-size:9pt;color:#888;margin:3pt 0">Powered by NexGen Ultra · Corverxis Technologies</p></div>'
     + '<p style="background:#f0f8ff;border-left:3pt solid #0099CC;padding:6pt 10pt;font-style:italic"><strong>Task:</strong> ' + esc(_query) + '</p>'
-    + mdRender(t) + '</body></html>');
+    + mdRender(t) + '<\/bo'+'dy><\/ht'+'ml>');
   w.document.close(); w.focus();
   setTimeout(function(){ w.print(); }, 500);
   showToast('PDF dialog opened \u2713');
@@ -1819,10 +1776,10 @@ function dlPdf() {
 
 function dlWord() {
   var t = getActionContent(); if (!t) return;
-  var body = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  var body = t.replace(/&/g,'\u0026').replace(/</g,'\u003C').replace(/>/g,'\u003E')
     .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
     .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/^- (.+)$/gm,'<li>$1</li>').replace(/\n\n/g,'</p><p>');
-  var html = '<html><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:10pt;text-transform:uppercase}</style></head><body><h1>NexAgent Output</h1><p><em>Task: ' + esc(_query) + '</em></p><p>' + body + '</p></body></html>';
+  var html = '<html><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:10pt;text-transform:uppercase}<\/st'+'yle><\/he'+'ad><body><h1>NexAgent Output</h1><p><em>Task: ' + esc(_query) + '</em></p><p>' + body + '</p><\/bo'+'dy><\/ht'+'ml>';
   dlBlob(html, 'nexagent-' + Date.now() + '.doc', 'application/msword');
   showToast('Word document downloaded ✓');
 }
@@ -1853,7 +1810,7 @@ function showHistory() {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'historyModal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(11,23,37,.95);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(15,38,69,.95);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px';
     modal.onclick = function(e){ if(e.target===modal) closeHistoryModal(); };
     document.body.appendChild(modal);
   }
@@ -1874,8 +1831,8 @@ function showHistory() {
 
   modal.innerHTML = '<div style="background:var(--surface);border:1px solid var(--border2);border-radius:14px;max-width:580px;width:100%;max-height:80vh;display:flex;flex-direction:column">'
     + '<div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)">'
-      + '<div style="font-family:var(--fm);font-size:11px;font-weight:700;color:var(--fg)">&#x1F4BE; Saved Outputs</div>'
-      + '<button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">&#x2715;</button>'
+      + '<div style="font-family:var(--fm);font-size:11px;font-weight:700;color:var(--fg)">💾 Saved Outputs</div>'
+      + '<button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">✕</button>'
     + '</div>'
     + '<div style="overflow-y:auto;padding:14px 20px">' + items + '</div>'
     + '</div>';
@@ -1969,7 +1926,7 @@ function renderAgents() {
       + '<div class="a-role">' + a.role + '</div>'
       + '<div class="a-desc">' + (a.desc||'').slice(0,75) + '\u2026</div>'
       + '<div class="a-tags">' + (a.tags||[]).slice(0,3).map(function(t){ return '<span class="a-tag">'+t+'</span>'; }).join('') + '</div>'
-      + '<button class="a-deploy" data-id="' + a.id + '">Deploy &#x26A1;</button>'
+      + '<button class="a-deploy" data-id="' + a.id + '">Deploy ⚡</button>'
     + '</div>';
   }).join('');
 
@@ -2098,103 +2055,6 @@ document.addEventListener('click', function(e) {
 });
 document.addEventListener('keydown', function(e) { if(e.key==='Escape'){ closeAglModal(); closeIntModal(); closePanel(); } });
 
-// ── AUTH GATE JS ──────────────────────────────────────
-var _gateSupa = window._supaInst || (window._supaInst = supabase.createClient('https://bvwgqafekmfqpylsrteu.supabase.co', 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis'));
-var _gatePlan = 'starter';
-
-_gateSupa.auth.getSession().then(function(result) {
-  if (result.data && result.data.session) {
-    hideGate(result.data.session.user);
-  }
-});
-
-function hideGate(user) {
-  var gate = document.getElementById('authGate');
-  if (gate) { gate.style.opacity = '0'; gate.style.transition = 'opacity .3s'; setTimeout(function(){ gate.style.display = 'none'; }, 300); }
-  if (user) {
-    var name = (user.user_metadata && user.user_metadata.full_name) ? user.user_metadata.full_name.split(' ')[0] : user.email.split('@')[0];
-    var trialTxt = document.getElementById('trialTxt');
-    if (trialTxt) trialTxt.innerHTML = '<strong style="color:var(--accent)">Welcome back, ' + name + '</strong> &mdash; NexGen Ultra ready';
-  }
-}
-
-function gateTab(tab) {
-  var fi = document.getElementById('gateFormIn');
-  var fu = document.getElementById('gateFormUp');
-  var ti = document.getElementById('gateTabIn');
-  var tu = document.getElementById('gateTabUp');
-  if (tab === 'in') {
-    fi.style.display = 'block'; fu.style.display = 'none';
-    ti.style.color = '#00C8FF'; ti.style.borderBottomColor = '#00C8FF';
-    tu.style.color = '#4A6C84'; tu.style.borderBottomColor = 'transparent';
-  } else {
-    fi.style.display = 'none'; fu.style.display = 'block';
-    tu.style.color = '#00C8FF'; tu.style.borderBottomColor = '#00C8FF';
-    ti.style.color = '#4A6C84'; ti.style.borderBottomColor = 'transparent';
-  }
-}
-
-function gateErr(id, msg) { var e=document.getElementById(id); if(e){e.textContent=msg;e.style.display='block';} }
-function gateClearErr(id) { var e=document.getElementById(id); if(e) e.style.display='none'; }
-function gateLoading(id, on) { var b=document.getElementById(id); if(b){b.disabled=on;b.style.opacity=on?'.5':'1';} }
-
-function selectGatePlan(plan) {
-  _gatePlan = plan;
-  var plans = {starter:'gPlanStarter', pro:'gPlanPro', enterprise:'gPlanEnt'};
-  Object.keys(plans).forEach(function(p) {
-    var el = document.getElementById(plans[p]); if (!el) return;
-    var active = p === plan;
-    el.style.background  = active ? 'rgba(0,200,255,.1)' : 'transparent';
-    el.style.borderColor = active ? 'rgba(0,200,255,.5)' : 'rgba(0,200,255,.12)';
-    el.style.boxShadow   = active ? '0 0 14px rgba(0,200,255,.15)' : 'none';
-    // Update name div color
-    var nameDiv = el.querySelector('div div');
-    if (nameDiv) nameDiv.style.color = active ? '#00C8FF' : '#8BAFC8';
-  });
-}
-
-async function gateSignIn() {
-  gateClearErr('gateErrIn');
-  var email = (document.getElementById('giEmail')||{}).value||'';
-  var pass  = (document.getElementById('giPass') ||{}).value||'';
-  if (!email || !email.includes('@')) { gateErr('gateErrIn','Enter a valid email'); return; }
-  if (!pass)                          { gateErr('gateErrIn','Enter your password');  return; }
-  gateLoading('gateBtnIn', true);
-  var r = await _gateSupa.auth.signInWithPassword({email:email, password:pass});
-  gateLoading('gateBtnIn', false);
-  if (r.error) { gateErr('gateErrIn', r.error.message || 'Sign in failed'); return; }
-  hideGate(r.data.user);
-}
-
-async function gateSignUp() {
-  gateClearErr('gateErrUp');
-  var name  = (document.getElementById('guName') ||{}).value||'';
-  var email = (document.getElementById('guEmail')||{}).value||'';
-  var pass  = (document.getElementById('guPass') ||{}).value||'';
-  if (!name.trim())                   { gateErr('gateErrUp','Enter your full name');   return; }
-  if (!email||!email.includes('@'))   { gateErr('gateErrUp','Enter a valid email');    return; }
-  if (!pass||pass.length<8)           { gateErr('gateErrUp','Password min 8 characters'); return; }
-  gateLoading('gateBtnUp', true);
-  var r = await _gateSupa.auth.signUp({
-    email: email, password: pass,
-    options: { data: {full_name:name.trim(), plan:_gatePlan}, emailRedirectTo:'https://nxagent.studio' }
-  });
-  gateLoading('gateBtnUp', false);
-  if (r.error) { gateErr('gateErrUp', r.error.message||'Sign up failed'); return; }
-  var stripe = {
-    starter:    'https://buy.stripe.com/6oU3cv8l47Hv9v5bbA1oI04',
-    pro:        'https://buy.stripe.com/7sYfZh6cWe5T7mXfrQ1oI05',
-    enterprise: 'https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06',
-  };
-  if (_gatePlan === 'enterprise') {
-    window.open('mailto:hello@corverxis.ai?subject=NexAgent Enterprise', '_blank');
-  } else {
-    window.open(stripe[_gatePlan]||stripe.starter, '_blank');
-  }
-  hideGate(r.data.user);
-  showToast('\u2713 Account created! Check your email to verify.');
-}
-
 
 
 // ── CONNECTION WIZARD ─────────────────────────────────
@@ -2264,7 +2124,7 @@ var WZ_SYSTEMS = [
     steps:[
       'Log in to Atlassian → go to id.atlassian.com/manage-profile/security/api-tokens',
       'Click Create API Token → name it NexAgent',
-      'Copy the token immediately (it won&#39;t show again)',
+      "Copy the token immediately (it won't show again)",
       'Your Jira base URL is: https://yourorg.atlassian.net',
       'Use your Atlassian email address as the username'
     ],
@@ -2351,7 +2211,7 @@ function wzShowPage(n) {
     var dot = stepEl.querySelector('div');
     var label = stepEl.querySelector('span');
     if (i < n) {
-      dot.style.background = 'rgba(0,200,255,.3)'; dot.style.color = 'var(--accent)'; dot.innerHTML = '&#x2713;';
+      dot.style.background = 'rgba(0,200,255,.3)'; dot.style.color = 'var(--accent)'; dot.innerHTML = '✓';
       label.style.color = 'rgba(0,200,255,.5)';
     } else if (i === n) {
       dot.style.background = 'var(--accent)'; dot.style.color = 'var(--black)'; dot.textContent = i;
@@ -2397,10 +2257,10 @@ function wzBuildAuthStep() {
     s.fields.forEach(function(f) {
       formHTML += '<div style="margin-bottom:12px">'
         + '<div style="font-family:var(--fm);font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">' + f.label + '</div>'
-        + '<input id="' + f.id + '" type="' + (f.type || 'text') + '" placeholder="' + f.placeholder + '" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:9px 12px;font-family:var(--fm);font-size:11.5px;color:var(--fg);outline:none;box-sizing:border-box"/>'
+        + '<input id="' + f.id + '" type="' + (f.type || 'text') + '" placeholder="' + f.placeholder + '" style="width:100%;background:#162E52;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:9px 12px;font-family:var(--fm);font-size:11.5px;color:var(--fg);outline:none;box-sizing:border-box"/>'
         + '</div>';
     });
-    formHTML += '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-top:6px">&#x1F512; Credentials are encrypted and never stored in plain text</div></div>';
+    formHTML += '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-top:6px">🔒 Credentials are encrypted and never stored in plain text</div></div>';
     form.innerHTML = formHTML;
   }
 }
@@ -2413,14 +2273,14 @@ function wzTestConnection() {
   var suggestions = document.getElementById('wzAgentSuggestions');
   var deployBtn   = document.getElementById('wzDeployBtn');
 
-  if (result) result.textContent = '&#x231B;';
+  if (result) result.textContent = '⌛';
   if (resTitle) resTitle.textContent = 'Testing connection...';
   if (resMsg) resMsg.textContent = 'Verifying credentials and checking connectivity to ' + (s ? s.name : 'your system') + '.';
   if (deployBtn) deployBtn.style.display = 'none';
 
   // Simulate connection test
   setTimeout(function() {
-    if (result) result.innerHTML = '&#x2705;';
+    if (result) result.innerHTML = '✅';
     if (resTitle) { resTitle.textContent = 'Connection Successful!'; resTitle.style.color = 'var(--accent)'; }
     if (resMsg) resMsg.innerHTML = '<strong style="color:var(--fg)">' + (s ? s.name : 'Your system') + '</strong> is connected to NexAgent Studio. Your agents can now read and write data from this integration in real time.';
 
@@ -2430,7 +2290,7 @@ function wzTestConnection() {
         + '<div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Recommended Agents for ' + s.name + '</div>'
         + s.agents.map(function(a) {
             return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'
-              + '<span style="color:var(--accent)">&#x2713;</span>'
+              + '<span style="color:var(--accent)">✓</span>'
               + '<span style="font-size:12.5px;color:var(--dim)">' + a + '</span>'
             + '</div>';
           }).join('')
@@ -2458,10 +2318,595 @@ function wzDeployAgent() {
 }
 
 </script>
+<script>
+// ══════════════════════════════════════════════════════════════════
+// NexAgent Studio — Supabase Auth + TOTP MFA
+// ══════════════════════════════════════════════════════════════════
+(function(){
+  'use strict';
+  var SURL = 'https://bvwgqafekmfqpylsrteu.supabase.co';
+  var SKEY = 'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis';
+  var _sb  = window._supaInst || (window._supaInst = supabase.createClient(SURL, SKEY));
+  window._naUser = null;
+  window._naSB   = function(){ return _sb; };
+
+  // ── Session restore (after DOM ready) ────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+    _sb.auth.getSession().then(function(r){
+      if(r.data && r.data.session) onNASignedIn(r.data.session.user);
+      else showNAAuth('up');
+    });
+    _sb.auth.onAuthStateChange(function(e,s){
+      if(e === 'PASSWORD_RECOVERY'){ showNAResetForm(); return; }
+      if(s && s.user) onNASignedIn(s.user);
+    });
+    // Stripe return
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('success') || p.get('session_id')){
+      var plan = localStorage.getItem('na_pending_plan') || 'pro';
+      _sb.auth.getSession().then(function(r){
+        if(!r.data || !r.data.session) return;
+        _sb.auth.updateUser({data:{plan:plan, paid:true}});
+        localStorage.removeItem('na_pending_plan');
+        history.replaceState(null,'',window.location.pathname);
+        naToast('✓ ' + plan.charAt(0).toUpperCase()+plan.slice(1) + ' plan activated!');
+      });
+    }
+  });
+
+  // Stripe success
+  (function(){
+    var p = new URLSearchParams(window.location.search);
+    if(p.get('success') || p.get('session_id')){
+      var plan = localStorage.getItem('na_pending_plan') || 'pro';
+      _sb.auth.getSession().then(function(r){
+        if(!r.data || !r.data.session) return;
+        _sb.auth.updateUser({data:{plan:plan, paid:true}});
+        localStorage.removeItem('na_pending_plan');
+        history.replaceState(null,'',window.location.pathname);
+        naToast('\u2713 ' + plan.charAt(0).toUpperCase()+plan.slice(1) + ' plan activated!');
+      });
+    }
+  })();
+
+  // ── Sign in success handler ──────────────────────────────────
+  window.onNASignedIn = function(user){
+    window._naUser = user;
+    var name = (user.user_metadata && user.user_metadata.full_name)
+      ? user.user_metadata.full_name.split(' ')[0] : user.email.split('@')[0];
+    var wall = document.getElementById('naAuthWall');
+    if(wall) wall.style.display = 'none';
+    var pill = document.getElementById('naUserPill');
+    if(pill){ pill.textContent = name; pill.style.display = 'inline-flex'; }
+    var signInBtn = document.getElementById('naSignInBtn');
+    if(signInBtn) signInBtn.style.display = 'none';
+    var mfaBtn = document.getElementById('naMFANavBtn');
+    if(mfaBtn) mfaBtn.style.display = 'inline-flex';
+    naToast('Welcome back, ' + name + ' \u2713');
+  };
+
+  // ── Auth wall tab switcher ───────────────────────────────────
+  window.naAuthTab = function(tab){
+    var fi = document.getElementById('naFormIn');
+    var fu = document.getElementById('naFormUp');
+    var ti = document.getElementById('naTabIn');
+    var tu = document.getElementById('naTabUp');
+    var hl = document.getElementById('naAuthHighlights');
+    var isIn = tab === 'in';
+    if(fi) fi.style.display = isIn ? 'block' : 'none';
+    if(fu) fu.style.display = isIn ? 'none'  : 'block';
+    if(hl) hl.style.display = isIn ? 'none'  : 'block';
+    if(ti){ ti.className = 'na-auth-tab' + (isIn ? ' active' : ''); }
+    if(tu){ tu.className = 'na-auth-tab' + (isIn ? '' : ' active'); }
+    naAuthErr('naErrIn',''); naAuthErr('naErrUp','');
+  };
+
+  window.showNAAuth = function(tab){
+    var w = document.getElementById('naAuthWall');
+    if(w) w.style.display = 'flex';
+    naAuthTab(tab || 'up');
+  };
+
+  window.closeNAAuth = function(){
+    var w = document.getElementById('naAuthWall');
+    if(w) w.style.display = 'none';
+  };
+
+  function naAuthErr(id, msg){
+    var e = document.getElementById(id);
+    if(e){ e.textContent = msg; e.style.display = msg ? 'block' : 'none'; }
+  }
+  function naBtn(id, on){
+    var b = document.getElementById(id); if(!b) return;
+    b.disabled = on; b.style.opacity = on ? '.5' : '1';
+    var labels = { naBtnIn:'Sign In \u2192', naBtnUp:'Create Account \u2192' };
+    var loading = { naBtnIn:'Signing in\u2026', naBtnUp:'Creating account\u2026' };
+    b.textContent = on ? (loading[id]||'Loading\u2026') : (labels[id]||b.textContent);
+  }
+
+  // ── Sign In ──────────────────────────────────────────────────
+  window.naSignIn = async function(){
+    naAuthErr('naErrIn','');
+    var email = (document.getElementById('naEmail')||{}).value.trim()||'';
+    var pass  = (document.getElementById('naPass') ||{}).value||'';
+    if(!email.includes('@')){ naAuthErr('naErrIn','Enter a valid email'); return; }
+    if(!pass){ naAuthErr('naErrIn','Enter your password'); return; }
+    naBtn('naBtnIn', true);
+    var r = await _sb.auth.signInWithPassword({email:email, password:pass});
+    naBtn('naBtnIn', false);
+    if(r.error){
+      naAuthErr('naErrIn', r.error.message.includes('Invalid') ? 'Incorrect email or password.' : r.error.message);
+      return;
+    }
+    // Check MFA requirement
+    nxMFACheck(r.data.session, function(){
+      closeNAAuth();
+      onNASignedIn(r.data.user);
+    });
+  };
+
+  // ── Sign Up ──────────────────────────────────────────────────
+  window.naSignUp = async function(){
+    naAuthErr('naErrUp','');
+    var name  = (document.getElementById('naName')    ||{}).value.trim()||'';
+    var email = (document.getElementById('naEmailUp') ||{}).value.trim()||'';
+    var pass  = (document.getElementById('naPassUp')  ||{}).value||'';
+    if(!name){ naAuthErr('naErrUp','Enter your full name'); return; }
+    if(!email.includes('@')){ naAuthErr('naErrUp','Enter a valid email'); return; }
+    if(pass.length < 6){ naAuthErr('naErrUp','Password must be at least 6 characters'); return; }
+    naBtn('naBtnUp', true);
+    var r = await _sb.auth.signUp({email:email, password:pass,
+      options:{data:{full_name:name}, emailRedirectTo:window.location.href}});
+    naBtn('naBtnUp', false);
+    if(r.error){
+      var msg = r.error.message;
+      if(msg.includes('rate limit')||msg.includes('sending')){
+        naAuthErr('naErrUp','\u26A0 Email rate limit \u2014 account created. Please sign in.');
+        setTimeout(function(){ naAuthTab('in'); }, 2000); return;
+      }
+      if(msg.includes('already')||msg.includes('registered')){
+        naAuthErr('naErrUp','Account exists \u2014 please sign in.');
+        setTimeout(function(){ naAuthTab('in'); }, 1500); return;
+      }
+      naAuthErr('naErrUp', msg); return;
+    }
+    closeNAAuth();
+    naToast('Account created! Check your email to verify, then sign in.');
+  };
+
+  // ── Forgot password ──────────────────────────────────────────
+  window.naForgotPassword = async function(){
+    var email = (document.getElementById('naEmail')||{}).value.trim()||'';
+    if(!email.includes('@')){ naAuthErr('naErrIn','Enter your email first, then click Forgot password'); return; }
+    var r = await _sb.auth.resetPasswordForEmail(email, {redirectTo: window.location.href+'?reset=1'});
+    if(r.error){ naAuthErr('naErrIn', r.error.message); return; }
+    naToast('\u2713 Reset link sent! Check your inbox.');
+  };
+
+  // ── Show reset form ──────────────────────────────────────────
+  window.showNAResetForm = function(){
+    var w = document.getElementById('naAuthWall');
+    if(w) w.style.display = 'flex';
+    var fi = document.getElementById('naFormIn');
+    var fu = document.getElementById('naFormUp');
+    var fr = document.getElementById('naFormReset');
+    if(fi) fi.style.display = 'none';
+    if(fu) fu.style.display = 'none';
+    if(fr) fr.style.display = 'block';
+  };
+
+  window.naUpdatePassword = async function(){
+    var pass = (document.getElementById('naNewPass')||{}).value||'';
+    if(pass.length < 6){ naAuthErr('naErrReset','Password must be at least 6 characters'); return; }
+    var r = await _sb.auth.updateUser({password:pass});
+    if(r.error){ naAuthErr('naErrReset', r.error.message); return; }
+    naToast('\u2713 Password updated! Signing you in\u2026');
+    history.replaceState(null,'',window.location.pathname);
+    _sb.auth.getSession().then(function(res){
+      if(res.data && res.data.session) onNASignedIn(res.data.session.user);
+    });
+  };
+
+  // ── Sign Out ─────────────────────────────────────────────────
+  window.signOut = async function(){
+    await _sb.auth.signOut();
+    window._naUser = null;
+    var pill = document.getElementById('naUserPill');
+    if(pill) pill.style.display = 'none';
+    var signInBtn = document.getElementById('naSignInBtn');
+    if(signInBtn) signInBtn.style.display = 'inline-flex';
+    var mfaBtn = document.getElementById('naMFANavBtn');
+    if(mfaBtn) mfaBtn.style.display = 'none';
+    showNAAuth('in');
+  };
+
+  // ── Toast helper ─────────────────────────────────────────────
+  window.naToast = function(msg){
+    var t = document.getElementById('naToast');
+    if(!t){
+      t = document.createElement('div'); t.id = 'naToast';
+      t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#162E52;border:1px solid rgba(0,200,255,.3);border-radius:8px;padding:10px 16px;font-family:monospace;font-size:12px;color:#00C8FF;z-index:99999;opacity:0;transition:opacity .25s;pointer-events:none';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg; t.style.opacity = '1';
+    clearTimeout(t._t); t._t = setTimeout(function(){ t.style.opacity = '0'; }, 3000);
+  };
+
+})();
+// ─────────────────────────────────────────────────────────────────
+
+</script>
+<script>
+
+// ══════════════════════════════════════════════════════════════════
+// NexGen MFA Module — Corverxis Technologies
+// TOTP-based MFA via Supabase Auth (Google Authenticator / Authy)
+// ══════════════════════════════════════════════════════════════════
+(function(global) {
+  'use strict';
+
+  // ── MFA STATE ─────────────────────────────────────────────────
+  var _mfaPending  = null;  // pending session after password sign-in
+  var _mfaFactorId = null;  // enrolled factor id
+  var _mfaCallback = null;  // fn to call after successful MFA
+  var _sb          = null;
+
+  function sb() {
+    // reuse existing supabase client from the host page
+    if (window._sb)          return window._sb;
+    if (window.getSB)        return window.getSB();
+    if (window._nglSupabase) return window._nglSupabase;
+    if (window._consoleSB)   return window._consoleSB();
+    // fallback — create one
+    if (!_sb) _sb = supabase.createClient(
+      'https://bvwgqafekmfqpylsrteu.supabase.co',
+      'sb_publishable_giKFkcglGwHs2ezDp0UsKQ_tmZ3QJis'
+    );
+    return _sb;
+  }
+
+  // ── CHALLENGE FLOW ─────────────────────────────────────────────
+  // Called after password sign-in succeeds — check if MFA required
+  global.nxMFACheck = async function(session, onSuccess) {
+    _mfaCallback = onSuccess;
+    var r = await sb().auth.mfa.getAuthenticatorAssuranceLevel();
+    if (r.error) { if(onSuccess) onSuccess(session); return; }
+    var aal = r.data;
+    // If current level matches required level — no MFA needed
+    if (aal.currentLevel === aal.nextLevel) {
+      if(onSuccess) onSuccess(session);
+      return;
+    }
+    // MFA required — show challenge
+    var factors = await sb().auth.mfa.listFactors();
+    var totp = factors.data && factors.data.totp && factors.data.totp[0];
+    if (!totp) { if(onSuccess) onSuccess(session); return; }
+    _mfaFactorId = totp.id;
+    nxMFAShowChallenge();
+  };
+
+  global.nxMFAShowChallenge = function() {
+    var w = document.getElementById('nxMFAWall');
+    if (w) { w.style.display='flex'; }
+    var inp = document.getElementById('nxMFACode');
+    if (inp) { inp.value=''; inp.focus(); }
+    nxMFAErr('');
+  };
+
+  global.nxMFAVerify = async function() {
+    var code = (document.getElementById('nxMFACode')||{}).value.replace(/\s/g,'');
+    if (code.length !== 6 || isNaN(code)) { nxMFAErr('Enter the 6-digit code from your authenticator app'); return; }
+    var btn = document.getElementById('nxMFABtn');
+    if(btn){ btn.disabled=true; btn.textContent='Verifying\u2026'; }
+    // Create challenge then verify
+    var ch = await sb().auth.mfa.challenge({ factorId: _mfaFactorId });
+    if (ch.error) { nxMFAErr(ch.error.message||'Challenge failed'); if(btn){btn.disabled=false;btn.textContent='Verify Code \u2192';} return; }
+    var vr = await sb().auth.mfa.verify({ factorId:_mfaFactorId, challengeId:ch.data.id, code:code });
+    if(btn){ btn.disabled=false; btn.textContent='Verify Code \u2192'; }
+    if (vr.error) { nxMFAErr('Incorrect code. Try again.'); return; }
+    // Success
+    var w = document.getElementById('nxMFAWall');
+    if(w) w.style.display='none';
+    nxMFAErr('');
+    if (_mfaCallback) _mfaCallback(vr.data.session);
+  };
+
+  global.nxMFAErr = function(msg) {
+    var el = document.getElementById('nxMFAErr');
+    if(el){ el.textContent=msg; el.style.display=msg?'block':'none'; }
+  };
+
+  // ── ENROLL FLOW ────────────────────────────────────────────────
+  global.nxMFAStartEnroll = async function() {
+    var btn = document.getElementById('nxMFAEnrollBtn');
+    if(btn){ btn.disabled=true; btn.textContent='Loading\u2026'; }
+    var r = await sb().auth.mfa.enroll({ factorType:'totp', friendlyName:'NexGen Authenticator' });
+    if(btn){ btn.disabled=false; btn.textContent='Enable MFA'; }
+    if (r.error) { nxMFASettingsErr(r.error.message||'Enroll failed'); return; }
+    var data = r.data;
+    _mfaFactorId = data.id;
+    // Show QR code
+    var qrImg = document.getElementById('nxMFAQR');
+    if(qrImg) qrImg.src = data.totp.qr_code;
+    var secret = document.getElementById('nxMFASecret');
+    if(secret) secret.textContent = data.totp.secret;
+    var enrollPanel = document.getElementById('nxMFAEnrollPanel');
+    if(enrollPanel) enrollPanel.style.display='block';
+    var enrollBtn = document.getElementById('nxMFAEnrollBtn');
+    if(enrollBtn) enrollBtn.style.display='none';
+    nxMFASettingsErr('');
+  };
+
+  global.nxMFAConfirmEnroll = async function() {
+    var code = (document.getElementById('nxMFAEnrollCode')||{}).value.replace(/\s/g,'');
+    if (code.length !== 6 || isNaN(code)) { nxMFASettingsErr('Enter the 6-digit code from your authenticator app'); return; }
+    var btn = document.getElementById('nxMFAConfirmBtn');
+    if(btn){ btn.disabled=true; btn.textContent='Verifying\u2026'; }
+    var ch = await sb().auth.mfa.challenge({ factorId: _mfaFactorId });
+    if (ch.error) { nxMFASettingsErr(ch.error.message); if(btn){btn.disabled=false;btn.textContent='Confirm & Enable';} return; }
+    var vr = await sb().auth.mfa.verify({ factorId:_mfaFactorId, challengeId:ch.data.id, code:code });
+    if(btn){ btn.disabled=false; btn.textContent='Confirm & Enable'; }
+    if (vr.error) { nxMFASettingsErr('Incorrect code. Scan the QR code again and retry.'); return; }
+    // MFA enrolled
+    nxMFASettingsErr('');
+    var enrollPanel = document.getElementById('nxMFAEnrollPanel');
+    if(enrollPanel) enrollPanel.style.display='none';
+    var status = document.getElementById('nxMFAStatus');
+    if(status){ status.textContent='\u2713 MFA enabled'; status.style.color='#00C88C'; }
+    var disableBtn = document.getElementById('nxMFADisableBtn');
+    if(disableBtn) disableBtn.style.display='inline-block';
+    if(typeof nxToast !== 'undefined') nxToast('\u2713 MFA enabled successfully');
+    else if(typeof toast !== 'undefined') toast('\u2713 MFA enabled successfully');
+  };
+
+  global.nxMFADisable = async function() {
+    if(!confirm('Disable MFA? Your account will only be protected by your password.')) return;
+    var factors = await sb().auth.mfa.listFactors();
+    if(factors.error || !factors.data || !factors.data.totp) return;
+    var totp = factors.data.totp[0];
+    if(!totp) return;
+    var r = await sb().auth.mfa.unenroll({ factorId: totp.id });
+    if(r.error){ nxMFASettingsErr(r.error.message); return; }
+    var status = document.getElementById('nxMFAStatus');
+    if(status){ status.textContent='MFA not enabled'; status.style.color=''; }
+    var enrollBtn = document.getElementById('nxMFAEnrollBtn');
+    if(enrollBtn) enrollBtn.style.display='inline-block';
+    var disableBtn = document.getElementById('nxMFADisableBtn');
+    if(disableBtn) disableBtn.style.display='none';
+    if(typeof nxToast !== 'undefined') nxToast('MFA disabled');
+    else if(typeof toast !== 'undefined') toast('MFA disabled');
+  };
+
+  global.nxMFASettingsErr = function(msg){
+    var el=document.getElementById('nxMFASettingsErr');
+    if(el){ el.textContent=msg; el.style.display=msg?'block':'none'; }
+  };
+
+  global.nxMFALoadStatus = async function(){
+    var factors = await sb().auth.mfa.listFactors();
+    var totp = factors.data && factors.data.totp && factors.data.totp[0];
+    var status = document.getElementById('nxMFAStatus');
+    var enrollBtn = document.getElementById('nxMFAEnrollBtn');
+    var disableBtn = document.getElementById('nxMFADisableBtn');
+    if(totp && totp.status==='verified'){
+      if(status){ status.textContent='\u2713 MFA enabled'; status.style.color='#00C88C'; }
+      if(enrollBtn) enrollBtn.style.display='none';
+      if(disableBtn) disableBtn.style.display='inline-block';
+    } else {
+      if(status){ status.textContent='MFA not enabled'; status.style.color=''; }
+      if(enrollBtn) enrollBtn.style.display='inline-block';
+      if(disableBtn) disableBtn.style.display='none';
+    }
+  };
+
+})(window);
+// ─────────────────────────────────────────────────────────────────
+
+</script>
+
+
+<!-- ── NEXAGENT AUTH WALL ──────────────────────────────── -->
+<div id="naAuthWall" style="display:none;position:fixed;inset:0;background:rgba(15,38,69,.97);z-index:99999;align-items:flex-start;justify-content:center;backdrop-filter:blur(20px);padding:24px 20px;overflow-y:auto">
+  <div style="max-width:900px;width:100%;margin:auto">
+
+    <!-- ── TOP: Logo shifted up, flush to top ── -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+      <svg width="48" height="48" viewBox="0 0 28 28" fill="none"><polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" stroke="#00C8FF" stroke-width="1.5" fill="none"/><polygon points="14,7 20,10.5 20,17.5 14,21 8,17.5 8,10.5" stroke="#00C8FF" stroke-width="1" fill="none" opacity=".6"/><circle cx="14" cy="14" r="2.5" fill="#00C8FF"/><line x1="14" y1="2" x2="14" y2="7" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="24" y1="7.5" x2="20" y2="10.5" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="24" y1="20.5" x2="20" y2="17.5" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="14" y1="26" x2="14" y2="21" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="4" y1="20.5" x2="8" y2="17.5" stroke="#00C8FF" stroke-width="1" opacity=".5"/><line x1="4" y1="7.5" x2="8" y2="10.5" stroke="#00C8FF" stroke-width="1" opacity=".5"/></svg>
+      <div>
+        <div style="font-family:monospace;font-size:9px;color:#00C8FF;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px">Corverxis Technologies</div>
+        <div style="font-size:26px;font-weight:800;letter-spacing:-.8px;line-height:1.15"><span style="color:#ffffff">Your AI Workforce,</span> <span style="color:#00C8FF">Live Right Now</span></div>
+      </div>
+    </div>
+
+    <!-- ── Tagline ── -->
+    <div style="font-size:13.5px;color:#9BC0D8;line-height:1.8;margin-bottom:22px;max-width:620px">NexAgent Studio deploys 4 specialist agents — Research, Analysis, Action, and Quality — that work together to deliver enterprise-grade outputs in seconds.</div>
+
+    <!-- ── Two-column: features left / form right ── -->
+    <div style="display:flex;gap:36px;align-items:flex-start">
+
+      <!-- LEFT: Feature highlights (hidden on sign-in) -->
+      <div id="naAuthHighlights" style="flex:1;min-width:0">
+
+        <!-- Feature rows -->
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:22px">
+
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.12);border-radius:10px">
+            <div style="font-size:22px;flex-shrink:0;margin-top:1px">&#x1F916;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#EEF4F8;margin-bottom:4px">40+ Pre-Built Specialist Agents</div>
+              <div style="font-size:12px;color:#9BC0D8;line-height:1.65">Deploy instantly across every function — Research, Sales, Legal, Clinical, Finance, Engineering and more. No setup required.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.12);border-radius:10px">
+            <div style="font-size:22px;flex-shrink:0;margin-top:1px">&#x1F50D;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#EEF4F8;margin-bottom:4px">4-Agent Pipeline</div>
+              <div style="font-size:12px;color:#9BC0D8;line-height:1.65">Research, Analysis, Action &amp; Quality agents working in parallel — streaming live enterprise-grade results.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.12);border-radius:10px">
+            <div style="font-size:22px;flex-shrink:0;margin-top:1px">&#x1F517;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#EEF4F8;margin-bottom:4px">200+ Native Integrations</div>
+              <div style="font-size:12px;color:#9BC0D8;line-height:1.65">Salesforce, Slack, Jira, SAP, AWS and 195+ more — one-click connections to your entire stack.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:14px;background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.12);border-radius:10px">
+            <div style="font-size:22px;flex-shrink:0;margin-top:1px">&#x1F512;</div>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#EEF4F8;margin-bottom:4px">Enterprise-Grade Security</div>
+              <div style="font-size:12px;color:#9BC0D8;line-height:1.65">SOC 2 compliant, HIPAA ready, GDPR aligned. Your data stays yours.</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Agent categories label -->
+        <div style="font-family:monospace;font-size:8.5px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Agent Categories</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Research</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Sales</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Legal</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Clinical</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Finance</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Engineering</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">HR</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Marketing</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Compliance</span><span style="padding:4px 11px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.18);border-radius:20px;font-family:monospace;font-size:9.5px;color:#00C8FF">Data</span>
+        </div>
+
+      </div>
+
+      <!-- RIGHT: Form card -->
+      <div style="background:#162E52;border:1px solid rgba(0,200,255,.22);border-radius:14px;padding:26px;width:100%;max-width:390px;flex-shrink:0">
+        <!-- Brand in card -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+          <div style="width:34px;height:34px;border-radius:8px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 28 28" fill="none"><polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" stroke="#00C8FF" stroke-width="1.5" fill="none"/><polygon points="14,7 20,10.5 20,17.5 14,21 8,17.5 8,10.5" stroke="#00C8FF" stroke-width="1" fill="none" opacity=".6"/><circle cx="14" cy="14" r="2.5" fill="#00C8FF"/></svg></div>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#EEF4F8">NexAgent <span style="color:#00C8FF">Studio</span></div>
+            <div style="font-family:monospace;font-size:7.5px;color:#5A84A8;letter-spacing:1px">CORVERXIS TECHNOLOGIES</div>
+          </div>
+        </div>
+        <!-- Tabs -->
+        <div style="display:flex;background:#0F2645;border-radius:8px;padding:3px;margin-bottom:16px;border:1px solid rgba(0,200,255,.1)">
+          <button id="naTabIn" class="na-auth-tab" onclick="naAuthTab('in')">SIGN IN</button>
+          <button id="naTabUp" class="na-auth-tab active" onclick="naAuthTab('up')">CREATE ACCOUNT</button>
+        </div>
+        <!-- Errors -->
+        <div id="naErrIn"    style="display:none;font-family:monospace;font-size:10px;color:#FF6B6B;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.2);border-radius:6px;padding:8px 12px;margin-bottom:10px"></div>
+        <div id="naErrUp"    style="display:none;font-family:monospace;font-size:10px;color:#FF6B6B;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.2);border-radius:6px;padding:8px 12px;margin-bottom:10px"></div>
+        <div id="naErrReset" style="display:none;font-family:monospace;font-size:10px;color:#FF6B6B;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.2);border-radius:6px;padding:8px 12px;margin-bottom:10px"></div>
+        <!-- Sign In -->
+        <div id="naFormIn" style="display:none">
+          <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Email</div>
+          <input id="naEmail" type="email" placeholder="you@company.com" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Password</div>
+          <input id="naPass" type="password" placeholder="Your password" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:14px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <button id="naBtnIn" onclick="naSignIn()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Sign In &#x2192;</button>
+          <div style="text-align:center;font-family:monospace;font-size:9px;color:#5A84A8"><span onclick="naForgotPassword()" style="color:#00C8FF;cursor:pointer;text-decoration:underline;text-underline-offset:3px">Forgot password?</span> &nbsp;&middot;&nbsp; <span onclick="naAuthTab('up')" style="color:#00C8FF;cursor:pointer">Create account</span></div>
+        </div>
+        <!-- Create Account -->
+        <div id="naFormUp">
+          <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Full Name</div>
+          <input id="naName" type="text" placeholder="Alex Morgan" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Email</div>
+          <input id="naEmailUp" type="email" placeholder="you@company.com" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Password</div>
+          <input id="naPassUp" type="password" placeholder="Min. 6 characters" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:14px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <button id="naBtnUp" onclick="naSignUp()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Free Account &#x2192;</button>
+          <div style="text-align:center;font-family:monospace;font-size:9px;color:#5A84A8">3 free tasks &nbsp;&middot;&nbsp; No credit card required</div>
+          <div style="margin-top:8px;text-align:center;font-family:monospace;font-size:8.5px;color:#5A84A8">Already have an account? <span onclick="naAuthTab('in')" style="color:#00C8FF;cursor:pointer">Sign in</span></div>
+        </div>
+        <!-- Password Reset -->
+        <div id="naFormReset" style="display:none">
+          <div style="font-family:monospace;font-size:9px;color:#9BC0D8;margin-bottom:14px;line-height:1.7">Enter your new password below.</div>
+          <input id="naNewPass" type="password" placeholder="New password (min. 6 characters)" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:14px;box-sizing:border-box"/>
+          <button onclick="naUpdatePassword()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px">Set New Password &#x2192;</button>
+          <div style="text-align:center"><span onclick="naAuthTab('in')" style="font-family:monospace;font-size:9px;color:#5A84A8;cursor:pointer">&larr; Back to Sign In</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.na-auth-tab{flex:1;padding:8px;border:none;border-radius:6px;background:transparent;color:#3D5A73;font-family:monospace;font-size:9.5px;cursor:pointer;transition:all .15s}
+.na-auth-tab.active{background:#00C8FF;color:#0F2645;font-weight:700}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- NexGen MFA Challenge Wall                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="nxMFAWall" style="display:none;position:fixed;inset:0;background:rgba(15,38,69,.97);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(18px);padding:20px">
+  <div style="background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:14px;padding:36px;width:100%;max-width:400px;text-align:center">
+    <svg width="44" height="44" viewBox="0 0 28 28" fill="none" style="margin-bottom:16px"><polygon points="14,2 24,7.5 24,20.5 14,26 4,20.5 4,7.5" stroke="#00C8FF" stroke-width="1.5" fill="none"/><polygon points="14,7 20,10.5 20,17.5 14,21 8,17.5 8,10.5" stroke="#00C8FF" stroke-width="1" fill="none" opacity=".6"/><circle cx="14" cy="14" r="2.5" fill="#00C8FF"/></svg>
+    <div style="font-family:monospace;font-size:9px;color:#00C8FF;letter-spacing:3px;margin-bottom:10px">TWO-FACTOR AUTHENTICATION</div>
+    <div style="font-size:19px;font-weight:700;color:#E8F2FB;margin-bottom:8px;letter-spacing:-.4px">Enter your authentication code</div>
+    <div style="font-size:12.5px;color:#8BAFC8;line-height:1.8;margin-bottom:24px">Open your authenticator app (Google Authenticator, Authy, etc.) and enter the 6-digit code for NexGen.</div>
+    <div id="nxMFAErr" style="display:none;background:rgba(255,77,77,.08);border:1px solid rgba(255,77,77,.2);border-radius:7px;padding:9px 13px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px;text-align:left"></div>
+    <input id="nxMFACode" type="text" inputmode="numeric" maxlength="6" placeholder="000000"
+      style="width:100%;background:#0F2645;border:1px solid rgba(0,200,255,.2);border-radius:9px;padding:14px;font-family:monospace;font-size:26px;letter-spacing:10px;text-align:center;color:#00C8FF;outline:none;box-sizing:border-box;margin-bottom:16px"
+      onkeydown="if(event.key==='Enter')nxMFAVerify()"
+      oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"/>
+    <button id="nxMFABtn" onclick="nxMFAVerify()"
+      style="width:100%;padding:13px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:12px;letter-spacing:.5px;transition:opacity .15s"
+      onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Verify Code &#x2192;</button>
+    <div style="font-family:monospace;font-size:9px;color:#3D5A73">Having trouble? Contact <a href="mailto:support@corverxis.com" style="color:#00C8FF;text-decoration:none">support@corverxis.com</a></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- NexGen MFA Settings Panel (inject into account/settings area)  -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<div id="nxMFASettings" style="display:none;position:fixed;inset:0;background:rgba(15,38,69,.95);z-index:99997;align-items:center;justify-content:center;backdrop-filter:blur(14px);padding:20px">
+  <div style="background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:14px;padding:36px;width:100%;max-width:480px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+      <div>
+        <div style="font-family:monospace;font-size:9px;color:#00C8FF;letter-spacing:2px;margin-bottom:6px">SECURITY SETTINGS</div>
+        <div style="font-size:18px;font-weight:700;color:#E8F2FB;letter-spacing:-.4px">Two-Factor Authentication</div>
+      </div>
+      <button onclick="document.getElementById('nxMFASettings').style.display='none'"
+        style="background:none;border:none;color:#4A6C84;font-size:22px;cursor:pointer;padding:4px"
+        onmouseover="this.style.color='#E8F2FB'" onmouseout="this.style.color='#4A6C84'">&#x2715;</button>
+    </div>
+    <div style="background:#0F2645;border:1px solid rgba(0,200,255,.1);border-radius:10px;padding:18px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:13px;font-weight:600;color:#E8F2FB">Authenticator App (TOTP)</div>
+        <span id="nxMFAStatus" style="font-family:monospace;font-size:10px;color:#8BAFC8">Checking&#x2026;</span>
+      </div>
+      <div style="font-size:12px;color:#8BAFC8;line-height:1.7;margin-bottom:14px">Use Google Authenticator, Authy, or any TOTP app to generate secure login codes. Once enabled, you will be asked for a code every time you sign in.</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="nxMFAEnrollBtn" onclick="nxMFAStartEnroll()"
+          style="padding:8px 18px;background:#00C8FF;color:#0F2645;border:none;border-radius:7px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;transition:opacity .15s"
+          onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Enable MFA</button>
+        <button id="nxMFADisableBtn" onclick="nxMFADisable()" style="display:none;padding:8px 18px;background:transparent;border:1px solid rgba(255,77,77,.3);color:#FF6B6B;border-radius:7px;font-family:monospace;font-size:10px;cursor:pointer">Disable MFA</button>
+      </div>
+    </div>
+    <div id="nxMFASettingsErr" style="display:none;background:rgba(255,77,77,.08);border:1px solid rgba(255,77,77,.2);border-radius:7px;padding:9px 13px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px"></div>
+    <!-- Enroll panel (shown after clicking Enable) -->
+    <div id="nxMFAEnrollPanel" style="display:none;background:#0F2645;border:1px solid rgba(0,200,255,.12);border-radius:10px;padding:20px">
+      <div style="font-size:12px;font-weight:600;color:#E8F2FB;margin-bottom:12px">Step 1 — Scan this QR code with your authenticator app</div>
+      <div style="text-align:center;margin-bottom:14px">
+        <img id="nxMFAQR" src="" alt="QR Code" style="width:160px;height:160px;border-radius:8px;background:#fff;padding:8px"/>
+      </div>
+      <div style="font-size:11px;color:#8BAFC8;margin-bottom:6px">Or enter this secret key manually:</div>
+      <div id="nxMFASecret" style="font-family:monospace;font-size:11px;color:#00C8FF;background:#162E52;border:1px solid rgba(0,200,255,.15);border-radius:6px;padding:8px 12px;word-break:break-all;margin-bottom:16px;letter-spacing:2px"></div>
+      <div style="font-size:12px;font-weight:600;color:#E8F2FB;margin-bottom:8px">Step 2 — Enter the 6-digit code to confirm</div>
+      <input id="nxMFAEnrollCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000"
+        style="width:100%;background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:8px;padding:11px;font-family:monospace;font-size:22px;letter-spacing:8px;text-align:center;color:#00C8FF;outline:none;box-sizing:border-box;margin-bottom:12px"
+        oninput="this.value=this.value.replace(/\D/g,'').slice(0,6)"/>
+      <button id="nxMFAConfirmBtn" onclick="nxMFAConfirmEnroll()"
+        style="width:100%;padding:12px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;transition:opacity .15s"
+        onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Confirm &amp; Enable &#x2713;</button>
+    </div>
+    <!-- Recovery note -->
+    <div style="margin-top:18px;padding:14px;background:rgba(255,184,48,.05);border:1px solid rgba(255,184,48,.15);border-radius:8px">
+      <div style="font-family:monospace;font-size:9px;color:#FFB830;letter-spacing:1.5px;margin-bottom:5px">&#x26A0; IMPORTANT</div>
+      <div style="font-size:11.5px;color:#8BAFC8;line-height:1.7">If you lose access to your authenticator app you will need to contact <a href="mailto:support@corverxis.com" style="color:#00C8FF;text-decoration:none">support@corverxis.com</a> to recover your account. Save your secret key in a safe place.</div>
+    </div>
+  </div>
+</div>
+
+
 
 <!-- ── CONNECTION WIZARD MODAL ────────────────── -->
-<div id="connectWizard" style="display:none;position:fixed;inset:0;background:rgba(8,15,24,.95);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px;overflow-y:auto">
-  <div style="background:#0D1B2E;border:1px solid rgba(0,200,255,.2);border-radius:16px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto">
+<div id="connectWizard" style="display:none;position:fixed;inset:0;background:rgba(15,38,69,.95);z-index:9000;align-items:center;justify-content:center;backdrop-filter:blur(16px);padding:20px;overflow-y:auto">
+  <div style="background:#162E52;border:1px solid rgba(0,200,255,.2);border-radius:16px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto">
     <div style="display:flex;align-items:center;gap:12px;padding:22px 26px;border-bottom:1px solid rgba(0,200,255,.1)">
       <div style="width:40px;height:40px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px">&#x1F50C;</div>
       <div>
@@ -2506,208 +2951,18 @@ function wzDeployAgent() {
         </div>
       </div>
     </div>
+    </div>
   </div>
 </div>
 
-<!-- ── AUTH GATE ── -->
-<div id="authGate" style="position:fixed;inset:0;background:#080F18;z-index:99999;display:flex;overflow-y:auto">
 
-  <!-- LEFT PANEL — Branding & Marketing -->
-  <div style="flex:1;min-width:0;background:linear-gradient(145deg,#0B1725 0%,#0D1F35 50%,#071018 100%);display:flex;flex-direction:column;justify-content:center;padding:48px 52px;position:relative;overflow:hidden">
-
-    <!-- Background glow -->
-    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,200,255,.08) 0%,transparent 70%);pointer-events:none"></div>
-    <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(0,153,204,.06) 0%,transparent 70%);pointer-events:none"></div>
-
-    <!-- Logo -->
-    <div style="margin-bottom:36px">
-      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMjYwIDcwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIyNjAiIGhlaWdodD0iNzAiIHJ4PSIxMiIgZmlsbD0iIzBCMTcyNSIvPgogIDxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSIyNTgiIGhlaWdodD0iNjgiIHJ4PSIxMSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDAsMjAwLDI1NSwwLjI1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPCEtLSBJY29uIC0tPgogIDxjaXJjbGUgY3g9IjM1IiBjeT0iMzUiIHI9IjIyIiBmaWxsPSJyZ2JhKDAsMjAwLDI1NSwwLjEpIiBzdHJva2U9IiMwMEM4RkYiIHN0cm9rZS13aWR0aD0iMS41Ii8+CiAgPHBhdGggZD0iTTI2IDM1IEwzNSAyNSBMNDQgMzUgTDM1IDQ1IFoiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwQzhGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPGNpcmNsZSBjeD0iMzUiIGN5PSIzNSIgcj0iNCIgZmlsbD0iIzAwQzhGRiIvPgogIDwhLS0gVGV4dCAtLT4KICA8dGV4dCB4PSI2NyIgeT0iMzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLHNlcmlmIiBmb250LXNpemU9IjIyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjRkZGRkZGIiBsZXR0ZXItc3BhY2luZz0iLTAuNSI+Q29ydmVyeGlzPC90ZXh0PgogIDx0ZXh0IHg9IjY3IiB5PSI1MiIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iMTUiIGZpbGw9IiMwMEM4RkYiIGxldHRlci1zcGFjaW5nPSIxLjUiPlRFQ0hOT0xPR0lFUzwvdGV4dD4KPC9zdmc+" style="height:44px;object-fit:contain" alt="Corverxis Technologies"/>
-      <div style="font-family:monospace;font-size:8px;color:rgba(0,200,255,.6);letter-spacing:3px;text-transform:uppercase;margin-top:8px">NexAgent Studio &middot; v2.0</div>
-    </div>
-
-    <!-- Headline -->
-    <div style="font-family:'Playfair Display',serif;font-size:32px;color:#EEF4F8;line-height:1.25;letter-spacing:-.5px;margin-bottom:16px">
-      Your AI Workforce,<br><em style="color:#00C8FF">Live Right Now</em>
-    </div>
-    <div style="font-size:14px;color:#8BAFC8;line-height:1.75;margin-bottom:40px;max-width:380px">
-      NexAgent Studio deploys 4 specialist agents — Research, Analysis, Action, and Quality — that work together to deliver enterprise-grade outputs in seconds.
-    </div>
-
-    <!-- Marketing highlights -->
-    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:32px">
-      <div style="display:flex;align-items:flex-start;gap:14px">
-        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F916;</div>
-        <div>
-          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">40+ Pre-Built Specialist Agents</div>
-          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Deploy instantly across every function — Research, Sales, Legal, Clinical, Finance, Engineering and more. No setup required.</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:14px">
-        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F50D;</div>
-        <div>
-          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">4-Agent Pipeline</div>
-          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Research, Analysis, Action &amp; Quality agents working in parallel — streaming live enterprise-grade results.</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:14px">
-        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F517;</div>
-        <div>
-          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">200+ Native Integrations</div>
-          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">Salesforce, Slack, Jira, SAP, AWS and 195+ more — one-click connections to your entire stack.</div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:14px">
-        <div style="width:36px;height:36px;background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">&#x1F512;</div>
-        <div>
-          <div style="font-size:13.5px;font-weight:600;color:#EEF4F8;margin-bottom:3px">Enterprise-Grade Security</div>
-          <div style="font-size:12px;color:#8BAFC8;line-height:1.6">SOC 2 compliant, HIPAA ready, GDPR aligned. Your data stays yours.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Agent category pills -->
-    <div style="margin-bottom:32px">
-      <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px">Agent Categories</div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px">
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F52C; Research</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4CA; Analytics</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x2696;&#xFE0F; Compliance</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3E5; Healthcare</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4B0; Finance</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4BC; Sales &amp; CRM</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F4CB; Marketing</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F477; HR &amp; People</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3DB;&#xFE0F; Government</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x2699;&#xFE0F; Engineering</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F3ED; Manufacturing</span>
-        <span style="font-family:monospace;font-size:8.5px;padding:4px 10px;border-radius:10px;background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);color:#8BAFC8">&#x1F9E0; AI &amp; ML</span>
-      </div>
-    </div>
-
-    <!-- Social proof -->
-    <div style="border-top:1px solid rgba(0,200,255,.08);padding-top:24px">
-      <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px">Trusted by teams at</div>
-      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Goldman Sachs</span>
-        <span style="color:#4A6C84">&middot;</span>
-        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Johns Hopkins</span>
-        <span style="color:#4A6C84">&middot;</span>
-        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">Siemens Energy</span>
-        <span style="color:#4A6C84">&middot;</span>
-        <span style="font-family:monospace;font-size:10px;color:#8BAFC8;opacity:.7">US Dept. HHS</span>
-      </div>
-    </div>
-
-    <!-- Metric pills -->
-    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
-      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
-        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">40+</span>
-        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> Agents</span>
-      </div>
-      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
-        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">200+</span>
-        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> Integrations</span>
-      </div>
-      <div style="background:rgba(0,200,255,.07);border:1px solid rgba(0,200,255,.12);border-radius:20px;padding:6px 14px">
-        <span style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">3 free</span>
-        <span style="font-family:monospace;font-size:9px;color:#4A6C84"> tasks</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT PANEL — Auth Form -->
-  <div style="width:420px;flex-shrink:0;background:#0D1B2E;border-left:1px solid rgba(0,200,255,.1);display:flex;flex-direction:column;justify-content:center;padding:40px 36px;overflow-y:auto">
-
-    <div style="margin-bottom:28px">
-      <div style="font-family:'Playfair Display',serif;font-size:22px;color:#EEF4F8;margin-bottom:6px">Welcome</div>
-      <div style="font-family:monospace;font-size:9px;color:#4A6C84;letter-spacing:1px">Sign in or create your free account</div>
-    </div>
-
-    <!-- Tabs -->
-    <div style="display:flex;border-bottom:1px solid rgba(0,200,255,.1);margin-bottom:24px">
-      <button id="gateTabIn" onclick="gateTab('in')" style="flex:1;padding:11px;background:transparent;border:none;font-family:monospace;font-size:10px;color:#00C8FF;cursor:pointer;border-bottom:2px solid #00C8FF;transition:all .2s">Sign In</button>
-      <button id="gateTabUp" onclick="gateTab('up')" style="flex:1;padding:11px;background:transparent;border:none;font-family:monospace;font-size:10px;color:#4A6C84;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s">Create Account</button>
-    </div>
-
-    <!-- Sign In Form -->
-    <div id="gateFormIn">
-      <div id="gateErrIn" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:6px;padding:8px 12px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px"></div>
-      <div style="margin-bottom:14px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Email</div>
-        <input id="giEmail" type="email" placeholder="you@company.com" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'" onkeydown="if(event.key==='Enter')gateSignIn()"/>
-      </div>
-      <div style="margin-bottom:20px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Password</div>
-        <input id="giPass" type="password" placeholder="••••••••" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'" onkeydown="if(event.key==='Enter')gateSignIn()"/>
-      </div>
-      <button id="gateBtnIn" onclick="gateSignIn()" style="width:100%;padding:12px;background:#00C8FF;color:#04080E;border:none;border-radius:8px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Sign In &#x2192;</button>
-      <div style="text-align:center;font-family:monospace;font-size:9px;color:#4A6C84">No account? <span onclick="gateTab('up')" style="color:#00C8FF;cursor:pointer">Create one free</span></div>
-    </div>
-
-    <!-- Create Account Form -->
-    <div id="gateFormUp" style="display:none">
-      <div id="gateErrUp" style="display:none;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:6px;padding:8px 12px;font-family:monospace;font-size:10px;color:#FF6B6B;margin-bottom:14px"></div>
-      <div style="margin-bottom:12px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Full Name</div>
-        <input id="guName" type="text" placeholder="Sampson Kontomah" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
-      </div>
-      <div style="margin-bottom:12px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Work Email</div>
-        <input id="guEmail" type="email" placeholder="you@company.com" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
-      </div>
-      <div style="margin-bottom:14px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Password (min 8 chars)</div>
-        <input id="guPass" type="password" placeholder="••••••••" style="width:100%;background:#080F18;border:1px solid rgba(0,200,255,.12);border-radius:7px;padding:10px 13px;font-size:13px;color:#EEF4F8;outline:none;box-sizing:border-box" onfocus="this.style.borderColor='rgba(0,200,255,.4)'" onblur="this.style.borderColor='rgba(0,200,255,.12)'"/>
-      </div>
-      <!-- Plan selector -->
-      <div style="margin-bottom:18px">
-        <div style="font-family:monospace;font-size:8px;color:#4A6C84;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Choose Your Plan</div>
-        <div style="display:flex;flex-direction:column;gap:7px">
-
-          <div id="gPlanStarter" onclick="selectGatePlan('starter')" style="padding:11px 14px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.4);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between">
-            <div><div style="font-family:monospace;font-size:10px;color:#00C8FF;font-weight:700">Starter</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">50 tasks &middot; 4 agents &middot; 20 integrations</div></div>
-            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#00C8FF;font-weight:700">$299</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">/mo</div></div>
-          </div>
-
-          <div id="gPlanPro" onclick="selectGatePlan('pro')" style="padding:11px 14px;background:transparent;border:1px solid rgba(0,200,255,.12);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between;position:relative">
-            <div style="position:absolute;top:-9px;left:12px;background:#00C8FF;color:#04080E;font-family:monospace;font-size:7px;font-weight:700;padding:2px 8px;border-radius:8px">MOST POPULAR</div>
-            <div><div style="font-family:monospace;font-size:10px;color:#8BAFC8;font-weight:700">Professional</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">Unlimited &middot; All 40+ agents &middot; 200+ integrations</div></div>
-            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#8BAFC8;font-weight:700">$999</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">/mo</div></div>
-          </div>
-
-          <div id="gPlanEnt" onclick="selectGatePlan('enterprise')" style="padding:11px 14px;background:transparent;border:1px solid rgba(0,200,255,.12);border-radius:8px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:space-between">
-            <div><div style="font-family:monospace;font-size:10px;color:#8BAFC8;font-weight:700">Enterprise</div><div style="font-family:monospace;font-size:8px;color:#4A6C84;margin-top:2px">Private cloud &middot; HIPAA/SOC2 &middot; Dedicated support</div></div>
-            <div style="text-align:right"><div style="font-family:monospace;font-size:13px;color:#8BAFC8;font-weight:700">Custom</div><div style="font-family:monospace;font-size:7.5px;color:#4A6C84">pricing</div></div>
-          </div>
-
-        </div>
-      </div>
-      <button id="gateBtnUp" onclick="gateSignUp()" style="width:100%;padding:12px;background:#00C8FF;color:#04080E;border:none;border-radius:8px;font-family:monospace;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:14px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Account &amp; Start Free Trial &#x2192;</button>
-      <div style="text-align:center;font-family:monospace;font-size:9px;color:#4A6C84;margin-bottom:10px">Already have an account? <span onclick="gateTab('in')" style="color:#00C8FF;cursor:pointer">Sign in</span></div>
-      <div style="text-align:center;font-family:monospace;font-size:8px;color:#4A6C84">3 free tasks &middot; no card required &middot; cancel anytime</div>
-    </div>
-
-    <!-- Trust row -->
-    <div style="display:flex;justify-content:center;gap:14px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,200,255,.07);flex-wrap:wrap">
-      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x1F512; SOC 2</span>
-      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x2713; GDPR</span>
-      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x26A1; Instant Access</span>
-      <span style="font-family:monospace;font-size:8px;color:#4A6C84">&#x2713; Cancel Anytime</span>
-    </div>
-
-    <div style="text-align:center;margin-top:16px">
-      <a href="nexagent.html" style="font-family:monospace;font-size:8px;color:#4A6C84;text-decoration:none">&#x2190; Back to NexAgent</a>
-    </div>
-  </div>
-
-</div>
 
 <!-- Mobile: hide left panel on small screens -->
 <style>
 @media(max-width:768px){
-  #authGate > div:first-child { display:none !important; }
   #authGate > div:last-child  { width:100% !important; border-left:none !important; }
 }
 </style>
 </body>
+
 </html>
