@@ -154,6 +154,13 @@ textarea#prompt:focus{border-color:var(--border2)}
 /* UPGRADE WALL */
 .upgrade-wall{position:fixed;inset:0;background:rgba(15,38,69,.96);z-index:9999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(20px);padding:20px}
 .upgrade-wall.on{display:flex}
+.upload-btn{width:34px;height:34px;border-radius:7px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);color:var(--accent);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;line-height:1;font-weight:300}
+.upload-btn:hover{background:rgba(0,200,255,.15);border-color:rgba(0,200,255,.4)}
+.att-row{display:flex;flex-wrap:wrap;gap:6px;padding:6px 12px 0;border-top:1px solid rgba(0,200,255,.08)}
+.att-chip{display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);border-radius:20px;font-family:var(--fm);font-size:10px;color:var(--accent);max-width:220px}
+.att-chip-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.att-chip-x{cursor:pointer;color:var(--muted);font-size:14px;line-height:1;flex-shrink:0;margin-left:2px}
+.att-chip-x:hover{color:var(--red)}
 
 /* TOAST */
 .toast{position:fixed;bottom:18px;right:18px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-family:var(--fm);font-size:11.5px;color:var(--fg);z-index:9999;transition:opacity .3s;pointer-events:none;opacity:0}
@@ -314,12 +321,16 @@ textarea#prompt:focus{border-color:var(--border2)}
     </div>
     <!-- Input -->
     <div class="input-bar">
-      <div class="input-row">
-        <textarea id="prompt" rows="2" placeholder="Describe a task... e.g. 'Write a competitive analysis of AI in healthcare in West Africa'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runTask();}"></textarea>
+      <div id="attRow" class="att-row" style="display:none"></div>
+      <div class="input-row" style="align-items:flex-end;gap:8px">
+        <!-- Upload + button -->
+        <button class="upload-btn" title="Attach file or image" onclick="document.getElementById('naFileInput').click()">&#x2B;</button>
+        <input type="file" id="naFileInput" multiple accept="image/*,.pdf,.txt,.md,.csv,.docx,.xlsx,.pptx,.json,.py,.js,.ts,.html,.css" style="display:none" onchange="handleFileAttach(this)"/>
+        <textarea id="prompt" rows="2" placeholder="Describe a task, or attach a document to analyse..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runTask();}"></textarea>
         <button id="runBtn" onclick="runTask()">Run &#x26A1;</button>
       </div>
       <div class="input-hint">
-        <span class="hint">Shift+Enter for new line &middot; Enter to run</span>
+        <span class="hint">&#x2B; Attach files &middot; Shift+Enter for new line &middot; Enter to run</span>
         <span class="hint">Powered by <span style="color:var(--accent)">NexGen Ultra</span> &middot; Corverxis Technologies</span>
       </div>
     </div>
@@ -1041,6 +1052,46 @@ const AGENTS = [
    tags:['L&D','Skills Graph','Learning','ROI'],
    metrics:[{n:'40%',l:'Skill Gap Closure Rate'},{n:'3×',l:'Learning Engagement'},{n:'Measurable',l:'Business Impact'}],
    deploy:'Deploy in 25 min · LMS integration required'},
+
+  {id:'a41',icon:'🎨',bg:'rgba(255,120,80,0.1)',cat:'Creative',status:'live',
+   name:'Graphics & Design Agent',role:'Visual Content Creation',
+   desc:'Generates professional graphics, diagrams, infographics, data visualisations, brand assets and visual layouts. Describes and structures visual content for design tools, creates SVG diagrams, and produces detailed design briefs ready for Figma, Canva or Illustrator.',
+   caps:['SVG diagram and chart generation','Infographic structure and layout planning','Brand asset specification and colour palette design','Data visualisation from raw numbers','Design brief generation for Figma / Canva','Icon set and UI component descriptions','Social media graphic templates'],
+   ints:['Figma','Canva','Adobe Creative Cloud','Sketch','Miro','Google Slides'],
+   tags:['Design','Graphics','Visuals','Branding','Infographics'],
+   metrics:[{n:'60s',l:'Brief to Design Spec'},{n:'10x',l:'Faster than Manual'},{n:'100+',l:'Template Styles'}],
+   deploy:'Canva · Figma · Adobe',
+   prompt:'Create a professional infographic layout for our Q3 revenue data showing growth by region, product line, and customer segment with recommended colour palette and chart types.'},
+
+  {id:'a42',icon:'👁️',bg:'rgba(80,180,255,0.1)',cat:'Creative',status:'live',
+   name:'Vision & Image Analysis Agent',role:'Visual Intelligence',
+   desc:'Analyses images, screenshots, documents, charts, diagrams and visual media. Extracts text via OCR, interprets charts and graphs, identifies objects and scenes, compares visual content, and generates structured insights from any visual input.',
+   caps:['Image content extraction and description','Chart and graph data interpretation','OCR text extraction from images and PDFs','Screenshot analysis and UI review','Visual comparison and diff detection','Medical or scientific image interpretation','Document layout analysis'],
+   ints:['Google Vision API','AWS Rekognition','Azure Computer Vision','Tesseract OCR','Roboflow'],
+   tags:['Vision','OCR','Image Analysis','Visual AI','Screenshot'],
+   metrics:[{n:'99%',l:'OCR Accuracy'},{n:'0.8s',l:'Avg Image Analysis'},{n:'50+',l:'Image Formats'}],
+   deploy:'Any image or document upload',
+   prompt:'Analyse this chart image and extract all data points, labels, and trends into a structured table with insights on what the data shows.'},
+
+  {id:'a43',icon:'📊',bg:'rgba(100,200,150,0.1)',cat:'Creative',status:'live',
+   name:'PowerPoint & Slides Agent',role:'Presentation Creation',
+   desc:'Creates complete, professional slide decks from briefs, data, documents or prompts. Structures narratives, writes slide content, defines layouts, generates speaker notes, and exports presentation-ready outlines for PowerPoint, Google Slides or Keynote.',
+   caps:['Full deck creation from brief or data','Executive presentation structuring','Slide-by-slide content and layout design','Speaker notes and presenter script generation','Data-to-slide chart and table creation','Investor pitch deck structuring','Training and onboarding deck creation'],
+   ints:['Microsoft PowerPoint','Google Slides','Keynote','Beautiful.ai','Gamma','Pitch','Canva'],
+   tags:['PowerPoint','Slides','Presentations','Decks','Pitch'],
+   metrics:[{n:'15min',l:'Full Deck Draft'},{n:'20+',l:'Slide Templates'},{n:'3x',l:'Faster than Manual'}],
+   deploy:'PowerPoint · Google Slides · Gamma',
+   prompt:'Create a 12-slide investor pitch deck for NexAgent Studio covering problem, solution, market size, product demo, business model, traction, team, and funding ask.'},
+
+  {id:'a44',icon:'📚',bg:'rgba(200,150,255,0.1)',cat:'Creative',status:'live',
+   name:'Knowledge Base Agent',role:'Organisational Intelligence',
+   desc:'Builds, maintains and queries knowledge bases from documents, wikis, conversations and data sources. Answers questions from internal content, identifies knowledge gaps, creates structured FAQs, and ensures organisational knowledge is always searchable and up to date.',
+   caps:['Knowledge base creation from documents and wikis','FAQ and Q&A pair generation','Internal search and retrieval','Knowledge gap identification','Confluence and Notion page structuring','Training material creation from SOPs','Version-aware knowledge updating'],
+   ints:['Confluence','Notion','SharePoint','Guru','Document360','Intercom','Zendesk'],
+   tags:['Knowledge','Wiki','FAQ','Documentation','Search'],
+   metrics:[{n:'90%',l:'Query Answer Rate'},{n:'5min',l:'Doc to KB Entry'},{n:'10k+',l:'Docs Supported'}],
+   deploy:'Confluence · Notion · SharePoint',
+   prompt:'Ingest our product documentation and create a structured knowledge base with categorised FAQs, quick-reference guides, and an index of all features with their descriptions.'},
 ];
 
 
@@ -1523,7 +1574,8 @@ async function runTask() {
   if (_running) return;
   var userText = (document.getElementById('prompt') || {}).value || '';
   userText = userText.trim();
-  if (!userText) return;
+  if (!userText && !_attachments.length) return;
+  if (!userText && _attachments.length) userText = 'Analyse the attached file(s) and provide a detailed summary, key insights and recommendations.';
   if (!checkTrial()) return;
 
   _running = true;
@@ -1585,9 +1637,10 @@ async function runTask() {
     var __key = window.__K;
     if (!__key) throw new Error('API key not configured. Please contact support.');
 
+    var __msgs = buildMessages(userText);
     var __body = JSON.stringify({
       model: 'claude-sonnet-4-6', max_tokens: 8000, stream: true,
-      system: SYSTEM, messages: [{ role: 'user', content: userText }],
+      system: SYSTEM, messages: __msgs,
     });
 
     // Direct browser call — works from nxagent.studio
@@ -1651,6 +1704,7 @@ async function runTask() {
     _output = full;
     _query  = userText;
     showOutput();
+    clearAttachments();
     incrementTrial();
     _taskCount++;
     updateStats();
@@ -2319,6 +2373,111 @@ function wzDeployAgent() {
 
 </script>
 <script>
+
+// ── FILE UPLOAD ───────────────────────────────────────────────────
+var _attachments = []; // {name, type, content, dataUrl}
+
+function handleFileAttach(input) {
+  var files = Array.from(input.files || []);
+  if (!files.length) return;
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    var isImage = file.type.startsWith('image/');
+    reader.onload = function(e) {
+      var att = {
+        name:    file.name,
+        type:    file.type,
+        size:    file.size,
+        dataUrl: e.target.result,
+        content: isImage ? null : e.target.result,
+        isImage: isImage
+      };
+      _attachments.push(att);
+      renderAttachments();
+    };
+    if (isImage) {
+      reader.readAsDataURL(file);
+    } else {
+      reader.readAsText(file);
+    }
+  });
+  input.value = ''; // reset so same file can be reattached
+}
+
+function renderAttachments() {
+  var row = document.getElementById('attRow');
+  if (!row) return;
+  if (!_attachments.length) { row.style.display = 'none'; row.innerHTML = ''; return; }
+  row.style.display = 'flex';
+  row.innerHTML = _attachments.map(function(att, i) {
+    var icon = att.isImage ? '&#x1F5BC;' :
+               att.type.includes('pdf') ? '&#x1F4C4;' :
+               att.type.includes('sheet') || att.name.endsWith('.xlsx') || att.name.endsWith('.csv') ? '&#x1F4CA;' :
+               att.type.includes('presentation') || att.name.endsWith('.pptx') ? '&#x1F4CA;' :
+               att.name.endsWith('.py') || att.name.endsWith('.js') || att.name.endsWith('.ts') ? '&#x1F4BB;' :
+               '&#x1F4C3;';
+    var size = att.size > 1024*1024 ? (att.size/1024/1024).toFixed(1)+'MB' : (att.size/1024).toFixed(0)+'KB';
+    return '<div class="att-chip" title="' + esc(att.name) + '">'
+      + '<span>' + icon + '</span>'
+      + '<span class="att-chip-name">' + esc(att.name.slice(0,24)) + '</span>'
+      + '<span style="font-family:var(--fm);font-size:8px;color:var(--muted);flex-shrink:0">' + size + '</span>'
+      + '<span class="att-chip-x" onclick="removeAttachment(' + i + ')">&#x2715;</span>'
+      + '</div>';
+  }).join('');
+}
+
+function removeAttachment(i) {
+  _attachments.splice(i, 1);
+  renderAttachments();
+}
+
+function clearAttachments() {
+  _attachments = [];
+  renderAttachments();
+}
+
+// ── Inject attachments into task prompt ──────────────────────────
+function buildPromptWithAttachments(userText) {
+  if (!_attachments.length) return userText;
+  var parts = [userText];
+  _attachments.forEach(function(att) {
+    if (att.isImage) {
+      parts.push('\n[Attached image: ' + att.name + ']');
+    } else if (att.content) {
+      var preview = att.content.slice(0, 8000);
+      var truncated = att.content.length > 8000 ? '\n... [truncated, ' + (att.content.length/1024).toFixed(0) + 'KB total]' : '';
+      parts.push('\n\n---\nAttached file: ' + att.name + '\n```\n' + preview + truncated + '\n```');
+    }
+  });
+  return parts.join('');
+}
+
+// ── Build messages array with image support ───────────────────────
+function buildMessages(userText) {
+  var images = _attachments.filter(function(a){ return a.isImage; });
+  if (!images.length) {
+    return [{ role: 'user', content: buildPromptWithAttachments(userText) }];
+  }
+  // Multi-modal message with images
+  var content = [];
+  images.forEach(function(img) {
+    var parts = img.dataUrl.split(',');
+    var mediaType = img.type || 'image/jpeg';
+    var b64 = parts[1] || parts[0];
+    content.push({ type: 'image', source: { type: 'base64', media_type: mediaType, data: b64 } });
+  });
+  // Add text (with non-image file contents appended)
+  var textParts = [userText];
+  _attachments.filter(function(a){ return !a.isImage && a.content; }).forEach(function(att) {
+    textParts.push('\n\nAttached file: ' + att.name + '\n```\n' + att.content.slice(0, 8000) + '\n```');
+  });
+  content.push({ type: 'text', text: textParts.join('') });
+  return [{ role: 'user', content: content }];
+}
+// ─────────────────────────────────────────────────────────────────
+
+</script>
+<script>
 // ══════════════════════════════════════════════════════════════════
 // NexAgent Studio — Supabase Auth + TOTP MFA
 // ══════════════════════════════════════════════════════════════════
@@ -2965,4 +3124,9 @@ function wzDeployAgent() {
 </style>
 </body>
 
-</html>
+</html
+  { icon:'🎨', label:'Design Brief Generator',    prompt:'Create a detailed design brief for a professional infographic showing our company growth metrics over the past 3 years. Include recommended layout, colour palette, chart types and visual hierarchy.' },
+  { icon:'👁️', label:'Image Data Extraction',     prompt:'Analyse the uploaded chart image and extract all data points, axis labels, legends and trend lines into a structured table with a written summary of key insights.' },
+  { icon:'📊', label:'Investor Pitch Deck',        prompt:'Create a complete 15-slide investor pitch deck for NexAgent Studio. Include problem, solution, market size (TAM/SAM/SOM), product, traction, business model, competition, team and funding ask slides with speaker notes.' },
+  { icon:'📚', label:'Knowledge Base from Docs',   prompt:'Review our product documentation and build a structured knowledge base. Organise content into categories, generate FAQ pairs, identify gaps, and create a master index with one-line descriptions of each article.' },
+>
