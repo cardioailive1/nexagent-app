@@ -2607,6 +2607,13 @@ function buildMessages(userText) {
   // ── Sign Up ──────────────────────────────────────────────────
   window.naSignUp = async function(){
     naAuthErr('naErrUp','');
+    var consent = document.getElementById('naConsent');
+    if(consent && !consent.checked){
+      var row = document.getElementById('naConsentRow');
+      if(row){ row.style.borderColor='rgba(255,107,107,.5)'; row.style.background='rgba(255,80,80,.06)'; setTimeout(function(){ row.style.borderColor='rgba(0,200,255,.12)'; row.style.background='rgba(0,200,255,.05)'; },2500); }
+      naAuthErr('naErrUp','Please agree to the Privacy Policy and Terms of Service to continue.');
+      return;
+    }
     var name  = (document.getElementById('naName')    ||{}).value.trim()||'';
     var email = (document.getElementById('naEmailUp') ||{}).value.trim()||'';
     var pass  = (document.getElementById('naPassUp')  ||{}).value||'';
@@ -2967,6 +2974,7 @@ function buildMessages(userText) {
           <input id="naEmailUp" type="email" placeholder="you@company.com" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
           <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Password</div>
           <input id="naPassUp" type="password" placeholder="Min. 6 characters" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:14px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
+          <div id="naConsentRow" style="display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;padding:10px 12px;background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.12);border-radius:7px"><input type="checkbox" id="naConsent" style="margin-top:2px;accent-color:#00C8FF;width:14px;height:14px;flex-shrink:0;cursor:pointer"/><label for="naConsent" style="font-family:monospace;font-size:9.5px;color:#9BC0D8;line-height:1.6;cursor:pointer">I have read and agree to the <span onclick="openNaPrivacy();event.preventDefault();" style="color:#00C8FF;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Privacy Policy</span> and <span onclick="openNaPrivacy();event.preventDefault();" style="color:#00C8FF;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Terms of Service</span></label></div>
           <button id="naBtnUp" onclick="naSignUp()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Free Account &#x2192;</button>
           <div style="text-align:center;font-family:monospace;font-size:9px;color:#5A84A8">3 free tasks &nbsp;&middot;&nbsp; No credit card required</div>
           <div style="margin-top:8px;text-align:center;font-family:monospace;font-size:8.5px;color:#5A84A8">Already have an account? <span onclick="naAuthTab('in')" style="color:#00C8FF;cursor:pointer">Sign in</span></div>
@@ -3122,11 +3130,82 @@ function buildMessages(userText) {
   #authGate > div:last-child  { width:100% !important; border-left:none !important; }
 }
 </style>
+<!-- NEXAGENT PRIVACY POLICY + TERMS OF SERVICE -->
+<div id="naPolicyModal" style="display:none;position:fixed;inset:0;background:rgba(11,23,37,.95);z-index:999999;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;backdrop-filter:blur(16px)">
+  <div style="background:#162E52;border:1px solid rgba(0,200,255,.22);border-radius:14px;max-width:680px;width:100%;margin:auto;position:relative">
+    <button onclick="closeNaPrivacy()" style="position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:7px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);color:#00C8FF;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#x2715;</button>
+    <div style="padding:36px 40px 40px">
+      <div style="font-family:monospace;font-size:9px;color:#00C8FF;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Legal</div>
+      <h2 style="font-size:22px;font-weight:800;color:#EEF4F8;margin-bottom:4px;letter-spacing:-.3px">Privacy Policy &amp; Terms of Service</h2>
+      <div style="font-family:monospace;font-size:9px;color:#5A84A8;margin-bottom:28px">NexAgent Studio &nbsp;&middot;&nbsp; Corverxis Technologies Ltd &nbsp;&middot;&nbsp; Effective: 18 June 2026</div>
+      <div style="font-size:12.5px;color:#9BC0D8;line-height:1.85">
+        <div style="font-size:15px;font-weight:700;color:#EEF4F8;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(0,200,255,.15)">&#x1F512; Privacy Policy</div>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">1. Who We Are</div>
+        <p style="margin:0 0 10px">NexAgent Studio is operated by <strong style="color:#EEF4F8">Corverxis Technologies Ltd</strong>. Contact us at <strong style="color:#EEF4F8">support@corverxis.com</strong> for any privacy enquiries.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">2. Information We Collect</div>
+        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">Account data:</strong> Your name, email and encrypted password at registration &mdash; used only for authentication.</p>
+        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">Task &amp; prompt data:</strong> Prompts you submit and agent outputs. These are transmitted to Anthropic's API and are not stored on Corverxis servers beyond your active session unless you save them.</p>
+        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">File uploads:</strong> Documents and images are processed in-session only and not retained after your session ends.</p>
+        <p style="margin:0 0 10px"><strong style="color:#EEF4F8">Usage data:</strong> Anonymous platform metrics to improve performance. No personally identifiable information is included.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">3. AI Processing &amp; Third-Party APIs</div>
+        <p style="margin:0 0 6px">NexAgent Studio is powered by <strong style="color:#EEF4F8">NexGen Ultra</strong>, Corverxis Technologies' proprietary AI engine. Your prompts are processed securely within the NexGen infrastructure. Corverxis does not sell your prompts, share them with unauthorised third parties, or use them to train models without your explicit consent.</p>
+        <p style="margin:0 0 10px">Payments are processed by <strong style="color:#EEF4F8">Stripe Inc.</strong>, a PCI-DSS Level 1 certified payment processor. Corverxis does not store or access your payment card details.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">4. How We Use Your Information</div>
+        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
+          <li>Authenticate and manage your account</li>
+          <li>Process and route your AI agent tasks</li>
+          <li>Manage subscription billing via Stripe</li>
+          <li>Send transactional emails (verification, password reset)</li>
+          <li>Detect and prevent fraud and security incidents</li>
+        </ul>
+        <p style="margin:0 0 10px">We do <strong style="color:#EEF4F8">not</strong> sell your information or use task data for advertising.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">5. Security</div>
+        <p style="margin:0 0 10px">Data is encrypted at rest and in transit (TLS 1.2+). Passwords are hashed. Optional TOTP MFA is available. Contact <strong style="color:#EEF4F8">support@corverxis.com</strong> immediately if you suspect a breach.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">6. Your Rights (GDPR / CCPA)</div>
+        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
+          <li><strong style="color:#EEF4F8">Access &amp; Portability</strong> &mdash; request a copy of your data</li>
+          <li><strong style="color:#EEF4F8">Rectification</strong> &mdash; correct inaccurate data</li>
+          <li><strong style="color:#EEF4F8">Erasure</strong> &mdash; delete your account and all data within 30 days</li>
+          <li><strong style="color:#EEF4F8">Objection</strong> &mdash; object to processing for legitimate interests</li>
+        </ul>
+        <p style="margin:0 0 10px">To exercise any right email <strong style="color:#EEF4F8">support@corverxis.com</strong> with subject "Privacy Request".</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">7. Data Retention &amp; International Transfers</div>
+        <p style="margin:0 0 10px">Account data is kept while your account is active. Task history follows your plan tier. Data may be processed in the US (Anthropic, Supabase, Stripe) under Standard Contractual Clauses (SCCs). Corverxis Technologies Ltd operates under the laws of the State of Delaware, United States.</p>
+        <div style="font-size:15px;font-weight:700;color:#EEF4F8;margin:16px 0 12px;padding:14px 0 8px;border-top:1px solid rgba(0,200,255,.15);border-bottom:1px solid rgba(0,200,255,.15)">&#x1F4CB; Terms of Service</div>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">1. Acceptance</div>
+        <p style="margin:0 0 10px">By creating an account you agree to these Terms. They form a legally binding agreement between you and Corverxis Technologies Ltd.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">2. Permitted Use</div>
+        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
+          <li>Use NexAgent Studio for lawful business and personal purposes only</li>
+          <li>Do not reverse-engineer, scrape or extract the underlying AI models</li>
+          <li>Do not share credentials or resell access without a reseller agreement</li>
+          <li>Do not submit prompts designed to circumvent AI safety measures</li>
+        </ul>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">3. AI-Generated Outputs</div>
+        <p style="margin:0 0 10px">AI outputs may contain errors. <strong style="color:#EEF4F8">Outputs do not constitute legal, medical, financial or professional advice.</strong> You are solely responsible for verifying and deciding whether to rely on any AI-generated content. Corverxis accepts no liability for decisions made based on AI outputs.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">4. Intellectual Property</div>
+        <p style="margin:0 0 10px">You retain ownership of your inputs and outputs (subject to Anthropic's policies). The NexAgent platform, UI and branding are the exclusive property of Corverxis Technologies Ltd.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">5. Billing &amp; Cancellation</div>
+        <p style="margin:0 0 10px">Paid plans are billed monthly via Stripe. Cancel anytime &mdash; access continues until the end of your billing period. Pricing changes are notified 30 days in advance.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">6. Limitation of Liability</div>
+        <p style="margin:0 0 10px">Corverxis's total liability for any claim shall not exceed the amount you paid in the 3 months preceding it. We are not liable for indirect, consequential or loss-of-profit damages.</p>
+        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">7. Governing Law</div>
+        <p style="margin:0 0 16px">These Terms are governed by the laws of the State of Delaware, United States. Any disputes shall be subject to the exclusive jurisdiction of the federal and state courts located in the State of Delaware.</p>
+        <div style="background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:14px 16px">
+          <div style="font-size:11px;font-weight:700;color:#EEF4F8;margin-bottom:5px">Contact</div>
+          <div style="font-size:11.5px;color:#9BC0D8">Corverxis Technologies Ltd &nbsp;&middot;&nbsp; <strong style="color:#EEF4F8">support@corverxis.com</strong> &nbsp;&middot;&nbsp; corverxis.com</div>
+        </div>
+      </div>
+      <button onclick="closeNaPrivacy()" style="margin-top:22px;width:100%;padding:12px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer">I Understand &mdash; Close</button>
+    </div>
+  </div>
+</div>
+<style>#naPolicyModal::-webkit-scrollbar{width:5px}#naPolicyModal::-webkit-scrollbar-thumb{background:rgba(0,200,255,.3);border-radius:3px}</style>
+<script>
+function openNaPrivacy(){document.getElementById("naPolicyModal").style.display="flex";document.body.style.overflow="hidden";}
+function closeNaPrivacy(){document.getElementById("naPolicyModal").style.display="none";document.body.style.overflow="";}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("naPolicyModal").style.display==="flex")closeNaPrivacy();});
+</script>
 </body>
 
-</html
-  { icon:'🎨', label:'Design Brief Generator',    prompt:'Create a detailed design brief for a professional infographic showing our company growth metrics over the past 3 years. Include recommended layout, colour palette, chart types and visual hierarchy.' },
-  { icon:'👁️', label:'Image Data Extraction',     prompt:'Analyse the uploaded chart image and extract all data points, axis labels, legends and trend lines into a structured table with a written summary of key insights.' },
-  { icon:'📊', label:'Investor Pitch Deck',        prompt:'Create a complete 15-slide investor pitch deck for NexAgent Studio. Include problem, solution, market size (TAM/SAM/SOM), product, traction, business model, competition, team and funding ask slides with speaker notes.' },
-  { icon:'📚', label:'Knowledge Base from Docs',   prompt:'Review our product documentation and build a structured knowledge base. Organise content into categories, generate FAQ pairs, identify gaps, and create a master index with one-line descriptions of each article.' },
->
+</html>
