@@ -215,7 +215,7 @@ textarea#prompt:focus{border-color:var(--border2)}
   <span class="nav-badge">NexGen Ultra</span>
   <div style="display:flex;align-items:center;gap:7px;margin-left:auto">
     <span id="trialCountNav" style="font-family:var(--fm);font-size:9px;padding:3px 10px;border-radius:10px;background:var(--adim);border:1px solid rgba(0,200,255,.2);color:var(--accent);display:none"></span>
-    <button class="nav-btn ghost" onclick="document.getElementById('upgradeWall').classList.add('on')">&#x1F4B3; Pricing</button>
+    <button class="nav-btn ghost" onclick="openUpgradeWall()">&#x1F4B3; Plans</button>
     <button class="nav-btn ghost" onclick="showHistory()">&#x1F4BE; History</button>
     <button class="nav-btn ghost" onclick="clearWorkspace()">Clear</button>
     <a class="nav-btn ghost" href="nexagent.html">&#x2190; Back</a>
@@ -225,14 +225,14 @@ textarea#prompt:focus{border-color:var(--border2)}
   </div>
 </nav>
 
-<!-- TRIAL BAR -->
+<!-- PLANS BAR -->
 <div class="trial-bar" id="trialBar">
   <div class="trial-dot"></div>
-  <span id="trialTxt" style="font-family:var(--fm);font-size:10px;color:var(--fg)"><strong style="color:var(--accent)">3 free tasks</strong> &mdash; no credit card required</span>
+  <span id="trialTxt" style="font-family:var(--fm);font-size:10px;color:var(--fg)"><strong style="color:var(--accent)">Choose a plan</strong> to start running NexGen Ultra agents</span>
   <div style="display:flex;gap:6px;align-items:center">
-    <button onclick="window.open('https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Starter $99</button>
-    <button onclick="window.open('https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g','_blank')" style="padding:4px 10px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Pro $299 &#x2605;</button>
-    <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.15);color:var(--dim);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Enterprise</button>
+    <button onclick="goCheckout('starter','https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Starter $99</button>
+    <button onclick="goCheckout('pro','https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g')" style="padding:4px 10px;background:var(--accent);color:var(--black);border:none;border-radius:5px;font-family:var(--fm);font-size:8px;font-weight:700;cursor:pointer">Pro $299 &#x2605;</button>
+    <button onclick="goCheckout('enterprise','https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06')" style="padding:4px 10px;background:transparent;border:1px solid rgba(0,200,255,.15);color:var(--dim);border-radius:5px;font-family:var(--fm);font-size:8px;cursor:pointer">Enterprise</button>
   </div>
 </div>
 
@@ -376,7 +376,7 @@ textarea#prompt:focus{border-color:var(--border2)}
     <div style="font-size:40px;margin-bottom:12px">&#x26A1;</div>
     <div style="font-family:var(--fm);font-size:9px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Choose Your Plan</div>
     <div style="font-size:20px;font-weight:700;color:var(--fg);margin-bottom:8px">Upgrade NexAgent Studio</div>
-    <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:24px">Your 3 free tasks are complete. Pick a plan to keep running NexGen Ultra agents.</div>
+    <div style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:24px">Pick a plan to start running NexGen Ultra agents.</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;text-align:left">
       <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
         <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Starter</div>
@@ -393,7 +393,7 @@ textarea#prompt:focus{border-color:var(--border2)}
           <span style="color:var(--muted)">&#8212; API &amp; SDK access</span><br>
           <span style="color:var(--muted)">&#8212; Team collaboration</span>
         </div>
-        <button onclick="window.open('https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Start Free Trial &#x2192;</button>
+        <button onclick="goCheckout('starter','https://buy.stripe.com/5kQ6oH1WG6Dr5eP2F41oI0f')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Choose Starter &#x2192;</button>
       </div>
       <div style="background:var(--panel);border:2px solid rgba(0,200,255,.4);border-radius:10px;padding:18px;position:relative">
         <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:var(--black);font-family:var(--fm);font-size:7px;font-weight:700;padding:3px 10px;border-radius:10px;white-space:nowrap">MOST POPULAR</div>
@@ -411,7 +411,7 @@ textarea#prompt:focus{border-color:var(--border2)}
           &#x2713; Team collaboration (10 users)<br>
           &#x2713; Priority support (24h)
         </div>
-        <button onclick="window.open('https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g','_blank')" style="width:100%;padding:9px;background:var(--accent);color:var(--black);border:none;border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Get Started &#x2192;</button>
+        <button onclick="goCheckout('pro','https://buy.stripe.com/3cI6oH30K5zn36HenM1oI0g')" style="width:100%;padding:9px;background:var(--accent);color:var(--black);border:none;border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Get Started &#x2192;</button>
       </div>
       <div style="background:var(--panel);border:1px solid rgba(0,200,255,.15);border-radius:10px;padding:18px">
         <div style="font-family:var(--fm);font-size:8px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Enterprise</div>
@@ -427,11 +427,11 @@ textarea#prompt:focus{border-color:var(--border2)}
           &#x2713; Dedicated success manager<br>
           &#x2713; White-label for agencies
         </div>
-        <button onclick="window.open('https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06','_blank')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Contact Sales &#x2192;</button>
+        <button onclick="goCheckout('enterprise','https://buy.stripe.com/eVqdR96cW8Lz9v593s1oI06')" style="width:100%;padding:9px;background:transparent;border:1px solid rgba(0,200,255,.3);color:var(--accent);border-radius:7px;font-family:var(--fm);font-size:9px;font-weight:700;cursor:pointer">Contact Sales &#x2192;</button>
       </div>
     </div>
     <div style="font-family:var(--fm);font-size:8.5px;color:var(--muted);margin-bottom:12px">&#x1F525; Early adopter prices — locked for life &nbsp;&middot;&nbsp; &#x2713; 14-day money-back guarantee &nbsp;&middot;&nbsp; &#x2713; Cancel anytime</div>
-    <button onclick="document.getElementById('upgradeWall').classList.remove('on')" style="padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:7px;font-family:var(--fm);font-size:9px;cursor:pointer">Maybe later</button>
+    <button id="upgradeWallDismissBtn" onclick="upgradeWallDismiss()" style="padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,.1);color:var(--dim);border-radius:7px;font-family:var(--fm);font-size:9px;cursor:pointer">Maybe later</button>
   </div>
 </div>
 
@@ -1424,8 +1424,6 @@ var _query      = '';
 var _taskCount  = 0;
 var _agentCat   = 'All';
 var _intCat     = 'All';
-var _trialTasks = 0;
-var _trialConv  = false;
 var _savedOutputs = [];
 
 var TEMPLATES = [
@@ -1439,7 +1437,7 @@ var TEMPLATES = [
 
 // ── INIT ──────────────────────────────────────
 (function init() {
-  loadTrial();
+  updatePlanBar();
   loadSaved();
   buildTemplates();
   buildAgentCats();
@@ -1447,38 +1445,47 @@ var TEMPLATES = [
   updateStats();
 })();
 
-// ── TRIAL ─────────────────────────────────────
-function loadTrial() {
-  var raw = localStorage.getItem('na_trial'); var t = raw ? JSON.parse(raw) : {tasks:0,converted:false};
-  _trialTasks = t.tasks || 0;
-  _trialConv  = t.converted || false;
-  updateTrialBar();
+// ── PAID PLAN GATE ────────────────────────────
+function isPaidUser() {
+  var u = window._naUser;
+  return !!(u && u.user_metadata && u.user_metadata.paid);
 }
 
-function saveTrial() {
-  localStorage.setItem('na_trial', JSON.stringify({ tasks: _trialTasks, converted: _trialConv }));
+function goCheckout(plan, url) {
+  localStorage.setItem('na_pending_plan', plan);
+  window.open(url, '_blank');
 }
 
-function updateTrialBar() {
+function openUpgradeWall() {
+  var btn = document.getElementById('upgradeWallDismissBtn');
+  if (btn) btn.textContent = isPaidUser() ? 'Maybe later' : 'Sign out';
+  document.getElementById('upgradeWall').classList.add('on');
+}
+
+function upgradeWallDismiss() {
+  document.getElementById('upgradeWall').classList.remove('on');
+  if (!isPaidUser() && typeof signOut === 'function') {
+    // No free access without a plan — return to sign in.
+    signOut();
+  }
+}
+
+function updatePlanBar() {
   var bar = document.getElementById('trialBar');
-  var txt = document.getElementById('trialTxt');
   var nav = document.getElementById('trialCountNav');
-  if (_trialConv) { if (bar) bar.style.display = 'none'; return; }
-  var rem = Math.max(0, 3 - _trialTasks);
-  if (txt) txt.innerHTML = rem > 0
-    ? '<strong style="color:var(--accent)">' + rem + ' free task' + (rem !== 1 ? 's' : '') + '</strong> &mdash; no credit card required'
-    : '<strong style="color:#FFB84D">Free trial complete</strong> &mdash; upgrade to continue';
-  if (nav) { nav.textContent = rem + ' left'; nav.style.display = rem > 0 ? 'inline-block' : 'none'; }
+  if (isPaidUser()) {
+    if (bar) bar.style.display = 'none';
+    if (nav) { nav.textContent = 'Subscribed'; nav.style.display = 'inline-block'; }
+    return;
+  }
+  if (bar) bar.style.display = 'flex';
+  if (nav) nav.style.display = 'none';
 }
 
 function checkTrial() {
-  if (_trialConv) return true;
-  if (_trialTasks >= 3) { document.getElementById('upgradeWall').classList.add('on'); return false; }
-  return true;
-}
-
-function incrementTrial() {
-  if (!_trialConv) { _trialTasks++; saveTrial(); updateTrialBar(); }
+  if (isPaidUser()) return true;
+  openUpgradeWall();
+  return false;
 }
 
 // ── TEMPLATES ─────────────────────────────────
@@ -1657,8 +1664,17 @@ async function runTask() {
     if (!resp.ok) {
       var errJson = await resp.json().catch(function(){ return {}; });
       var msg = (errJson.error && errJson.error.message) || ('HTTP ' + resp.status);
-      if (resp.status === 401) msg = 'Invalid API key. Check your NEXAGENT_CONFIG_KEY in the HTML file.';
-      if (resp.status === 429) msg = 'Rate limit reached. Please wait a moment and try again.';
+      var lowCredit = resp.status === 402
+        || /credit balance/i.test(msg)
+        || /plans\s*&\s*billing/i.test(msg)
+        || (errJson.error && errJson.error.type === 'billing_error');
+      if (lowCredit) {
+        msg = 'We\u2019re unable to process your request right now. Please try again later, or contact support: support@corverxis.com';
+      } else if (resp.status === 401) {
+        msg = 'We\u2019re unable to process your request right now. Please try again later, or contact support: support@corverxis.com';
+      } else if (resp.status === 429) {
+        msg = 'Rate limit reached. Please wait a moment and try again.';
+      }
       throw new Error(msg);
     }
 
@@ -1685,7 +1701,18 @@ async function runTask() {
             full += ev.delta.text;
             updateBubbles(full);
           }
-        } catch(e) {}
+          if (ev.type === 'error') {
+            var evMsg = (ev.error && ev.error.message) || '';
+            var evLowCredit = /credit balance/i.test(evMsg)
+              || /plans\s*&\s*billing/i.test(evMsg)
+              || (ev.error && ev.error.type === 'billing_error');
+            throw new Error(evLowCredit
+              ? 'We\u2019re unable to process your request right now. Please try again later, or contact support: support@corverxis.com'
+              : 'Something went wrong. Please try again later, or contact support: support@corverxis.com');
+          }
+        } catch(e) {
+          if (e && e.message && e.message.indexOf('support@corverxis.com') !== -1) throw e;
+        }
       }
     }
 
@@ -1705,7 +1732,6 @@ async function runTask() {
     _query  = userText;
     showOutput();
     clearAttachments();
-    incrementTrial();
     _taskCount++;
     updateStats();
     setPipe(null);
@@ -2505,7 +2531,12 @@ function buildMessages(userText) {
       var plan = localStorage.getItem('na_pending_plan') || 'pro';
       _sb.auth.getSession().then(function(r){
         if(!r.data || !r.data.session) return;
-        _sb.auth.updateUser({data:{plan:plan, paid:true}});
+        _sb.auth.updateUser({data:{plan:plan, paid:true}}).then(function(ur){
+          if(ur.data && ur.data.user) window._naUser = ur.data.user;
+          if (typeof updatePlanBar === 'function') updatePlanBar();
+          var w = document.getElementById('upgradeWall');
+          if (w) w.classList.remove('on');
+        });
         localStorage.removeItem('na_pending_plan');
         history.replaceState(null,'',window.location.pathname);
         naToast('✓ ' + plan.charAt(0).toUpperCase()+plan.slice(1) + ' plan activated!');
@@ -2520,7 +2551,12 @@ function buildMessages(userText) {
       var plan = localStorage.getItem('na_pending_plan') || 'pro';
       _sb.auth.getSession().then(function(r){
         if(!r.data || !r.data.session) return;
-        _sb.auth.updateUser({data:{plan:plan, paid:true}});
+        _sb.auth.updateUser({data:{plan:plan, paid:true}}).then(function(ur){
+          if(ur.data && ur.data.user) window._naUser = ur.data.user;
+          if (typeof updatePlanBar === 'function') updatePlanBar();
+          var w = document.getElementById('upgradeWall');
+          if (w) w.classList.remove('on');
+        });
         localStorage.removeItem('na_pending_plan');
         history.replaceState(null,'',window.location.pathname);
         naToast('\u2713 ' + plan.charAt(0).toUpperCase()+plan.slice(1) + ' plan activated!');
@@ -2541,6 +2577,12 @@ function buildMessages(userText) {
     if(signInBtn) signInBtn.style.display = 'none';
     var mfaBtn = document.getElementById('naMFANavBtn');
     if(mfaBtn) mfaBtn.style.display = 'inline-flex';
+    if (typeof updatePlanBar === 'function') updatePlanBar();
+    if (typeof isPaidUser === 'function' && !isPaidUser()) {
+      // No active plan yet — block app access behind the payment wall.
+      if (typeof openUpgradeWall === 'function') openUpgradeWall();
+      return;
+    }
     naToast('Welcome back, ' + name + ' \u2713');
   };
 
@@ -2607,13 +2649,6 @@ function buildMessages(userText) {
   // ── Sign Up ──────────────────────────────────────────────────
   window.naSignUp = async function(){
     naAuthErr('naErrUp','');
-    var consent = document.getElementById('naConsent');
-    if(consent && !consent.checked){
-      var row = document.getElementById('naConsentRow');
-      if(row){ row.style.borderColor='rgba(255,107,107,.5)'; row.style.background='rgba(255,80,80,.06)'; setTimeout(function(){ row.style.borderColor='rgba(0,200,255,.12)'; row.style.background='rgba(0,200,255,.05)'; },2500); }
-      naAuthErr('naErrUp','Please agree to the Privacy Policy and Terms of Service to continue.');
-      return;
-    }
     var name  = (document.getElementById('naName')    ||{}).value.trim()||'';
     var email = (document.getElementById('naEmailUp') ||{}).value.trim()||'';
     var pass  = (document.getElementById('naPassUp')  ||{}).value||'';
@@ -2974,9 +3009,8 @@ function buildMessages(userText) {
           <input id="naEmailUp" type="email" placeholder="you@company.com" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:10px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
           <div style="font-family:monospace;font-size:8px;color:#5A84A8;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px">Password</div>
           <input id="naPassUp" type="password" placeholder="Min. 6 characters" style="width:100%;background:#1B3560;border:1px solid rgba(0,200,255,.2);border-radius:7px;padding:10px 13px;font-family:monospace;font-size:12px;color:#EEF4F8;outline:none;margin-bottom:14px;box-sizing:border-box;transition:border-color .15s" onfocus="this.style.borderColor='rgba(0,200,255,.45)'" onblur="this.style.borderColor='rgba(0,200,255,.2)'"/>
-          <div id="naConsentRow" style="display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;padding:10px 12px;background:rgba(0,200,255,.05);border:1px solid rgba(0,200,255,.12);border-radius:7px"><input type="checkbox" id="naConsent" style="margin-top:2px;accent-color:#00C8FF;width:14px;height:14px;flex-shrink:0;cursor:pointer"/><label for="naConsent" style="font-family:monospace;font-size:9.5px;color:#9BC0D8;line-height:1.6;cursor:pointer">I have read and agree to the <span onclick="openNaPrivacy();event.preventDefault();" style="color:#00C8FF;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Privacy Policy</span> and <span onclick="openNaPrivacy();event.preventDefault();" style="color:#00C8FF;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Terms of Service</span></label></div>
-          <button id="naBtnUp" onclick="naSignUp()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Free Account &#x2192;</button>
-          <div style="text-align:center;font-family:monospace;font-size:9px;color:#5A84A8">3 free tasks &nbsp;&middot;&nbsp; No credit card required</div>
+          <button id="naBtnUp" onclick="naSignUp()" style="width:100%;padding:11px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:opacity .15s" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Create Account &#x2192;</button>
+          <div style="text-align:center;font-family:monospace;font-size:9px;color:#5A84A8">A paid plan is required to run agents</div>
           <div style="margin-top:8px;text-align:center;font-family:monospace;font-size:8.5px;color:#5A84A8">Already have an account? <span onclick="naAuthTab('in')" style="color:#00C8FF;cursor:pointer">Sign in</span></div>
         </div>
         <!-- Password Reset -->
@@ -3130,82 +3164,7 @@ function buildMessages(userText) {
   #authGate > div:last-child  { width:100% !important; border-left:none !important; }
 }
 </style>
-<!-- NEXAGENT PRIVACY POLICY + TERMS OF SERVICE -->
-<div id="naPolicyModal" style="display:none;position:fixed;inset:0;background:rgba(11,23,37,.95);z-index:999999;align-items:flex-start;justify-content:center;padding:24px 16px;overflow-y:auto;backdrop-filter:blur(16px)">
-  <div style="background:#162E52;border:1px solid rgba(0,200,255,.22);border-radius:14px;max-width:680px;width:100%;margin:auto;position:relative">
-    <button onclick="closeNaPrivacy()" style="position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:7px;background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);color:#00C8FF;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center">&#x2715;</button>
-    <div style="padding:36px 40px 40px">
-      <div style="font-family:monospace;font-size:9px;color:#00C8FF;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">Legal</div>
-      <h2 style="font-size:22px;font-weight:800;color:#EEF4F8;margin-bottom:4px;letter-spacing:-.3px">Privacy Policy &amp; Terms of Service</h2>
-      <div style="font-family:monospace;font-size:9px;color:#5A84A8;margin-bottom:28px">NexAgent Studio &nbsp;&middot;&nbsp; Corverxis Technologies Ltd &nbsp;&middot;&nbsp; Effective: 18 June 2026</div>
-      <div style="font-size:12.5px;color:#9BC0D8;line-height:1.85">
-        <div style="font-size:15px;font-weight:700;color:#EEF4F8;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(0,200,255,.15)">&#x1F512; Privacy Policy</div>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">1. Who We Are</div>
-        <p style="margin:0 0 10px">NexAgent Studio is operated by <strong style="color:#EEF4F8">Corverxis Technologies Ltd</strong>. Contact us at <strong style="color:#EEF4F8">support@corverxis.com</strong> for any privacy enquiries.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">2. Information We Collect</div>
-        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">Account data:</strong> Your name, email and encrypted password at registration &mdash; used only for authentication.</p>
-        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">Task &amp; prompt data:</strong> Prompts you submit and agent outputs. These are transmitted to Anthropic's API and are not stored on Corverxis servers beyond your active session unless you save them.</p>
-        <p style="margin:0 0 6px"><strong style="color:#EEF4F8">File uploads:</strong> Documents and images are processed in-session only and not retained after your session ends.</p>
-        <p style="margin:0 0 10px"><strong style="color:#EEF4F8">Usage data:</strong> Anonymous platform metrics to improve performance. No personally identifiable information is included.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">3. AI Processing &amp; Third-Party APIs</div>
-        <p style="margin:0 0 6px">NexAgent Studio is powered by <strong style="color:#EEF4F8">NexGen Ultra</strong>, Corverxis Technologies' proprietary AI engine. Your prompts are processed securely within the NexGen infrastructure. Corverxis does not sell your prompts, share them with unauthorised third parties, or use them to train models without your explicit consent.</p>
-        <p style="margin:0 0 10px">Payments are processed by <strong style="color:#EEF4F8">Stripe Inc.</strong>, a PCI-DSS Level 1 certified payment processor. Corverxis does not store or access your payment card details.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">4. How We Use Your Information</div>
-        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
-          <li>Authenticate and manage your account</li>
-          <li>Process and route your AI agent tasks</li>
-          <li>Manage subscription billing via Stripe</li>
-          <li>Send transactional emails (verification, password reset)</li>
-          <li>Detect and prevent fraud and security incidents</li>
-        </ul>
-        <p style="margin:0 0 10px">We do <strong style="color:#EEF4F8">not</strong> sell your information or use task data for advertising.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">5. Security</div>
-        <p style="margin:0 0 10px">Data is encrypted at rest and in transit (TLS 1.2+). Passwords are hashed. Optional TOTP MFA is available. Contact <strong style="color:#EEF4F8">support@corverxis.com</strong> immediately if you suspect a breach.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">6. Your Rights (GDPR / CCPA)</div>
-        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
-          <li><strong style="color:#EEF4F8">Access &amp; Portability</strong> &mdash; request a copy of your data</li>
-          <li><strong style="color:#EEF4F8">Rectification</strong> &mdash; correct inaccurate data</li>
-          <li><strong style="color:#EEF4F8">Erasure</strong> &mdash; delete your account and all data within 30 days</li>
-          <li><strong style="color:#EEF4F8">Objection</strong> &mdash; object to processing for legitimate interests</li>
-        </ul>
-        <p style="margin:0 0 10px">To exercise any right email <strong style="color:#EEF4F8">support@corverxis.com</strong> with subject "Privacy Request".</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">7. Data Retention &amp; International Transfers</div>
-        <p style="margin:0 0 10px">Account data is kept while your account is active. Task history follows your plan tier. Data may be processed in the US (Anthropic, Supabase, Stripe) under Standard Contractual Clauses (SCCs). Corverxis Technologies Ltd operates under the laws of the State of Delaware, United States.</p>
-        <div style="font-size:15px;font-weight:700;color:#EEF4F8;margin:16px 0 12px;padding:14px 0 8px;border-top:1px solid rgba(0,200,255,.15);border-bottom:1px solid rgba(0,200,255,.15)">&#x1F4CB; Terms of Service</div>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">1. Acceptance</div>
-        <p style="margin:0 0 10px">By creating an account you agree to these Terms. They form a legally binding agreement between you and Corverxis Technologies Ltd.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">2. Permitted Use</div>
-        <ul style="margin:0 0 10px;padding-left:18px;display:flex;flex-direction:column;gap:4px">
-          <li>Use NexAgent Studio for lawful business and personal purposes only</li>
-          <li>Do not reverse-engineer, scrape or extract the underlying AI models</li>
-          <li>Do not share credentials or resell access without a reseller agreement</li>
-          <li>Do not submit prompts designed to circumvent AI safety measures</li>
-        </ul>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">3. AI-Generated Outputs</div>
-        <p style="margin:0 0 10px">AI outputs may contain errors. <strong style="color:#EEF4F8">Outputs do not constitute legal, medical, financial or professional advice.</strong> You are solely responsible for verifying and deciding whether to rely on any AI-generated content. Corverxis accepts no liability for decisions made based on AI outputs.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">4. Intellectual Property</div>
-        <p style="margin:0 0 10px">You retain ownership of your inputs and outputs (subject to Anthropic's policies). The NexAgent platform, UI and branding are the exclusive property of Corverxis Technologies Ltd.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">5. Billing &amp; Cancellation</div>
-        <p style="margin:0 0 10px">Paid plans are billed monthly via Stripe. Cancel anytime &mdash; access continues until the end of your billing period. Pricing changes are notified 30 days in advance.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">6. Limitation of Liability</div>
-        <p style="margin:0 0 10px">Corverxis's total liability for any claim shall not exceed the amount you paid in the 3 months preceding it. We are not liable for indirect, consequential or loss-of-profit damages.</p>
-        <div style="font-size:11px;font-weight:700;color:#00C8FF;letter-spacing:1px;text-transform:uppercase;margin:12px 0 6px">7. Governing Law</div>
-        <p style="margin:0 0 16px">These Terms are governed by the laws of the State of Delaware, United States. Any disputes shall be subject to the exclusive jurisdiction of the federal and state courts located in the State of Delaware.</p>
-        <div style="background:rgba(0,200,255,.06);border:1px solid rgba(0,200,255,.15);border-radius:8px;padding:14px 16px">
-          <div style="font-size:11px;font-weight:700;color:#EEF4F8;margin-bottom:5px">Contact</div>
-          <div style="font-size:11.5px;color:#9BC0D8">Corverxis Technologies Ltd &nbsp;&middot;&nbsp; <strong style="color:#EEF4F8">support@corverxis.com</strong> &nbsp;&middot;&nbsp; corverxis.com</div>
-        </div>
-      </div>
-      <button onclick="closeNaPrivacy()" style="margin-top:22px;width:100%;padding:12px;background:#00C8FF;color:#0F2645;border:none;border-radius:8px;font-family:monospace;font-size:10.5px;font-weight:700;cursor:pointer">I Understand &mdash; Close</button>
-    </div>
-  </div>
-</div>
-<style>#naPolicyModal::-webkit-scrollbar{width:5px}#naPolicyModal::-webkit-scrollbar-thumb{background:rgba(0,200,255,.3);border-radius:3px}</style>
-<script>
-function openNaPrivacy(){document.getElementById("naPolicyModal").style.display="flex";document.body.style.overflow="hidden";}
-function closeNaPrivacy(){document.getElementById("naPolicyModal").style.display="none";document.body.style.overflow="";}
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("naPolicyModal").style.display==="flex")closeNaPrivacy();});
-</script>
 </body>
 
 </html>
+>
